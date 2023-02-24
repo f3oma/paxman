@@ -1,0 +1,28 @@
+.home-container {
+  padding: 16px 32px;
+  .top-head {
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  }
+  .content {
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .action-btn {
+      width: 100%;
+      background-color: #ffa600;
+      color: #000;
+      font-weight: 700;
+      font-size: 16px;
+      margin: 8px;
+      padding: 24px;
+      max-width: 800px;
+
+    }
+  }
+}
