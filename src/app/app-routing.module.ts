@@ -7,7 +7,12 @@ import { SearchComponent } from './pages/search/search.component';
 const routes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    redirectTo: 'home',
+    pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
   },
   {
     path: 'add-pax',

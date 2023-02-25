@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "f3omaha": {
+      "hosting": {
+        "homebase": [
+          "f3omaha"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "f3omaha"
+  }
+}

@@ -20,7 +20,7 @@ p {
   margin: 0;
 }
 
-.toolbar {
+.navbar {
   padding: 8px 8px;
   display: flex;
   align-items: center;
@@ -29,6 +29,15 @@ p {
   font-weight: 600;
 }
 
-.toolbar img {
+.navbar img {
   margin: 0 4px;
+}
+
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;
+  text-align: center;
+
 }

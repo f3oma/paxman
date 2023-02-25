@@ -1,8 +1,42 @@
-<div class="toolbar" role="banner">
-  <img
-    width="150"
-    alt="Angular Logo"
-    src="../assets/Header-Logo.png"
-  />
-</div>
+<nav class="navbar navbar-expand-md navbar-dark">
+  <a class="navbar-brand" routerLink="/home">
+    <img
+      width="150"
+      alt="Angular Logo"
+      src="../assets/Header-Logo.png"
+    />
+  </a>
+  <button #navbarMobileButton class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse align-right" id="navbarCollapse" [ngbCollapse]="isCollapsed">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/add-pax">Add PAX</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/search">Search</a>
+      </li>
+      <li class="nav-item dropdown" *ngIf="user">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          User
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+          <!-- <a class="dropdown-item" [routerLink]="['/profile/', user.uid]">My Profile</a> -->
+          <a class="dropdown-item" [routerLink]="['/whats-new']">What's New</a>
+          <div class="dropdown-divider"></div>
+          <!-- <a  class="dropdown-item" (click)="signOut()">Log Out</a> -->
+        </div>
+      </li>
+      <li class="nav-item" *ngIf="!user">
+        <a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 <router-outlet></router-outlet>
+
+<footer id="footer">
+  <p class="text-center text-muted">© 2023 F3Omaha</p>
+</footer>

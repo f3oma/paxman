@@ -4,4 +4,22 @@
     margin-bottom: 4px;
     font-size: 32px;
   }
+  .fng-form {
+    display: flex;
+    flex-direction: column;
+    mat-form-field {
+      width: 100%;
+      margin: 8px;
+      max-width: 800px;
+    }
+  }
+  #submit-btn {
+    width: 100%;
+    max-width: 800px;
+    font-size: 18px;
+    font-weight: 700;
+    background: #ffa600;
+    margin: 16px 0;
+    padding: 24px;
+  }
 }
