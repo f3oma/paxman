@@ -8,11 +8,25 @@
       Might use Algolia here to index the data, could be easier than querying firestore in realtime.
 
     -->
+    <mat-form-field appearance="fill">
+      <mat-label>Search</mat-label>
+      <input matInput placeholder="Enter F3 Name, First name, or last name" type="text" [(ngModel)]="currentSearchValue" (ngModelChange)="searchValueBehaviorSubject.next($event)">
+      <button *ngIf="currentSearchValue" matSuffix mat-icon-button aria-label="Clear" (click)="currentSearchValue=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
   </div>
   <div class="results-list">
-
+    <div class="pax" *ngFor="let pax of resultPaxList$ | async" (click)="routeToPaxPage(pax.objectID)">
+      <div class="pax-detail">
+        <h5>{{pax.f3Name}}</h5>
+        <p>{{pax.firstName}} {{pax.lastName}}</p>
+      </div>
+      <div class="pax-contact">
+        <p>{{pax.email}}</p>
+      </div>
+    </div>
     <!-- Once we have data here, we should be able to allow email and call functionality just by providing the numbers -->
     <!-- Site-Q's and Admin users will have the ability to update PAX data -->
-
   </div>
 </div>

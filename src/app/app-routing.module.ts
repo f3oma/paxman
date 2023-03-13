@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AddPaxComponent } from './pages/add-pax/add-pax.component';
 import { HomeComponent } from './pages/home/home.component';
 import { SearchComponent } from './pages/search/search.component';
+import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'search',
     component: SearchComponent
+  },
+  {
+    path: 'users/:id',
+    component: UserDetailComponent
   }
 ];
 

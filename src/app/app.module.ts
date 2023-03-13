@@ -18,8 +18,8 @@ import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
-
+import {MatSelectModule} from '@angular/material/select';
+import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +27,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AddPaxComponent,
     SearchComponent,
     HomeComponent,
-    PhoneInputComponent
+    PhoneInputComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +43,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    NgbModule
+    NgbModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent],

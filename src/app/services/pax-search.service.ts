@@ -20,9 +20,21 @@ export class PaxSearchService {
    */
   public async getPaxByF3Name(f3Name: string): Promise<PaxUser[]> {
     const lowercaseName = f3Name.toLowerCase();
-    console.log(lowercaseName);
     const collectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
     const q = query(collectionRef, where("f3Name", "==", lowercaseName));
+    const querySnapshot = await getDocs(q);
+    return [ ...querySnapshot.docs.map((doc) => doc.data())];
+  }
+
+  /**
+   * @param partialf3Name Name provided to PAX at join time, search string.
+   * @returns All PAX with the specified F3 Name, beware there could be multiple PAX with
+   * the same name...
+   */
+  public async searchPossiblePaxByF3Name(partialF3Name: string): Promise<PaxUser[]> {
+    const lowercaseName = partialF3Name.toLowerCase();
+    const collectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
+    const q = query(collectionRef, where("f3NameLowercase", ">=", lowercaseName));
     const querySnapshot = await getDocs(q);
     return [ ...querySnapshot.docs.map((doc) => doc.data())];
   }

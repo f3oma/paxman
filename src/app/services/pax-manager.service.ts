@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { addDoc, Firestore } from "@angular/fire/firestore";
-import { collection, DocumentReference } from "@firebase/firestore";
+import { addDoc, doc, Firestore, getDoc } from "@angular/fire/firestore";
+import { collection, DocumentReference, DocumentSnapshot } from "@firebase/firestore";
 import { PaxUser } from "../models/users.model";
 import { paxUserConverter } from "../utils/pax-model-converter";
 
@@ -25,8 +25,8 @@ export class PaxManagerService {
 
   }
 
-  getUserById(userId: string) {
-
+  async getUserById(userId: string): Promise<DocumentSnapshot<PaxUser>> {
+    const documentReference = doc(this.firestore, 'users', userId).withConverter(paxUserConverter);
+    return await getDoc(documentReference);
   }
-
 }

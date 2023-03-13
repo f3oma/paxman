@@ -4,4 +4,36 @@
     margin-bottom: 4px;
     font-size: 32px;
   }
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+  .results-list {
+    .pax {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: #fff;
+      cursor: pointer;
+      .pax-detail {
+        h5 {
+          margin: 4px 0;
+        }
+        p {
+          margin: 0;
+        }
+      }
+      .pax-contact {
+        p {
+          margin: 0;
+        }
+      }
+    }
+    .pax:nth-child(even) {
+      background: #eee !important;
+    }
+  }
 }

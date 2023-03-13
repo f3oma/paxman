@@ -8,10 +8,10 @@ export const paxUserConverter = {
       lastName: data.lastName,
       phoneNumber: data?.phoneNumber ? data.phoneNumber.toDashedForm() : null,
       email: data.email,
-      f3Name: data.f3Name.toLowerCase(),
+      f3Name: data.f3Name,
+      f3NameLowercase: data.f3Name.toLowerCase(),
       dateAdded: Timestamp.now()
     }
   },
-  fromFirestore: (snap: QueryDocumentSnapshot) =>
-    snap.data() as PaxUser
+  fromFirestore: (snap: QueryDocumentSnapshot) => snap.data() as PaxUser
 }

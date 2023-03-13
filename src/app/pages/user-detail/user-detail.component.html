@@ -1,0 +1,11 @@
+<div class="container" *ngIf="userData$ | async as user">
+  <h1>{{user.f3Name}}</h1>
+  <h5>Name</h5>
+  <p>{{user.firstName}} {{user.lastName}}</p>
+
+  <h5>Email</h5>
+  <a [href]="'mailto:' + user.email">{{user.email}}</a>
+
+  <h5>Phone</h5>
+  <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber}}</a>
+</div>
