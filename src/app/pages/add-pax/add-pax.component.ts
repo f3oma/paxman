@@ -72,17 +72,17 @@ export class AddPaxComponent {
     return '';
   }
 
-  private async doesF3NameExist(f3Name: string): Promise<PaxUser[]> {
-    return await this.paxSearchService.getPaxByF3Name(f3Name);
+  private async doesF3NameExist(f3Name: string): Promise<boolean> {
+    return await this.paxSearchService.doesF3NameExist(f3Name);
   }
 
   private paxF3NameValidator(): AsyncValidatorFn {
     return control => control.valueChanges.pipe(
       debounceTime(1000),
       distinctUntilChanged(),
-      switchMap((value: any) => this.doesF3NameExist(value)),
+      switchMap(async (value: any) => await this.doesF3NameExist(value)),
       map((value) => {
-        if (value && value.length > 0) {
+        if (value) {
           return { nameExists: true };
         }
         return null;

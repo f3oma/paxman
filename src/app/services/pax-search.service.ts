@@ -3,11 +3,16 @@ import { Firestore, getDocs, QueryDocumentSnapshot } from "@angular/fire/firesto
 import { collection, query, where } from "@firebase/firestore";
 import { PaxUser } from "../models/users.model";
 import { paxUserConverter } from "../utils/pax-model-converter";
+import algoliasearch from "algoliasearch";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaxSearchService {
+
+  private algoliaSearch = algoliasearch(environment.algoliasearch.APP_ID, environment.algoliasearch.API_KEY);
+  private idx = this.algoliaSearch.initIndex('f3OmahaUserIdx');
 
   constructor(private firestore: Firestore) {
 
@@ -18,12 +23,18 @@ export class PaxSearchService {
    * @returns All PAX with the specified F3 Name, beware there could be multiple PAX with
    * the same name...
    */
-  public async getPaxByF3Name(f3Name: string): Promise<PaxUser[]> {
-    const lowercaseName = f3Name.toLowerCase();
-    const collectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
-    const q = query(collectionRef, where("f3Name", "==", lowercaseName));
-    const querySnapshot = await getDocs(q);
-    return [ ...querySnapshot.docs.map((doc) => doc.data())];
+  public async doesF3NameExist(f3Name: string): Promise<boolean> {
+    return this.idx.search(f3Name, {
+      exactOnSingleWordQuery: "attribute",
+      restrictSearchableAttributes: ['f3Name'],
+      typoTolerance: false
+    }).then(({ hits }) => {
+      const results: any[] = hits;
+      if (results.length < 2) {
+        return results.filter((e) => e.f3Name.toLowerCase() === f3Name.toLowerCase()).length === 1;
+      }
+      return false;
+    });
   }
 
   /**
@@ -33,6 +44,7 @@ export class PaxSearchService {
    */
   public async searchPossiblePaxByF3Name(partialF3Name: string): Promise<PaxUser[]> {
     const lowercaseName = partialF3Name.toLowerCase();
+
     const collectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
     const q = query(collectionRef, where("f3NameLowercase", ">=", lowercaseName));
     const querySnapshot = await getDocs(q);
