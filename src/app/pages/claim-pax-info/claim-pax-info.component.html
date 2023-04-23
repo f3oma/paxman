@@ -1,0 +1,20 @@
+<div class="container">
+  <h1>Claim my F3 info</h1>
+  <div class="inner-form">
+    <mat-form-field appearance="fill">
+      <mat-label>F3 name</mat-label>
+      <input formControlName="f3Name" autocomplete="off" matInput type="text" placeholder="F3 name" required>
+      <mat-error *ngIf="form.controls['f3Name'].invalid">{{getF3NameError()}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input formControlName="email" autocomplete="off" matInput type="email" placeholder="pax@example.com" required>
+      <mat-error *ngIf="form.controls['email'].invalid">{{getEmailErrorMessage()}}</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Phone number</mat-label>
+      <phone-input formControlName="tel" autocomplete="off" required="false"></phone-input>
+      <mat-hint>Include area code</mat-hint>
+    </mat-form-field>
+  </div>
+</div>

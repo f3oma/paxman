@@ -20,6 +20,9 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatSelectModule} from '@angular/material/select';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { UserDetailComponent } from './pages/user-detail/user-detail.component';
     SearchComponent,
     HomeComponent,
     PhoneInputComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    LoginComponent,
+    RegisterComponent,
+    ClaimPaxInfoComponent
   ],
   imports: [
     BrowserModule,

@@ -3,7 +3,7 @@ import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationEr
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, first, map, switchMap } from 'rxjs';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
-import { PaxUser } from 'src/app/models/users.model';
+import { IPaxUser, PaxUser } from 'src/app/models/users.model';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
 
@@ -40,15 +40,16 @@ export class AddPaxComponent {
         }
         return false;
       }
-      const pax: PaxUser = {
-        firstName: this.form.controls['firstName'].value,
-        lastName: this.form.controls['lastName'].value,
-        f3Name: this.form.controls['f3Name'].value,
-        email: this.form.controls['email'].value,
-        phoneNumber: phoneValid() ? this.form.controls['tel'].value : null,
-      };
+      const pax = new PaxUser(
+        this.form.controls['firstName'].value,
+        this.form.controls['lastName'].value,
+        this.form.controls['email'].value,
+        phoneValid() ? this.form.controls['tel'].value : undefined,
+        this.form.controls['f3Name'].value
+      );
       const newUserAdded = await this.paxManagerService.addNewUser(pax);
       if (newUserAdded && newUserAdded.id) {
+        window.alert(`Welcome to F3 Omaha, ${this.form.controls['f3Name'].value}!`);
         this.router.navigate(['home']);
       } else {
         console.error("ERR", newUserAdded);
@@ -89,5 +90,4 @@ export class AddPaxComponent {
       }),
       first());
   }
-
 }

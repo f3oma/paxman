@@ -1,0 +1,45 @@
+.container {
+    padding: 16px;
+    text-align: center;
+    h1 {
+     font-size: 32px;
+    }
+    .center {
+      text-align: center;
+      padding: 24px;
+
+      form {
+        margin: 6px 0 24px 0;
+
+        .error {
+          background-color: rgb(255, 160, 160);
+          color: #000;
+          text-align: center;
+          margin: 24px 8px;
+          padding: 8px;
+          border-radius: 5px;
+        }
+        mat-form-field {
+          width: 100%;
+          max-width: 600px;
+        }
+      }
+      .sign-up-btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 22px;
+        width: 400px;
+        font-weight: bold;
+      }
+
+      #google {
+        color: #fff;
+        background-color: rgb(0, 140, 255);
+      }
+
+      #submit {
+        color: #fff;
+        background-color: #000;
+      }
+    }
+}

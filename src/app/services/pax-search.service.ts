@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Firestore, getDocs, QueryDocumentSnapshot } from "@angular/fire/firestore";
-import { collection, query, where } from "@firebase/firestore";
+import { Firestore, getDocs, collection, query, where } from "@angular/fire/firestore";
 import { PaxUser } from "../models/users.model";
 import { paxUserConverter } from "../utils/pax-model-converter";
 import algoliasearch from "algoliasearch";

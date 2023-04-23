@@ -27,6 +27,6 @@ export class UserDetailComponent {
   }
 
   async getUserData(id: string) {
-    this.userDataSubject.next(await (await this.paxManagerService.getUserById(id)).data());
+    this.userDataSubject.next(await (await this.paxManagerService.getDataByAuthId(id)).data());
   }
 }
