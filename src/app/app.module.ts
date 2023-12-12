@@ -23,6 +23,7 @@ import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.com
     UserDetailComponent,
     LoginComponent,
     RegisterComponent,
-    ClaimPaxInfoComponent
+    ClaimPaxInfoComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

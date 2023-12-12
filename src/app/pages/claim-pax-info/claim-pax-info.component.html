@@ -1,8 +1,11 @@
 <div class="container">
-  <h1>Claim my F3 info</h1>
-  <div class="inner-form">
+  <h1>Claim my F3 Info</h1>
+  <div class="inner-form" [formGroup]="form">
+    <div class="error" *ngIf="errorMessage">
+      <p>{{errorMessage}}</p>
+    </div>
     <mat-form-field appearance="fill">
-      <mat-label>F3 name</mat-label>
+      <mat-label>F3 Name</mat-label>
       <input formControlName="f3Name" autocomplete="off" matInput type="text" placeholder="F3 name" required>
       <mat-error *ngIf="form.controls['f3Name'].invalid">{{getF3NameError()}}</mat-error>
     </mat-form-field>
@@ -16,5 +19,23 @@
       <phone-input formControlName="tel" autocomplete="off" required="false"></phone-input>
       <mat-hint>Include area code</mat-hint>
     </mat-form-field>
+    <button mat-flat-button id="submit" (click)="tryClaimF3Info()">Find Data</button>
+  </div>
+
+  <div class="logged-in-match" *ngIf="loggedInEmailMatchFound && loggedInMatchedUserData">
+    <span >Based on your logged in email...</span>
+    <span id="f3Name">{{loggedInMatchedUserData.f3Name}}</span>
+    <span id="firstName">{{loggedInMatchedUserData.firstName}}</span>
+    <button mat-flat-button id="claim-btn" (click)="claimData(loggedInMatchedUserData)">Claim data</button>
+  </div>
+  
+  <div class="pax-list-container" *ngIf="searched">
+    <h2>Search results</h2>
+    <p>We've found these profiles:</p>
+    <div class="pax-list" *ngFor="let pax of paxForDisplay">
+      <span id="f3Name">{{pax.f3Name}}</span>
+      <span id="firstName">{{pax.firstName}}</span>
+      <button mat-flat-button id="claim-btn" (click)="claimData(pax)">Claim data</button>
+    </div>
   </div>
 </div>

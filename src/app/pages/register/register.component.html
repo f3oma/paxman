@@ -1,4 +1,20 @@
 <div class="container">
   <h1>Sign up</h1>
-  <p>Claim your F3 account data</p>
+  <p>Create a new account with email and password</p>
+  <form [formGroup]="registerForm" class="register-form">
+    <div class="error" *ngIf="signInErrorMessage !== ''">{{signInErrorMessage}}</div>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input formControlName="email" autocomplete="off" matInput type="email" placeholder="pax@example.com" required>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input formControlName="password" autocomplete="off" matInput type="password" placeholder="Password" required>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Confirm Password</mat-label>
+      <input formControlName="confirmPassword" autocomplete="off" matInput type="password" placeholder="Password" required>
+    </mat-form-field>
+    <button class="sign-up-btn" id="submit" (click)="registerUser()">Register</button>
+  </form>
 </div>

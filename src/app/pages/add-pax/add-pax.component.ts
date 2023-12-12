@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { AbstractControl, AsyncValidatorFn, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, first, map, switchMap } from 'rxjs';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
-import { IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { IPaxUser } from 'src/app/models/users.model';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
 
@@ -28,7 +28,7 @@ export class AddPaxComponent {
     private readonly paxSearchService: PaxSearchService,
     private readonly paxManagerService: PaxManagerService,
     private readonly router: Router) {
-    this.f3NameFormControl.setAsyncValidators(this.paxF3NameValidator());
+      this.f3NameFormControl.setAsyncValidators(this.paxF3NameValidator());
   }
 
   public async addPax(): Promise<void> {
@@ -40,22 +40,23 @@ export class AddPaxComponent {
         }
         return false;
       }
-      const pax = new PaxUser(
-        this.form.controls['firstName'].value,
-        this.form.controls['lastName'].value,
-        this.form.controls['email'].value,
-        phoneValid() ? this.form.controls['tel'].value : undefined,
-        this.form.controls['f3Name'].value
-      );
+      const pax: Partial<IPaxUser> = {
+        id: undefined,
+        f3Name: this.form.controls['f3Name'].value,
+        firstName: this.form.controls['firstName'].value,
+        lastName: this.form.controls['lastName'].value,
+        email: this.form.controls['email'].value,
+        phoneNumber: phoneValid() ? this.form.controls['tel'].value : undefined,
+      };
       const newUserAdded = await this.paxManagerService.addNewUser(pax);
       if (newUserAdded && newUserAdded.id) {
         window.alert(`Welcome to F3 Omaha, ${this.form.controls['f3Name'].value}!`);
         this.router.navigate(['home']);
       } else {
-        console.error("ERR", newUserAdded);
+        console.error("Error", newUserAdded);
       }
     } else {
-      console.log("ERROR");
+      console.log("Error");
     }
   }
 

@@ -40,7 +40,7 @@ export class LoginComponent {
       try {
         const user: AuthenticatedUser = await this.userAuthenticationService.loginUserEmailPassword(email, password);
         if (user) {
-
+          this.tryClaimDataPrompt(user);
         }
       } catch (err: any) {
         console.log(err);
@@ -53,23 +53,22 @@ export class LoginComponent {
   }
 
   public async loginWithGoogle() {
-    const result = await this.userAuthenticationService.loginWithGoogle();
-    console.log(result);
+    const user: AuthenticatedUser = await this.userAuthenticationService.loginWithGoogle();
+
+    // If the result does not have PAX data, ask if we'd like to claim it
+    this.tryClaimDataPrompt(user);
   }
 
-  public getEmailErrorMessage() {
-
-  }
-
-  public getPasswordErrorMessage() {
-
-  }
-
-  private handleLoginResult(result: AuthenticatedUser | undefined) {
-    if (result?.getPaxDataId() !== null) {
-      this.router.navigate(['home']);
+  private tryClaimDataPrompt(user: AuthenticatedUser) {
+    if (user.getPaxDataId() === undefined) {
+      const result = confirm("Would you like to claim your F3 data now?");
+      if (result) {
+        this.router.navigate(['claim-info']);
+      } else {
+        this.router.navigate(['home']);
+      }
     } else {
-      this.router.navigate(['claim-info']);
+      this.router.navigate(['home']);
     }
   }
 }

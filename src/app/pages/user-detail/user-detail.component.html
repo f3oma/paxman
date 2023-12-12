@@ -1,11 +1,19 @@
 <div class="container" *ngIf="userData$ | async as user">
-  <h1>{{user.f3Name}}</h1>
-  <h5>Name</h5>
-  <p>{{user.firstName}} {{user.lastName}}</p>
+  <div class="user-data" *ngIf="isAuthorizedUser">
+    <h1>{{user.f3Name}}</h1>
+    <h5>Name</h5>
+    <p>{{user.firstName}} {{user.lastName}}</p>
+  
+    <h5>Email</h5>
+    <a [href]="'mailto:' + user.email">{{user.email}}</a>
+  
+    <h5>Phone</h5>
+    <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber?.toDashedForm() ?? ''}}</a>
+  
+    <div class="action-btns">
+      <button *ngIf="isAuthorizedUser && !hasExistingRole('SiteQ')" class="action-btn" id="siteq-btn" mat-flat-button (click)="promoteRole('SiteQ', user)">Promote to SiteQ</button>
+      <button *ngIf="isAdmin && !hasExistingRole('Admin')" class="action-btn" id="admin-btn" mat-flat-button (click)="promoteRole('Admin', user)">Promote to Admin</button>
+    </div>
+  </div>
 
-  <h5>Email</h5>
-  <a [href]="'mailto:' + user.email">{{user.email}}</a>
-
-  <h5>Phone</h5>
-  <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber}}</a>
 </div>

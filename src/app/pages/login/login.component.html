@@ -1,19 +1,17 @@
 <div class="container">
   <h1>Login</h1>
   <div class="center">
-    <form [formGroup]="loginForm">
+    <form [formGroup]="loginForm" class="login-form">
       <div class="error" *ngIf="signInErrorMessage !== ''">{{signInErrorMessage}}</div>
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input formControlName="email" autocomplete="off" matInput type="email" placeholder="pax@example.com" required>
-        <mat-error *ngIf="loginForm.controls['email'].invalid">{{getEmailErrorMessage()}}</mat-error>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
         <input formControlName="password" autocomplete="off" matInput type="password" placeholder="Password" required>
-        <mat-error *ngIf="loginForm.controls['password'].invalid">{{getPasswordErrorMessage()}}</mat-error>
       </mat-form-field>
-      <button class="sign-up-btn" id="submit" (click)="loginUser()">Submit</button>
+      <button class="sign-up-btn" id="submit" (click)="loginUser()">Login</button>
     </form>
     <hr/>
     <p>Need an account? <a routerLink="/register"><b>Sign up with email</b></a></p>

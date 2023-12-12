@@ -6,6 +6,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { SearchComponent } from './pages/search/search.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
+import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
+import { AuthGuard } from './route-guard/auth-guard.guard';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -36,6 +39,16 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent
+  },
+  {
+    path: 'claim-info',
+    component: ClaimPaxInfoComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'profile',
+    component: ProfileComponent,
+    canActivate: [AuthGuard]
   }
 ];
 

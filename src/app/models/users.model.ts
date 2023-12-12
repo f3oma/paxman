@@ -2,6 +2,7 @@ import { Timestamp } from "@angular/fire/firestore";
 import { PhoneNumber } from "./phonenumber.model";
 
 export interface IPaxUser {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -9,6 +10,12 @@ export interface IPaxUser {
   f3Name: string;
   // ehLocation
   // ehUser
+}
+
+export interface IClaimUserInfo {
+  f3Name: string,
+  phoneNumber: PhoneNumber | undefined,
+  email: string;
 }
 
 export interface IPaxUserEntity {
@@ -24,18 +31,24 @@ export interface IPaxUserEntity {
 }
 
 export class PaxUser {
+  private _id: string;
   private _firstName: string;
   private _lastName: string;
   private _email: string;
   private _phoneNumber: PhoneNumber | undefined;
   private _f3Name: string;
 
-  constructor(firstName: string, lastName: string, email: string, phoneNumber: PhoneNumber | undefined, f3Name: string) {
+  constructor(id: string, firstName: string, lastName: string, email: string, phoneNumber: PhoneNumber | undefined, f3Name: string) {
+    this._id = id;
     this._firstName = firstName;
     this._lastName = lastName;
     this._email = email;
     this._phoneNumber = phoneNumber;
     this._f3Name = f3Name;
+  }
+
+  public get id(): string {
+    return this._id;
   }
 
   public get firstName(): string {
@@ -64,6 +77,7 @@ export class PaxUser {
 
   public toProperties(): IPaxUser {
     return {
+      id: this.id,
       f3Name: this.f3Name,
       firstName: this.firstName,
       lastName: this.lastName,
