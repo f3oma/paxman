@@ -1,4 +1,4 @@
-# SiteSync? (name tbd)
+# Pax-o-dex? SiteSync? (name tbd)
 
 This repo houses F3 Omaha's PAX management and scheduling tool. The new tool will provide admins and Site Q's the ability to both add new and search existing PAX.
 
