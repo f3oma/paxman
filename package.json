@@ -1,6 +1,9 @@
 {
-  "name": "homebase",
-  "version": "0.0.0",
+  "name": "pax-o-dex",
+  "version": "1.0.0",
+  "author": "Nolan Clark - F3 iMac",
+  "description": "Adds user information to the roster for F3 Omaha",
+  "license": "ISC",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
