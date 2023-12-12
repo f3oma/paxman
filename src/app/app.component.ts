@@ -1,7 +1,7 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
 import { Router, RouterEvent, Event, NavigationStart, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
+import { UserAuthenticationService } from './services/user-authentication.service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +11,7 @@ import { filter } from 'rxjs';
 export class AppComponent {
   title = 'TBD';
   user: any = null;
+  isLoggedIn = false;
 
   screenWidth = 600;
 
@@ -24,11 +25,19 @@ export class AppComponent {
   }
 
   isCollapsed = false;
+  subscriptions: Subscription[] = [];
 
   constructor(
-    private auth: Auth,
+    private auth: UserAuthenticationService,
     private readonly router: Router
   ) {
+    this.isLoggedIn = this.auth.isLoggedIn;
+    this.subscriptions.push(
+      this.auth.authUserData$.subscribe((res) => {
+        this.user = res;
+      })
+    );
+
     this.router.events.pipe(
       filter((e: Event): e is NavigationStart => e instanceof NavigationStart && this.screenWidth < 768)
     ).subscribe((e: RouterEvent) => {
@@ -36,6 +45,7 @@ export class AppComponent {
         this.mobileNavButton?.nativeElement.click();
       }
     });
+
     this.router.events.pipe(
       filter((e: Event): e is NavigationEnd => e instanceof NavigationEnd)
     ).subscribe((res) => {
@@ -43,5 +53,13 @@ export class AppComponent {
     })
   }
 
+  ngOnDestroy() {
+    this.subscriptions.forEach((s) => s.unsubscribe());
+  }
 
+  async signOut() {
+    await this.auth.signOutUser();
+    this.user = null;
+    this.router.navigate(['login']);
+  }
 }

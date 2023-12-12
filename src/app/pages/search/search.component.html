@@ -22,7 +22,7 @@
         <h5>{{pax.f3Name}}</h5>
         <p>{{pax.firstName}} {{pax.lastName}}</p>
       </div>
-      <div class="pax-contact">
+      <div class="pax-contact" *ngIf="isAdmin">
         <p>{{pax.email}}</p>
       </div>
     </div>

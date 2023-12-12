@@ -8,4 +8,22 @@
     margin-top: 12px;
     margin-bottom: 4px;
   }
+
+  .action-btns {
+    margin-top: 12px;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+
+    #siteq-btn {
+      color: #000;
+      background-color: orange;
+    }
+
+    #admin-btn {
+      color: #fff;
+      background-color: rgb(138, 30, 30);
+    }
+  }
 }

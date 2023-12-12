@@ -1,0 +1,41 @@
+<div class="container" *ngIf="authUserData$ | async as authUser">
+    <h1>My Profile</h1>
+    <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
+      <h5>F3 Name</h5>
+      <p>{{user.f3Name}}</p>
+      <div class="user-info" *ngIf="!editMode">
+          <h5>Name</h5>
+          <p>{{user.firstName}} {{user.lastName}}</p>
+          <h5>Email</h5>
+          <a [href]="'mailto:' + user.email">{{user.email}}</a>
+          <h5>Phone</h5>
+          <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber?.toDashedForm() ?? ''}}</a>
+          <button mat-raised-button class="editData" (click)="toggleEditMode()">Edit Information</button>
+        </div>
+        <div class="edit-mode" *ngIf="editMode">
+          <div class="edit-field">
+            <h5>First Name</h5>
+            <input id="firstName" type="text" autocomplete="given-name" [(ngModel)]="user.firstName" />
+            <h5>Last Name</h5>
+            <input id="lastName" type="text" autocomplete="family-name" [(ngModel)]="user.lastName" />
+            <h5>Email</h5>
+            <input id="email" type="text" autocomplete="email" [(ngModel)]="user.email" />
+            <h5>Phone number</h5>
+            <div class="phone-number">
+              <input [maxLength]="3" [minlength]="3" id="phoneNumberArea" type="tel" autocomplete="tel-area-code" [(ngModel)]="user.phoneNumber!.area" /> -
+              <input [maxLength]="3" [minlength]="3" id="phoneNumberCountry" type="tel" autocomplete="tel-country-code" [(ngModel)]="user.phoneNumber!.exchange" /> -
+              <input [maxLength]="4" [minlength]="4" id="phoneNumberExtension" type="tel" autocomplete="tel-extension" [(ngModel)]="user.phoneNumber!.subscriber" />
+            </div>
+            <button mat-raised-button class="saveData" (click)="saveData(user)">Save</button>
+        </div>
+    </div>
+    <div class="roles" *ngIf="authUser.getRoles().length > 0">
+        <h5>Roles</h5>
+        <span *ngFor="let role of authUser.getRoles()">{{role}}</span>
+    </div>
+  </div>
+  
+  <ng-template #noPaxData>
+    <p>No linked F3 data. Claim your F3 data to see more.</p>
+    <button id="claim-btn" mat-raised-button routerLink="../claim-info">Claim now</button>
+  </ng-template>

@@ -1,0 +1,60 @@
+.container {
+  padding: 16px 32px;
+
+  .inner-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+
+    .error {
+      background-color: rgb(255, 144, 144);
+      color: #000;
+      padding: 8px;
+      border-radius: 5px;
+      margin: 12px 0;
+      transition: 0.3s all ease-in-out;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  .pax-list, .logged-in-match {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee;
+    padding: 8px;
+    margin: 4px;
+
+    #f3Name {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 2px 0;
+    }
+    #firstName {
+      font-size: 18px;
+      padding: 0px 0px 4px 0;
+    }
+    #claim-btn {
+      color: #fff;
+      background-color: #000;
+    }
+  }
+
+  .logged-in-match {
+    background-color: rgb(198, 223, 255);
+  }
+  #submit {
+    background-color: #000;
+    color: #fff;
+    margin: 24px 0;
+    padding: 8px;
+  }
+}
