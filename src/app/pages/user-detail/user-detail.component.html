@@ -3,6 +3,9 @@
     <h1>{{user.f3Name}}</h1>
     <h5>Name</h5>
     <p>{{user.firstName}} {{user.lastName}}</p>
+
+    <h5>Joined</h5>
+    <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
   
     <h5>Email</h5>
     <a [href]="'mailto:' + user.email">{{user.email}}</a>

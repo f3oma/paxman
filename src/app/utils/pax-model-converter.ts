@@ -11,7 +11,7 @@ export const paxUserConverter = {
       email: data.email,
       f3Name: data.f3Name,
       f3NameLowercase: data.f3Name.toLowerCase(),
-      dateAdded: Timestamp.now()
+      joinDate: Timestamp.fromDate(data.joinDate),
     }
   },
   fromFirestore: (snap: QueryDocumentSnapshot): PaxUser => {
@@ -21,6 +21,6 @@ export const paxUserConverter = {
       let textPhoneNumberParts = data.phoneNumber.split("-");
       phoneNumber = new PhoneNumber(textPhoneNumberParts[0], textPhoneNumberParts[1], textPhoneNumberParts[2]);
     }
-    return new PaxUser(snap.id, data.firstName, data.lastName, data.email, phoneNumber, data.f3Name);
+    return new PaxUser(snap.id, data.firstName, data.lastName, data.email, phoneNumber, data.f3Name, data.joinDate.toDate());
   }
 }
