@@ -17,13 +17,13 @@ Contact Nolan Clark - iMac (nolanmclark@gmail.com) - or anyone from the F3 Tech 
 ## Ideas with legs
 
 ### User Account Association
-✅ Allow PAX to claim their account data
-✅ Allow PAX to update their F3 data we have on file
-Allow PAX to delete their F3 data
+✅ Allow PAX to claim their account data  
+✅ Allow PAX to update their F3 data we have on file  
+Allow PAX to delete their F3 data  
 
 ### CRUD AO Data
-Add hidden view with Site-Q's and Admin level access to AO Data (temporary)
-Allow Site-Q's and Admins to add new AO's to the database
-Associate all account "Initial AO" locations to the new database AOs
+Add hidden view with Site-Q's and Admin level access to AO Data (temporary)  
+Allow Site-Q's and Admins to add new AO's to the database  
+Associate all account "Initial AO" locations to the new database AOs  
 
 
