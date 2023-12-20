@@ -3,6 +3,8 @@
     <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
       <h5>F3 Name</h5>
       <p>{{user.f3Name}}</p>
+      <h5>Joined</h5>
+      <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
       <div class="user-info" *ngIf="!editMode">
           <h5>Name</h5>
           <p>{{user.firstName}} {{user.lastName}}</p>
