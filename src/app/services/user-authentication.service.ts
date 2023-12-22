@@ -54,7 +54,6 @@ export class UserAuthenticationService {
       }
       return result.data()!;
     }).catch((error) => {
-      console.log(error.message);
       if (error?.message.includes('auth/email-already-in-use')) {
         throw new Error("Email is already in use. You may need to log in.");
       } else if (error?.message.includes('auth/weak-password')) {
@@ -118,7 +117,7 @@ export class UserAuthenticationService {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
         throw new Error(error.message);
       });
   }
@@ -182,7 +181,7 @@ export class UserAuthenticationService {
   }
 
   async completeF3InfoClaim(user: AuthenticatedUser, paxUser: IPaxUser): Promise<void> {
-    const authDocRef = doc(this.authUserCollectionRef, user.getId());
+    const authDocRef = doc(this.authUserCollectionRef, user.getId()).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
     const userDocRef = doc(this.usersCollectionRef, paxUser.id);
     const batch = writeBatch(this.firestore);
     
@@ -193,7 +192,10 @@ export class UserAuthenticationService {
     batch.update(userDocRef, {
       authDataId: authDocRef.id
     })
-    return await batch.commit();
+    await batch.commit();
+    const result = (await getDoc(authDocRef)).data();
+    this.authUserData.next(result);
+    return;
   }
 
   public async promoteRole(userRole: UserRole, paxUserData: IPaxUser) {

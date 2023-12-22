@@ -25,10 +25,16 @@
         <phone-input formControlName="tel" autocomplete="off" required="false"></phone-input>
         <mat-hint>Include area code</mat-hint>
       </mat-form-field>
-      <!-- <mat-form-field appearance="fill">
-        <mat-label>EH'd by</mat-label>
-        <input matInput type="email" placeholder="Last name" required>
-      </mat-form-field> -->
+      <mat-form-field appearance="fill">
+        <mat-label>EH'd by (F3 name)</mat-label>
+        <input formControlName="ehByF3Name" [matAutocomplete]="auto" matInput type="text" placeholder="EH'd by">
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayF3NameOptions">
+          <mat-option *ngFor="let option of filteredEhF3Options$ | async" [value]="option">
+            {{option.f3Name}}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-hint>Leave blank if none</mat-hint>
+      </mat-form-field>
     </form>
     <button mat-flat-button id="submit-btn" (click)="addPax()">
       Submit

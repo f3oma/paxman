@@ -8,6 +8,7 @@ import { AddPaxComponent } from './pages/add-pax/add-pax.component';
 import { SearchComponent } from './pages/search/search.component';
 import { HomeComponent } from './pages/home/home.component';
 import { MatButtonModule } from '@angular/material/button';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -52,7 +53,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     NgbModule,
-    MatSelectModule
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent],
