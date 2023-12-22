@@ -1,4 +1,4 @@
-# SiteSync? (name tbd)
+# Pax-o-dex? SiteSync? (name tbd)
 
 This repo houses F3 Omaha's PAX management and scheduling tool. The new tool will provide admins and Site Q's the ability to both add new and search existing PAX.
 
@@ -16,14 +16,14 @@ Contact Nolan Clark - iMac (nolanmclark@gmail.com) - or anyone from the F3 Tech 
 
 ## Ideas with legs
 
-### User Account Association -
-Allow PAX to claim their account by providing the following:
-F3 Name
-Email Address or Phone on Account when they signed up.
-(this might be frustrating to some users, but we need validation).
+### User Account Association
+✅ Allow PAX to claim their account data  
+✅ Allow PAX to update their F3 data we have on file  
+Allow PAX to delete their F3 data  
 
-If this data matches what we have in the database, ask the user to create a password for their account.
-Register the new user account in Firestore, associate the account to the user data.
+### CRUD AO Data
+Add hidden view with Site-Q's and Admin level access to AO Data (temporary)  
+Allow Site-Q's and Admins to add new AO's to the database  
+Associate all account "Initial AO" locations to the new database AOs  
 
-Users can then update or delete their F3 data we have on file.
 
