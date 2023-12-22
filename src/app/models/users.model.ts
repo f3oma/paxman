@@ -1,5 +1,7 @@
-import { Timestamp } from "@angular/fire/firestore";
+import { DocumentReference, Timestamp } from "@angular/fire/firestore";
 import { PhoneNumber } from "./phonenumber.model";
+
+export type EhUserRef = DocumentReference<PaxUser> | undefined | null;
 
 export interface IPaxUser {
   id: string;
@@ -9,8 +11,7 @@ export interface IPaxUser {
   phoneNumber: PhoneNumber | undefined;
   f3Name: string;
   joinDate: Date;
-  // ehLocation
-  // ehUser
+  ehByUserRef: EhUserRef;
 }
 
 export interface IClaimUserInfo {
@@ -27,8 +28,8 @@ export interface IPaxUserEntity {
   f3Name: string;
   f3NameLowercase: string;
   joinDate: Timestamp;
+  ehByUserRef: EhUserRef;
   // ehLocationRef
-  // ehUserRef
 }
 
 export class PaxUser {
@@ -39,6 +40,7 @@ export class PaxUser {
   private _phoneNumber: PhoneNumber | undefined;
   private _f3Name: string;
   private _joinDate: Date;
+  private _ehByUserRef: EhUserRef;
 
   constructor(
     id: string, 
@@ -47,7 +49,8 @@ export class PaxUser {
     email: string, 
     phoneNumber: PhoneNumber | undefined, 
     f3Name: string,
-    joinDate: Date) {
+    joinDate: Date,
+    ehByUserRef: EhUserRef) {
     this._id = id;
     this._firstName = firstName;
     this._lastName = lastName;
@@ -55,6 +58,7 @@ export class PaxUser {
     this._phoneNumber = phoneNumber;
     this._f3Name = f3Name;
     this._joinDate = joinDate;
+    this._ehByUserRef = ehByUserRef;
   }
 
   public get id(): string {
@@ -85,6 +89,10 @@ export class PaxUser {
     return this._joinDate;
   }
 
+  public get ehByUserRef(): EhUserRef {
+    return this._ehByUserRef;
+  }
+
   public getLowercaseF3Name(): string {
     return this._f3Name.toLowerCase();
   }
@@ -97,7 +105,8 @@ export class PaxUser {
       lastName: this.lastName,
       email: this.email,
       phoneNumber: this.phoneNumber,
-      joinDate: this.joinDate
+      joinDate: this.joinDate,
+      ehByUserRef: this.ehByUserRef,
     }
   }
 

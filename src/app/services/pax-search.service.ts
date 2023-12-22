@@ -19,8 +19,7 @@ export class PaxSearchService {
 
   /**
    * @param f3Name Name provided to PAX at join time
-   * @returns All PAX with the specified F3 Name, beware there could be multiple PAX with
-   * the same name...
+   * @returns Whether the F3 name exists in the F3 Omaha system
    */
   public async doesF3NameExist(f3Name: string): Promise<boolean> {
     return this.idx.search(f3Name, {
@@ -35,6 +34,22 @@ export class PaxSearchService {
       return false;
     });
   }
+
+    /**
+   * @param partialF3Name Name provided to PAX at join time
+   * @returns All PAX with the specified F3 Name, beware there could be multiple PAX with
+   * the same name...
+   */
+    public async findF3Name(partialF3Name: string): Promise<any[]> {
+      return this.idx.search(partialF3Name, {
+        exactOnSingleWordQuery: "attribute",
+        restrictSearchableAttributes: ['f3Name'],
+        typoTolerance: false
+      }).then(({ hits }) => {
+        const results: any[] = hits;
+        return results.filter((e) => e.f3Name.toLowerCase() === partialF3Name.toLowerCase());
+      });
+    }
 
   /**
    * @param partialf3Name Name provided to PAX at join time, search string.

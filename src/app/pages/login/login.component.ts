@@ -43,7 +43,7 @@ export class LoginComponent {
           this.tryClaimDataPrompt(user);
         }
       } catch (err: any) {
-        console.log(err);
+        console.error(err);
         this.signInErrorMessage = "Invalid credentials";
         setTimeout(() => {
           this.signInErrorMessage = "";

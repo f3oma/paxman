@@ -3,7 +3,6 @@ import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference
 import { IPaxUser, PaxUser } from "../models/users.model";
 import { paxUserConverter } from "../utils/pax-model-converter";
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -11,23 +10,29 @@ export class PaxManagerService {
 
   constructor(private firestore: Firestore) { }
 
-  async addNewUser(user: Partial<IPaxUser>): Promise<DocumentReference<DocumentData>> {
+  public async addNewUser(user: Partial<IPaxUser>): Promise<DocumentReference<DocumentData>> {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(paxUserConverter);
     return await addDoc(userCollection, user);
   }
 
-  deleteUserById(userId: string) {
+  public deleteUserById(userId: string) {
 
   }
 
-  async updateUser(user: Partial<PaxUser>) {
-    const documentReference = doc(this.firestore, 'users', user.id!)
-      .withConverter(paxUserConverter);
+  public async updateUser(user: Partial<PaxUser>) {
+    const documentReference = doc(this.firestore, 'users', user.id!).withConverter(paxUserConverter);
     return await setDoc(documentReference, user, { merge: true });
   }
 
-  async getDataByAuthId(userId: string): Promise<DocumentSnapshot<PaxUser>> {
+  public async getDataByAuthId(userId: string): Promise<DocumentSnapshot<PaxUser>> {
     const documentReference = doc(this.firestore, 'users', userId).withConverter(paxUserConverter);
     return await getDoc(documentReference);
+  }
+
+  public getUserReference(databaseLocation: string): DocumentReference<PaxUser> | null {
+    if (databaseLocation) {
+      return doc(this.firestore, databaseLocation).withConverter(paxUserConverter);
+    }
+    return null;
   }
 }

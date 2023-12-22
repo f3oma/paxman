@@ -38,7 +38,6 @@ export class ProfileComponent {
     }
     
     public async saveData(user: IPaxUser) {
-        console.log(user);
         await this.paxManagerService.updateUser(user);
         this.toggleEditMode();
     }
