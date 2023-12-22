@@ -12,6 +12,12 @@
   
     <h5>Phone</h5>
     <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber?.toDashedForm() ?? ''}}</a>
+
+    <h5>Information Privacy</h5>
+    <p>{{user.hideContactInformation ? 'Contact info hidden' : 'Other PAX can contact'}}</p>
+
+    <h5>User Status</h5>
+    <p>{{user.activeUser ? 'Active F3 Member' : 'Inactive'}}</p>
   
     <div class="action-btns">
       <button *ngIf="isAuthorizedUser && !hasExistingRole('SiteQ')" class="action-btn" id="siteq-btn" mat-flat-button (click)="promoteRole('SiteQ', user)">Promote to SiteQ</button>

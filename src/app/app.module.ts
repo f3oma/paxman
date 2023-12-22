@@ -25,6 +25,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
     provideFirestore(() => getFirestore()),
     NgbModule,
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent],

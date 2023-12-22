@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserRole } from 'src/app/models/admin-user.model';
+import { PhoneNumber } from 'src/app/models/phonenumber.model';
 
 @Component({
   selector: 'app-search',
@@ -23,7 +24,8 @@ export class SearchComponent {
   private algoliaSearch = algoliasearch(environment.algoliasearch.APP_ID, environment.algoliasearch.API_KEY);
   private idx = this.algoliaSearch.initIndex('dev_f3OmahaPax');
 
-  public isAdmin = false;
+  public canViewUserDetails = false;
+  public isAuthenticated = false;
 
   constructor(
     private readonly router: Router,
@@ -37,8 +39,9 @@ export class SearchComponent {
     });
     this.userAuthService.authUserData$.subscribe((res) => {
       if (res) {
+        this.isAuthenticated = true;
         if (res.getRoles()?.includes(UserRole.Admin) || res.getRoles()?.includes(UserRole.SiteQ)) {
-          this.isAdmin = true;
+          this.canViewUserDetails = true;
         }
       }
     })
@@ -57,8 +60,16 @@ export class SearchComponent {
   }
 
   routeToPaxPage(paxId: string) {
-    if (this.isAdmin) {
+    if (this.canViewUserDetails) {
       this.router.navigate(['users', paxId]);
     }
+  }
+
+  phoneCall(phoneNumber: string) {
+    window.open(`tel:${phoneNumber}`);
+  }
+
+  sendEmail(email: string) {
+    window.open(`mailto:${email}`);
   }
 }

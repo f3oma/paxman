@@ -12,6 +12,8 @@ export interface IPaxUser {
   f3Name: string;
   joinDate: Date;
   ehByUserRef: EhUserRef;
+  hideContactInformation: boolean;
+  activeUser: boolean;
 }
 
 export interface IClaimUserInfo {
@@ -29,6 +31,8 @@ export interface IPaxUserEntity {
   f3NameLowercase: string;
   joinDate: Timestamp;
   ehByUserRef: EhUserRef;
+  hideContactInformation: boolean;
+  activeUser: boolean;
   // ehLocationRef
 }
 
@@ -41,6 +45,8 @@ export class PaxUser {
   private _f3Name: string;
   private _joinDate: Date;
   private _ehByUserRef: EhUserRef;
+  private _hideContactInformation: boolean;
+  private _activeUser: boolean;
 
   constructor(
     id: string, 
@@ -50,7 +56,9 @@ export class PaxUser {
     phoneNumber: PhoneNumber | undefined, 
     f3Name: string,
     joinDate: Date,
-    ehByUserRef: EhUserRef) {
+    ehByUserRef: EhUserRef,
+    hideContactInformation: boolean,
+    activeUser: boolean) {
     this._id = id;
     this._firstName = firstName;
     this._lastName = lastName;
@@ -59,6 +67,8 @@ export class PaxUser {
     this._f3Name = f3Name;
     this._joinDate = joinDate;
     this._ehByUserRef = ehByUserRef;
+    this._hideContactInformation = hideContactInformation;
+    this._activeUser = activeUser;
   }
 
   public get id(): string {
@@ -93,6 +103,14 @@ export class PaxUser {
     return this._ehByUserRef;
   }
 
+  public get hideContactInformation(): boolean {
+    return this._hideContactInformation;
+  }
+
+  public get activeUser(): boolean {
+    return this._activeUser;
+  }
+
   public getLowercaseF3Name(): string {
     return this._f3Name.toLowerCase();
   }
@@ -107,6 +125,8 @@ export class PaxUser {
       phoneNumber: this.phoneNumber,
       joinDate: this.joinDate,
       ehByUserRef: this.ehByUserRef,
+      hideContactInformation: this.hideContactInformation,
+      activeUser: this.activeUser
     }
   }
 

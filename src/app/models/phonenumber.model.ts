@@ -7,4 +7,11 @@ export class PhoneNumber {
     }
     return `${this.area}-${this.exchange}-${this.subscriber}`;
   }
+
+  public toCollapsedForm() {
+    if(!this.area || !this.exchange || !this.subscriber) {
+      return '';
+    }
+    return `${this.area}${this.exchange}${this.subscriber}`;
+  }
 }
