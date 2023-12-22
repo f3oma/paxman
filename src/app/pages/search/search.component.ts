@@ -65,11 +65,13 @@ export class SearchComponent {
     }
   }
 
-  phoneCall(phoneNumber: string) {
-    window.open(`tel:${phoneNumber}`);
+  async phoneCall(phoneNumber: string) {
+    await window.navigator.clipboard.writeText(`${phoneNumber}`);
+    alert("Phone number copied to clipboard");
   }
 
-  sendEmail(email: string) {
-    window.open(`mailto:${email}`);
+  async sendEmail(email: string) {
+    await window.navigator.clipboard.writeText(`${email}`);
+    alert("Email copied to clipboard");
   }
 }

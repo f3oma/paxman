@@ -2,12 +2,6 @@
   <h1>Search</h1>
   <p>Find users in the PAX-o-dex</p>
   <div class="search-bar">
-    <!--
-
-      I'd imagine most commonly searched by F3 Name, but could possibly search by email / phone / AO
-      Might use Algolia here to index the data, could be easier than querying firestore in realtime.
-
-    -->
     <mat-form-field appearance="fill">
       <mat-label>Search</mat-label>
       <input matInput placeholder="Enter F3 Name, First name, or last name" type="text" [(ngModel)]="currentSearchValue" (ngModelChange)="searchValueBehaviorSubject.next($event)">
@@ -23,12 +17,10 @@
         <p>{{pax.firstName}} {{pax.lastName}}</p>
       </div>
       <div class="pax-contact" *ngIf="isAuthenticated">
-        <button mat-button (click)="phoneCall(pax.phoneNumber)" *ngIf="!pax.hideContactInformation"><mat-icon>phone</mat-icon></button>
-        <button mat-button (click)="sendEmail(pax.email)" *ngIf="!pax.hideContactInformation"><mat-icon>email</mat-icon></button>
-        <button mat-button (click)="routeToPaxPage(pax.objectID)" *ngIf="canViewUserDetails"><mat-icon>person</mat-icon></button>
+        <button mat-icon-button (click)="phoneCall(pax.phoneNumber)" *ngIf="!pax.hideContactInformation"><mat-icon>phone</mat-icon></button>
+        <button mat-icon-button (click)="sendEmail(pax.email)" *ngIf="!pax.hideContactInformation"><mat-icon>email</mat-icon></button>
+        <button mat-icon-button (click)="routeToPaxPage(pax.objectID)" *ngIf="canViewUserDetails"><mat-icon>person</mat-icon></button>
       </div>
     </div>
-    <!-- Once we have data here, we should be able to allow email and call functionality just by providing the numbers -->
-    <!-- Site-Q's and Admin users will have the ability to update PAX data -->
   </div>
 </div>
