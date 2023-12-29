@@ -1,51 +1,24 @@
+<!-- Notes: 
+  
+  
+
+-->
+
 <div class="container" *ngIf="authUserData$ | async as authUser">
-    <h1>My Profile</h1>
-    <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
-      <h5>F3 Name</h5>
-      <p>{{user.f3Name}}</p>
-      <h5>Joined</h5>
-      <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
-      <div class="user-info" *ngIf="!editMode">
-          <h5>Name</h5>
-          <p>{{user.firstName}} {{user.lastName}}</p>
-          <h5>Email</h5>
-          <a [href]="'mailto:' + user.email">{{user.email}}</a>
-          <h5>Phone</h5>
-          <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber?.toDashedForm() ?? ''}}</a>
-          <h5>Information Privacy</h5>
-          <p>{{user.hideContactInformation ? 'Contact info hidden' : 'Other PAX can contact me'}}</p>
-          <h5>User Status</h5>
-          <p>{{user.activeUser ? 'Active F3 Member' : 'Inactive'}}</p>
-          <button mat-raised-button class="editData" (click)="toggleEditMode()">Edit Information</button>
-        </div>
-        <div class="edit-mode" *ngIf="editMode">
-          <div class="edit-field">
-            <h5>First Name</h5>
-            <input id="firstName" type="text" autocomplete="given-name" [(ngModel)]="user.firstName" />
-            <h5>Last Name</h5>
-            <input id="lastName" type="text" autocomplete="family-name" [(ngModel)]="user.lastName" />
-            <h5>Email</h5>
-            <input id="email" type="text" autocomplete="email" [(ngModel)]="user.email" />
-            <h5>Phone number</h5>
-            <div class="phone-number">
-              <input [maxLength]="3" [minlength]="3" id="phoneNumberArea" type="tel" autocomplete="tel-area-code" [(ngModel)]="user.phoneNumber!.area" /> -
-              <input [maxLength]="3" [minlength]="3" id="phoneNumberCountry" type="tel" autocomplete="tel-country-code" [(ngModel)]="user.phoneNumber!.exchange" /> -
-              <input [maxLength]="4" [minlength]="4" id="phoneNumberExtension" type="tel" autocomplete="tel-extension" [(ngModel)]="user.phoneNumber!.subscriber" />
-            </div>
-            <h5>Information Privacy</h5>
-            <mat-checkbox [(ngModel)]="user.hideContactInformation" (change)="updateHideContactInfoValue($event, user)">Hide my contact information</mat-checkbox>
-            <h5>User Status</h5>
-            <mat-checkbox [(ngModel)]="user.activeUser" (change)="updateActiveStatusValue($event, user)">Active F3 Member</mat-checkbox>
-            <button mat-raised-button class="saveData" (click)="saveData(user)">Save</button>
-        </div>
-    </div>
-    <div class="roles" *ngIf="authUser.getRoles().length > 0">
-        <h5>Roles</h5>
-        <span *ngFor="let role of authUser.getRoles()">{{role}}</span>
-    </div>
+  <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
+    <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
+    <user-data-edit [user]="user" *ngIf="editMode" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
+
+    <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>
   </div>
   
   <ng-template #noPaxData>
-    <p>No linked F3 data. Claim your F3 data to see more.</p>
-    <button id="claim-btn" mat-raised-button routerLink="../claim-info">Claim now</button>
+    <p>Thanks for joining F3 Omaha! The next step is to claim your F3 Data.</p>
+    <p><b>What does this mean?</b> We want you to own your personal F3 information and manage the information how you choose.</p>
+    <p><b>Why claim your data?</b> Claiming your data allows you to edit your contact information, modify notification frequency, and more coming features!</p>
+    <p><b>How does it work?</b> We use a combination of your F3 Name and either an email or phone number to find and assign your data.</p>
+    <p>Ready to get started?</p>
+    <div class="actions">
+      <button id="claim-btn" mat-flat-button routerLink="../claim-info">Claim now</button>
+    </div>
   </ng-template>

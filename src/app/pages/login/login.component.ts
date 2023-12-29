@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthenticatedUser } from 'src/app/models/admin-user.model';
+import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
 @Component({
@@ -14,8 +14,8 @@ export class LoginComponent {
   /**
    * The architecture of this login flow is as such:
    * First the user will need an account, if they have an account, they can log in. Done.
-   *
    * If no account, they'll sign up via email + traditional password OR use Google through 0Auth to make an account.
+   * 
    * After we have a user auth account created through Firebase, we need to associate that Auth account to the user's F3 Data.
    *
    * F3 Data is currently stored with Email, F3 Name, Phone Number, name, etc. We need the user to associate their account to that data
@@ -40,7 +40,7 @@ export class LoginComponent {
       try {
         const user: AuthenticatedUser = await this.userAuthenticationService.loginUserEmailPassword(email, password);
         if (user) {
-          this.tryClaimDataPrompt(user);
+          this.navigate(user);
         }
       } catch (err: any) {
         console.error(err);
@@ -54,19 +54,13 @@ export class LoginComponent {
 
   public async loginWithGoogle() {
     const user: AuthenticatedUser = await this.userAuthenticationService.loginWithGoogle();
-
-    // If the result does not have PAX data, ask if we'd like to claim it
-    this.tryClaimDataPrompt(user);
+    this.navigate(user);
   }
 
-  private tryClaimDataPrompt(user: AuthenticatedUser) {
-    if (user.getPaxDataId() === undefined) {
-      const result = confirm("Would you like to claim your F3 data now?");
-      if (result) {
-        this.router.navigate(['claim-info']);
-      } else {
-        this.router.navigate(['home']);
-      }
+  private navigate(user: AuthenticatedUser) {
+    // If the user does not have PAX data, push them to claim it on profile page...
+    if (user.paxDataId === undefined) {
+      this.router.navigate(['profile']);
     } else {
       this.router.navigate(['home']);
     }

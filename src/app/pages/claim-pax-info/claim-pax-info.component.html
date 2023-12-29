@@ -1,25 +1,24 @@
 <div class="container">
-  <h1>Claim my F3 Info</h1>
-  <div class="inner-form" [formGroup]="form">
-    <div class="error" *ngIf="errorMessage">
-      <p>{{errorMessage}}</p>
+  <h1>Claim my data</h1>
+  <div class="inner-form search-bar">
+    <mat-form-field appearance="fill">
+      <mat-label>Search F3 Name</mat-label>
+      <input matInput placeholder="Enter F3 Name, First name, or last name" type="text" [(ngModel)]="currentSearchValue" (ngModelChange)="searchValueBehaviorSubject.next($event)">
+      <button *ngIf="currentSearchValue" matSuffix mat-icon-button aria-label="Clear" (click)="currentSearchValue=''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <div class="results-list">
+    <div class="pax" *ngFor="let pax of resultPaxList$ | async">
+      <div class="pax-detail">
+        <h5>{{pax.f3Name}}</h5>
+        <p>{{pax.firstName}}</p>
+      </div>
+      <div class="actions">
+        <button mat-flat-button (click)="claimDataFromSearch(pax)">Claim Data</button>
+      </div>
     </div>
-    <mat-form-field appearance="fill">
-      <mat-label>F3 Name</mat-label>
-      <input formControlName="f3Name" autocomplete="off" matInput type="text" placeholder="F3 name" required>
-      <mat-error *ngIf="form.controls['f3Name'].invalid">{{getF3NameError()}}</mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input formControlName="email" autocomplete="off" matInput type="email" placeholder="pax@example.com" required>
-      <mat-error *ngIf="form.controls['email'].invalid">{{getEmailErrorMessage()}}</mat-error>
-    </mat-form-field>
-    <mat-form-field appearance="fill">
-      <mat-label>Phone number</mat-label>
-      <phone-input formControlName="tel" autocomplete="off" required="false"></phone-input>
-      <mat-hint>Include area code</mat-hint>
-    </mat-form-field>
-    <button mat-flat-button id="submit" (click)="tryClaimF3Info()">Find Data</button>
   </div>
 
   <div class="logged-in-match" *ngIf="loggedInEmailMatchFound && loggedInMatchedUserData">
@@ -27,15 +26,5 @@
     <span id="f3Name">{{loggedInMatchedUserData.f3Name}}</span>
     <span id="firstName">{{loggedInMatchedUserData.firstName}}</span>
     <button mat-flat-button id="claim-btn" (click)="claimData(loggedInMatchedUserData)">Claim data</button>
-  </div>
-  
-  <div class="pax-list-container" *ngIf="searched">
-    <h2>Search results</h2>
-    <p>We've found these profiles:</p>
-    <div class="pax-list" *ngFor="let pax of paxForDisplay">
-      <span id="f3Name">{{pax.f3Name}}</span>
-      <span id="firstName">{{pax.firstName}}</span>
-      <button mat-flat-button id="claim-btn" (click)="claimData(pax)">Claim data</button>
-    </div>
   </div>
 </div>

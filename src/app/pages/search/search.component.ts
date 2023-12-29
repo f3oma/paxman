@@ -5,7 +5,7 @@ import algoliasearch from 'algoliasearch';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
-import { UserRole } from 'src/app/models/admin-user.model';
+import { UserRole } from 'src/app/models/authenticated-user.model';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
 
 @Component({
@@ -26,6 +26,7 @@ export class SearchComponent {
 
   public canViewUserDetails = false;
   public isAuthenticated = false;
+  public hasClaimedData = false;
 
   constructor(
     private readonly router: Router,
@@ -40,7 +41,10 @@ export class SearchComponent {
     this.userAuthService.authUserData$.subscribe((res) => {
       if (res) {
         this.isAuthenticated = true;
-        if (res.getRoles()?.includes(UserRole.Admin) || res.getRoles()?.includes(UserRole.SiteQ)) {
+        if (res.paxDataId) {
+          this.hasClaimedData = true;
+        }
+        if (res.roles.includes(UserRole.Admin) || res.roles.includes(UserRole.SiteQ)) {
           this.canViewUserDetails = true;
         }
       }
@@ -73,5 +77,9 @@ export class SearchComponent {
   async sendEmail(email: string) {
     await window.navigator.clipboard.writeText(`${email}`);
     alert("Email copied to clipboard");
+  }
+
+  async tryClaimF3Info(paxId: string) {
+
   }
 }

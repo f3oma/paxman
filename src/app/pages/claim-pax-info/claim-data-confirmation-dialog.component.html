@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Verification</h1>
+<div mat-dialog-content>
+  <p>What's your last name?</p>
+  <mat-form-field appearance="fill">
+    <mat-label>Last name</mat-label>
+    <input matInput [(ngModel)]="userInput">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="validate()" cdkFocusInitial>Validate</button>
+</div>

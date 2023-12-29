@@ -7,8 +7,13 @@ import { RegisterComponent } from './pages/register/register.component';
 import { SearchComponent } from './pages/search/search.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
-import { AuthGuard } from './route-guard/auth-guard.guard';
+import { BasicAuthenticatedAuthGuard } from './route-guard/basic-authenticated.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { SiteManagementComponent } from './pages/site-management/site-management.component';
+import { SiteDetailComponent } from './pages/site-detail/site-detail.component';
+import { AdminRoleAuthGuard } from './route-guard/admin-role.guard';
+import { SiteQMinimumRoleAuthGuard } from './route-guard/siteq-minimum-role.guard';
+import { PersonalProfileAuthGuard } from './route-guard/personal-profile.guard';
 
 const routes: Routes = [
   {
@@ -21,16 +26,8 @@ const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'add-pax',
-    component: AddPaxComponent
-  },
-  {
     path: 'search',
     component: SearchComponent
-  },
-  {
-    path: 'users/:id',
-    component: UserDetailComponent
   },
   {
     path: 'login',
@@ -41,15 +38,35 @@ const routes: Routes = [
     component: RegisterComponent
   },
   {
+    path: 'add-pax',
+    component: AddPaxComponent,
+    canActivate: [BasicAuthenticatedAuthGuard]
+  },
+  {
+    path: 'site-management',
+    component: SiteManagementComponent,
+    canActivate: [SiteQMinimumRoleAuthGuard]
+  },
+  {
+    path: 'site-management/:id',
+    component: SiteDetailComponent,
+    canActivate: [SiteQMinimumRoleAuthGuard]
+  },
+  {
     path: 'claim-info',
     component: ClaimPaxInfoComponent,
-    canActivate: [AuthGuard]
+    canActivate: [BasicAuthenticatedAuthGuard]
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [AuthGuard]
-  }
+    canActivate: [BasicAuthenticatedAuthGuard]
+  },
+  {
+    path: 'users/:id',
+    component: UserDetailComponent,
+    canActivate: [PersonalProfileAuthGuard]
+  },
 ];
 
 @NgModule({

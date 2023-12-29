@@ -1,27 +1,16 @@
 <div class="container" *ngIf="userData$ | async as user">
-  <div class="user-data" *ngIf="isAuthorizedUser">
-    <h1>{{user.f3Name}}</h1>
-    <h5>Name</h5>
-    <p>{{user.firstName}} {{user.lastName}}</p>
 
-    <h5>Joined</h5>
-    <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
-  
-    <h5>Email</h5>
-    <a [href]="'mailto:' + user.email">{{user.email}}</a>
-  
-    <h5>Phone</h5>
-    <a [href]="'tel:' + user.phoneNumber">{{user.phoneNumber?.toDashedForm() ?? ''}}</a>
+  <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
+  <user-data-edit [user]="user" *ngIf="editMode" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
 
-    <h5>Information Privacy</h5>
-    <p>{{user.hideContactInformation ? 'Contact info hidden' : 'Other PAX can contact'}}</p>
+  <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>
 
-    <h5>User Status</h5>
-    <p>{{user.activeUser ? 'Active F3 Member' : 'Inactive'}}</p>
-  
-    <div class="action-btns">
-      <button *ngIf="isAuthorizedUser && !hasExistingRole('SiteQ')" class="action-btn" id="siteq-btn" mat-flat-button (click)="promoteRole('SiteQ', user)">Promote to SiteQ</button>
-      <button *ngIf="isAdmin && !hasExistingRole('Admin')" class="action-btn" id="admin-btn" mat-flat-button (click)="promoteRole('Admin', user)">Promote to Admin</button>
+  <div class="action-btns">
+    <div class="admin-only" *ngIf="isAdmin">
+      <p><b>Admin actions</b></p>
+      <button *ngIf="!hasExistingRole('SiteQ')" class="action-btn" id="siteq-btn" mat-flat-button (click)="promoteRole('SiteQ', user)">Promote to SiteQ</button>
+      <button *ngIf="!hasExistingRole('Admin')" class="action-btn" id="admin-btn" mat-flat-button (click)="promoteRole('Admin', user)">Promote to Admin</button>
+      <button *ngIf="hasExistingRole('Admin')" class="action-btn" id="delete-btn" mat-flat-button (click)="deleteUser(user)">Permenantly Delete User</button>
     </div>
   </div>
 

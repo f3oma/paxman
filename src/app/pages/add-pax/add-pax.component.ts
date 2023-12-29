@@ -3,8 +3,11 @@ import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/f
 import { Router } from '@angular/router';
 import { DocumentData, DocumentReference } from 'firebase/firestore';
 import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, first, map, switchMap } from 'rxjs';
+import { AOData } from 'src/app/models/ao.model';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
-import { IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { IPaxUser, NotificationFrequency, PaxUser } from 'src/app/models/users.model';
+import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
 
@@ -21,25 +24,43 @@ export class AddPaxComponent {
   filteredEhF3Options$: Observable<any[]> = this.filteredEhF3OptionsSubject.asObservable();
   selectedEhByF3Name: any = '';
 
+  filteredLocationOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredLocationOptions$: Observable<any[]> = this.filteredLocationOptionsSubject.asObservable();
+  selectedLocation: any = '';
+
   form: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
     f3Name: this.f3NameFormControl,
     tel: new FormControl(new PhoneNumber('', '', '')),
     email: new FormControl('', [Validators.required, Validators.email]),
-    ehByF3Name: new FormControl('')
+    ehByF3Name: new FormControl(''),
+    sector: new FormControl(''),
+    zipcode: new FormControl(''),
+    ehLocation: new FormControl('')
   });
 
   constructor(
     private readonly paxSearchService: PaxSearchService,
     private readonly paxManagerService: PaxManagerService,
+    private readonly locationSearchService: LocationSearchService,
+    private readonly aoManagerService: AOManagerService,
     private readonly router: Router) {
       this.f3NameFormControl.setAsyncValidators(this.paxF3NameValidator());
       this.form.controls['ehByF3Name'].valueChanges.pipe(
         debounceTime(1000),
         map(async (value: string) => {
           if (value) {
-            await this.updateAutocompleteResults(value);
+            await this.updateEHAutocompleteResults(value);
+          }
+          return [];
+        })).subscribe();
+
+      this.form.controls['ehLocation'].valueChanges.pipe(
+        debounceTime(1000),
+        map(async (value: string) => {
+          if (value) {
+            await this.updateLocationAutocompleteResults(value);
           }
           return [];
         })).subscribe();
@@ -65,8 +86,16 @@ export class AddPaxComponent {
       const ehedBy = this.form.controls['ehByF3Name'].value;
       let ehRef: DocumentReference<PaxUser> | null = null;
       if (ehedBy) {
-        ehRef = this.paxManagerService.getUserReference(ehedBy.ehByUserRef);
+        ehRef = this.paxManagerService.getUserReference(ehedBy.userRef);
       }
+
+      const location = this.form.controls['ehLocation'].value;
+      let locationRef: DocumentReference<AOData> | null = null;
+      if (location) {
+        locationRef = this.aoManagerService.getAoLocationReference(location.aoRef);
+      }
+
+      let paxNumber = await this.paxManagerService.getCurrentNumberOfPax();
 
       const pax: Partial<IPaxUser> = {
         id: undefined,
@@ -76,7 +105,14 @@ export class AddPaxComponent {
         email: this.form.controls['email'].value,
         phoneNumber: phoneValid() ? this.form.controls['tel'].value : null,
         joinDate: new Date(),
-        ehByUserRef: ehRef
+        ehByUserRef: ehRef,
+        activeUser: true,
+        hideContactInformation: false,
+        paxNumber: paxNumber + 1,
+        sector: this.form.controls['sector'].value,
+        zipcode: this.form.controls['zipcode'].value,
+        ehLocationRef: locationRef,
+        notificationFrequency: NotificationFrequency.All
       };
     
       const newUserAdded = await this.paxManagerService.addNewUser(pax);
@@ -94,6 +130,10 @@ export class AddPaxComponent {
 
   public displayF3NameOptions(option: any) {
     return option.f3Name;
+  }
+
+  public displayLocationNameOptions(option: any) {
+    return option.name;
   }
 
   public getEmailErrorMessage(): string {
@@ -118,6 +158,10 @@ export class AddPaxComponent {
     return await this.paxSearchService.findF3Name(partialF3Name);
   }
 
+  private async findLocationByName(partialLocationName: string): Promise<any[]> {
+    return await this.locationSearchService.findByName(partialLocationName);
+  }
+
   private paxF3NameValidator(): AsyncValidatorFn {
     return control => control.valueChanges.pipe(
       debounceTime(1000),
@@ -132,14 +176,25 @@ export class AddPaxComponent {
       first());
   }
 
-  private async updateAutocompleteResults(partialF3Name: string): Promise<void> {
+  private async updateEHAutocompleteResults(partialF3Name: string): Promise<void> {
     const result = await this.findEhF3Name(partialF3Name);
     const pax = result.map((res) => {
       return { 
-        ehByUserRef: res.ehByUserRef, 
+        userRef: res.path, 
         f3Name: res.f3Name 
       };
     })
     this.filteredEhF3OptionsSubject.next(pax);
+  }
+
+  private async updateLocationAutocompleteResults(partialLocationName: string): Promise<void> {
+    const result = await this.findLocationByName(partialLocationName);
+    const locations = result.map((res) => {
+      return { 
+        aoRef: res.path, 
+        name: res.name 
+      };
+    })
+    this.filteredLocationOptionsSubject.next(locations);
   }
 }

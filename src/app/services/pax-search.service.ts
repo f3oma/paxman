@@ -1,7 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Firestore, getDocs, collection, query, where } from "@angular/fire/firestore";
-import { PaxUser } from "../models/users.model";
-import { paxUserConverter } from "../utils/pax-model-converter";
 import algoliasearch from "algoliasearch";
 import { environment } from "src/environments/environment";
 
@@ -13,7 +10,7 @@ export class PaxSearchService {
   private algoliaSearch = algoliasearch(environment.algoliasearch.APP_ID, environment.algoliasearch.API_KEY);
   private idx = this.algoliaSearch.initIndex('dev_f3OmahaPax');
 
-  constructor(private firestore: Firestore) {
+  constructor() {
 
   }
 
@@ -46,23 +43,7 @@ export class PaxSearchService {
         restrictSearchableAttributes: ['f3Name'],
         typoTolerance: false
       }).then(({ hits }) => {
-        const results: any[] = hits;
-        return results.filter((e) => e.f3Name.toLowerCase() === partialF3Name.toLowerCase());
+        return hits;
       });
     }
-
-  /**
-   * @param partialf3Name Name provided to PAX at join time, search string.
-   * @returns All PAX with the specified F3 Name, beware there could be multiple PAX with
-   * the same name...
-   */
-  public async searchPossiblePaxByF3Name(partialF3Name: string): Promise<PaxUser[]> {
-    const lowercaseName = partialF3Name.toLowerCase();
-
-    const collectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
-    const q = query(collectionRef, where("f3NameLowercase", ">=", lowercaseName));
-    const querySnapshot = await getDocs(q);
-    return [ ...querySnapshot.docs.map((doc) => doc.data())];
-  }
-
 }

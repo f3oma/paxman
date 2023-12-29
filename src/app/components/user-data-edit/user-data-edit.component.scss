@@ -1,16 +1,15 @@
 .container {
-    padding: 16px 32px;
+    
     h1 {
       margin-bottom: 12px;
       font-size: 32px;
+      font-weight: bold;
     }
+  
     h5 {
       margin-top: 12px;
       margin-bottom: 4px;
       font-weight: 700;
-    }
-    p {
-      font-size: 18px;;
     }
 
     .fng-form {
@@ -18,8 +17,9 @@
       flex-direction: column;
       mat-form-field {
         width: 100%;
-        margin: 8px;
-        max-width: 800px;
+      }
+      mat-form-field:has(mat-hint) {
+        margin-bottom: 8px;
       }
     }
 
@@ -32,16 +32,17 @@
         flex-direction: row;
       }
     }
-    .editData, .saveData {
+
+    .actions {
+      margin-top: 12px;
       display: flex;
-      margin: 12px 0;
-      background-color: #000;
-      color: #fff;
+      flex-direction: row;
+      gap: 12px;
+
+      .saveData {
+        display: flex;
+        background-color: #000;
+        color: #fff;
+      }
     }
-  }
-  
-  #claim-btn {
-    background-color: #000;
-    color: #fff;
-    font-weight: bold;
   }

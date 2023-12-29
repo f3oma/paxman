@@ -12,14 +12,19 @@
   <div class="collapse navbar-collapse align-right" id="navbarCollapse" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/add-pax">Add PAX</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" routerLink="/search">Search</a>
       </li>
-      <li class="nav-item dropdown" *ngIf="user" ngbDropdown>
+      <li class="nav-item" *ngIf="isAdmin">
+        <a class="nav-link" routerLink="/site-management">Locations</a>
+      </li>
+      <li class="nav-item" *ngIf="authenticatedUser">
+        <a class="nav-link" routerLink="/add-pax">Add PAX</a>
+      </li>
+      <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
-          User
+          <span *ngIf="paxUserData$ | async as paxUserData; else basicUser">
+            <span>{{ paxUserData.f3Name }}</span>
+          </span>
         </a>
         <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
           <a ngbDropdownItem class="dropdown-item" [routerLink]="['/profile']">My Profile</a>
@@ -27,11 +32,15 @@
           <a  ngbDropdownItem class="dropdown-item" (click)="signOut()">Log Out</a>
         </div>
       </li>
-      <li class="nav-item" *ngIf="!user">
+      <li class="nav-item" *ngIf="!authenticatedUser">
         <a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
       </li>
     </ul>
   </div>
 </nav>
+
+<ng-template #basicUser>
+  <span>User</span>
+</ng-template>
 
 <router-outlet></router-outlet>

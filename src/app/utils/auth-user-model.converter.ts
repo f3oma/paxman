@@ -1,5 +1,5 @@
 import { doc, QueryDocumentSnapshot, collection, DocumentData, Firestore } from "@angular/fire/firestore";
-import { AuthenticatedUser, IAuthenticatedUser, IAuthenticatedUserEntity } from "../models/admin-user.model";
+import { AuthenticatedUser, IAuthenticatedUser, IAuthenticatedUserEntity } from "../models/authenticated-user.model";
 import { Injectable } from "@angular/core";
 
 @Injectable({
@@ -23,7 +23,6 @@ export class AuthenticationConverter {
           id: data.id,
           email: data.email,
           paxDataId: data.paxDataId ?? null,
-          paxDataRef: paxDataRef,
           roles: data.roles
         }
       },

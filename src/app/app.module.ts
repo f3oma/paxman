@@ -20,13 +20,19 @@ import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatSelectModule} from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
-import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
+import { ClaimDataConfirmationDialog, ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
+import { SiteManagementComponent } from './pages/site-management/site-management.component';
+import { SiteDetailComponent } from './pages/site-detail/site-detail.component';
+import { UserDataViewComponent } from './components/user-data-view/user-data-view.component';
+import { UserDataEditComponent } from './components/user-data-edit/user-data-edit.component';
+import { MatSortModule } from '@angular/material/sort';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -39,7 +45,12 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     LoginComponent,
     RegisterComponent,
     ClaimPaxInfoComponent,
-    ProfileComponent
+    ProfileComponent,
+    SiteManagementComponent,
+    SiteDetailComponent,
+    UserDataViewComponent,
+    UserDataEditComponent,
+    ClaimDataConfirmationDialog
   ],
   imports: [
     BrowserModule,
@@ -57,7 +68,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     NgbModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTableModule,
+    MatSortModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],

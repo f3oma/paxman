@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
-import { AuthenticatedUser, UserRole } from 'src/app/models/admin-user.model';
-import { IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
+import { IPaxUser } from 'src/app/models/users.model';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
@@ -18,31 +18,37 @@ export class UserDetailComponent {
 
   public isAdmin = false; // Only admins can promote to admin
   public isAuthorizedUser = false; // Can view content and promote to SiteQ
+  public editMode: boolean = false;
 
   constructor(
     private readonly paxManagerService: PaxManagerService,
     private activatedRoute: ActivatedRoute,
     private userAuthService: UserAuthenticationService
   ) {
+    // Look at the logged in user for admin / siteq permissions
     this.userAuthService.authUserData$.subscribe((res) => {
       if (res) {
-        if (res.getRoles().includes(UserRole.Admin)) {
+        if (res.roles.includes(UserRole.Admin)) {
           this.isAdmin = true;
           this.isAuthorizedUser = true;
         }
-        if (res.getRoles().includes(UserRole.SiteQ)) {
+        if (res.roles.includes(UserRole.SiteQ)) {
           this.isAuthorizedUser = true;
         }
       }
     })
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id !== null) {
-      this.getUserData(id);
-      this.getCurrentUserRoles(id);
+      await this.getUserData(id);
+      await this.getCurrentUserRoles(id);
     }
+  }
+
+  public toggleEditMode() {
+    this.editMode = !this.editMode
   }
 
   private async getUserData(id: string) {
@@ -57,12 +63,17 @@ export class UserDetailComponent {
   }
 
   public async getCurrentUserRoles(userId: string) {
-    const authUser: AuthenticatedUser = await this.userAuthService.getLinkedAuthData(userId);
-    this.existingRoles = authUser.getRoles();
+    const authUser: AuthenticatedUser | null = await this.userAuthService.getLinkedAuthData(userId);
+    if (authUser)
+      this.existingRoles = authUser.roles;
   }
 
   public hasExistingRole(role: string) {
     const userRole: UserRole = UserRole[role as keyof typeof UserRole];
     return this.existingRoles.includes(userRole);
+  }
+
+  public async deleteUser(user: IPaxUser): Promise<void> {
+    return this.paxManagerService.deleteUser(user);
   }
 }

@@ -1,7 +1,15 @@
 import { DocumentReference, Timestamp } from "@angular/fire/firestore";
 import { PhoneNumber } from "./phonenumber.model";
+import { AOData } from "./ao.model";
 
 export type EhUserRef = DocumentReference<PaxUser> | undefined | null;
+export type AoLocationRef = DocumentReference<AOData> | undefined | null;
+
+export enum NotificationFrequency {
+  All = 'All',
+  Important = 'Important',
+  None = 'None'
+}
 
 export interface IPaxUser {
   id: string;
@@ -11,9 +19,16 @@ export interface IPaxUser {
   phoneNumber: PhoneNumber | undefined;
   f3Name: string;
   joinDate: Date;
-  ehByUserRef: EhUserRef;
   hideContactInformation: boolean;
   activeUser: boolean;
+  paxNumber: number;
+  sector: string;
+  zipcode?: number | undefined;
+  notificationFrequency: NotificationFrequency;
+
+  // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
+  ehByUserRef: EhUserRef; 
+  ehLocationRef?: AoLocationRef;
 }
 
 export interface IClaimUserInfo {
@@ -30,10 +45,14 @@ export interface IPaxUserEntity {
   f3Name: string;
   f3NameLowercase: string;
   joinDate: Timestamp;
-  ehByUserRef: EhUserRef;
   hideContactInformation: boolean;
   activeUser: boolean;
-  // ehLocationRef
+  paxNumber: number;
+  sector: string;
+  zipcode?: number | undefined;
+  notificationFrequency: NotificationFrequency;
+  ehByUserRef: EhUserRef;
+  ehLocationRef?: AoLocationRef;
 }
 
 export class PaxUser {
@@ -47,6 +66,11 @@ export class PaxUser {
   private _ehByUserRef: EhUserRef;
   private _hideContactInformation: boolean;
   private _activeUser: boolean;
+  private _paxNumber: number;
+  private _sector: string;
+  private _zipcode: number | undefined;
+  private _notificationFrequency: NotificationFrequency;
+  private _ehLocationRef: AoLocationRef;
 
   constructor(
     id: string, 
@@ -58,7 +82,12 @@ export class PaxUser {
     joinDate: Date,
     ehByUserRef: EhUserRef,
     hideContactInformation: boolean,
-    activeUser: boolean) {
+    activeUser: boolean,
+    paxNumber: number,
+    sector: string,
+    zipcode: number | undefined,
+    notificationFrequency: NotificationFrequency,
+    ehLocationRef: AoLocationRef) {
     this._id = id;
     this._firstName = firstName;
     this._lastName = lastName;
@@ -69,6 +98,11 @@ export class PaxUser {
     this._ehByUserRef = ehByUserRef;
     this._hideContactInformation = hideContactInformation;
     this._activeUser = activeUser;
+    this._paxNumber = paxNumber;
+    this._sector = sector;
+    this._zipcode = zipcode;
+    this._notificationFrequency = notificationFrequency;
+    this._ehLocationRef = ehLocationRef;
   }
 
   public get id(): string {
@@ -111,6 +145,26 @@ export class PaxUser {
     return this._activeUser;
   }
 
+  public get sector(): string {
+    return this._sector;
+  }
+
+  public get paxNumber(): number {
+    return this._paxNumber;
+  }
+
+  public get zipcode(): number | undefined {
+    return this._zipcode;
+  }
+
+  public get notificationFrequency(): NotificationFrequency {
+    return this._notificationFrequency;
+  }
+
+  public get ehLocationRef(): AoLocationRef {
+    return this._ehLocationRef;
+  }
+
   public getLowercaseF3Name(): string {
     return this._f3Name.toLowerCase();
   }
@@ -126,7 +180,12 @@ export class PaxUser {
       joinDate: this.joinDate,
       ehByUserRef: this.ehByUserRef,
       hideContactInformation: this.hideContactInformation,
-      activeUser: this.activeUser
+      activeUser: this.activeUser,
+      paxNumber: this.paxNumber,
+      sector: this.sector,
+      zipcode: this.zipcode,
+      notificationFrequency: this.notificationFrequency,
+      ehLocationRef: this.ehLocationRef,
     }
   }
 

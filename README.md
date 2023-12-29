@@ -14,6 +14,29 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Contact Nolan Clark - iMac (nolanmclark@gmail.com) - or anyone from the F3 Tech / Data team for more help installing this application.
 
+## Notes
+As an unauthenticated user I can:
+- View basic pax details (name + f3 name) but cannot contact anyone
+- Create an account
+
+As an authenticated user I can:
+- Everything above, plus:
+- Add a PAX
+- Search & Contact PAX with their contact info
+- Claim my PAX info and edit my own information
+- View basic AO list
+
+As a Site-Q I can:
+- Everything above, plus:
+- Manage my site data & details
+
+As an Admin I can:
+- Everything above, plus:
+- Manage all site data
+- Manage all PAX data
+
+
+
 ## Ideas with legs
 
 ### User Account Association
@@ -25,5 +48,3 @@ Allow PAX to delete their F3 data
 Add hidden view with Site-Q's and Admin level access to AO Data (temporary)  
 Allow Site-Q's and Admins to add new AO's to the database  
 Associate all account "Initial AO" locations to the new database AOs  
-
-

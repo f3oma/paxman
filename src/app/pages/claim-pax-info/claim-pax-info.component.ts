@@ -1,10 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthenticatedUser } from 'src/app/models/admin-user.model';
+import algoliasearch from 'algoliasearch';
+import { BehaviorSubject, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
 import { IClaimUserInfo, IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
+import { environment } from 'src/environments/environment';
+
+interface ClaimDataAlgoliaResult {
+  firstName: string;
+  f3Name: string;
+  objectID: string;
+  path: string;
+}
+
+export interface DialogData {
+  lastName: string;
+}
 
 @Component({
   selector: 'app-claim-pax-info',
@@ -12,6 +28,15 @@ import { UserAuthenticationService } from 'src/app/services/user-authentication.
   styleUrls: ['./claim-pax-info.component.scss']
 })
 export class ClaimPaxInfoComponent {
+
+  public currentSearchValue: string = '';
+  public searchValueBehaviorSubject = new Subject<string>();
+
+  private resultPaxList = new BehaviorSubject<Array<any>>([]);
+  public resultPaxList$ = this.resultPaxList.asObservable();
+
+  private algoliaSearch = algoliasearch(environment.algoliasearch.APP_ID, environment.algoliasearch.API_KEY);
+  private idx = this.algoliaSearch.initIndex('dev_f3OmahaPax');
 
   form: FormGroup = new FormGroup({
     f3Name: new FormControl('', [Validators.required]),
@@ -29,7 +54,9 @@ export class ClaimPaxInfoComponent {
 
   constructor(
     private userAuth: UserAuthenticationService,
-    private router: Router
+    private router: Router,
+    private paxManagerService: PaxManagerService,
+    private dialog: MatDialog
   ) {
     this.userAuth.authUserData$.subscribe((res) => {
       this.authenticatedUser = res;
@@ -37,7 +64,63 @@ export class ClaimPaxInfoComponent {
         this.tryInitialEmailClaim();
       }
     })
+
+    this.searchValueBehaviorSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+    ).subscribe((val) => {
+      this.searchPax(val);
+    });
   }
+
+  async searchPax(searchValue: string) {
+    // determine what we are searching, if debounce is hit, begin search
+    if (searchValue === '') {
+      this.resultPaxList.next([]);
+      return;
+    }
+
+    this.idx.search(searchValue, {
+      typoTolerance: false,
+      restrictSearchableAttributes: ['f3Name', 'firstName', 'lastName'],
+      attributesToRetrieve: [
+        'f3Name',
+        'firstName',
+        'path'
+      ],
+      attributesToHighlight: []
+    }).then(({ hits }) => {
+      this.resultPaxList.next(hits);
+    });
+  }
+
+  public async claimDataFromSearch(algoliaSearchResult: ClaimDataAlgoliaResult) {
+    // Try and look up the record via path
+    const document = await this.paxManagerService.getUserReference(algoliaSearchResult.path);
+    if (document) {
+      const paxData = await this.paxManagerService.getPaxInfoByRef(document);
+      if (paxData) {
+        const dialogRef = this.dialog.open(ClaimDataConfirmationDialog, {
+          data: {
+            lastName: paxData.lastName
+          }
+        });
+        dialogRef.afterClosed().subscribe(async (successfulValidation) => {
+          if (successfulValidation === undefined) {
+
+          } else if (successfulValidation) {
+            await this.claimData(paxData);
+          } else {
+            alert("Claim validation failed");
+          }
+        });
+        return;
+      }
+    } else {
+      throw new Error("Something went wrong");
+    }
+  }
+
 
   public getEmailErrorMessage(): string {
     if (this.form.controls['email'].hasError('required')) {
@@ -56,10 +139,11 @@ export class ClaimPaxInfoComponent {
     return '';
   }
 
+  // Uses logged in info to try and match against pax
   public async tryInitialEmailClaim() {
     if (this.authenticatedUser) {
       const info: Partial<IClaimUserInfo> = {
-        email: this.authenticatedUser.getEmail()
+        email: this.authenticatedUser.email
       };
       const res = await this.userAuth.tryClaimF3Info(this.authenticatedUser, info);
       if (res.length > 0) {
@@ -88,7 +172,7 @@ export class ClaimPaxInfoComponent {
         this.setErrorMessage("We did not find any matching data for this information. Did you sign up under another email or phone number?");
       } else if (res.length === 1) {
         // We found a single match
-
+        return 
       } else {
         // We found multiple matches;
         this.paxForDisplay = res;
@@ -100,10 +184,9 @@ export class ClaimPaxInfoComponent {
 
   public async claimData(paxInfo: IPaxUser) {
     if (this.authenticatedUser) {
-      const paxMap = this.originalPaxResult.filter((e) => e.f3Name === paxInfo.f3Name)[0];
-      await this.userAuth.completeF3InfoClaim(this.authenticatedUser, paxMap);
+      await this.userAuth.completeF3InfoClaim(this.authenticatedUser, paxInfo);
       alert("Your F3 Information has been claimed!");
-      await this.router.navigate(['home']);
+      await this.router.navigate(['profile']);
     } else {
       throw new Error("User not logged in");
     }
@@ -114,5 +197,31 @@ export class ClaimPaxInfoComponent {
       setTimeout(() => {
         this.errorMessage = "";
       }, 4000);
+  }
+}
+
+@Component({
+  selector: 'claim-data-confirmation-dialog',
+  templateUrl: 'claim-data-confirmation-dialog.component.html',
+})
+export class ClaimDataConfirmationDialog {
+
+  userInput: string = '';
+
+  constructor(
+    public dialogRef: MatDialogRef<ClaimDataConfirmationDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {}
+
+  validate() {
+    let result = false;
+    if (this.userInput) {
+      result = this.userInput.toLowerCase() === this.data.lastName.toLowerCase();
+    }
+    this.dialogRef.close(result)
+  }
+
+  cancel(): void {
+    this.dialogRef.close();
   }
 }

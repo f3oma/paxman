@@ -2,10 +2,10 @@ import { Injectable } from "@angular/core";
 import { Auth, onAuthStateChanged, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, AuthProvider } from "@angular/fire/auth";
 import { collection, CollectionReference, doc, DocumentData, DocumentReference, Firestore, getDoc, getDocs, query, QueryDocumentSnapshot, setDoc, where } from "@angular/fire/firestore";
 import { BehaviorSubject, Subject } from "rxjs";
-import { AuthenticatedUser, UserRole } from "../models/admin-user.model";
-import { AuthenticationConverter } from "../utils/auth-user-model-converter";
+import { AuthenticatedUser, UserRole } from "../models/authenticated-user.model";
+import { AuthenticationConverter } from "../utils/auth-user-model.converter";
 import { IClaimUserInfo, IPaxUser, PaxUser } from "../models/users.model";
-import { paxUserConverter } from "../utils/pax-model-converter";
+import { PaxModelConverter, paxUserConverter } from "../utils/pax-model.converter";
 import { arrayRemove, arrayUnion, updateDoc, writeBatch } from "firebase/firestore";
 
 @Injectable({
@@ -15,13 +15,15 @@ export class UserAuthenticationService {
 
   private authUserData: Subject<AuthenticatedUser | undefined> = new BehaviorSubject<AuthenticatedUser | undefined>(undefined);
   public authUserData$ = this.authUserData.asObservable();
+  public cachedCurrentAuthData: AuthenticatedUser | undefined;
 
   private authUserCollectionRef: CollectionReference<DocumentData>; // Authenticated User data
   private usersCollectionRef: CollectionReference<DocumentData>; // Users from migration
+  private paxConverter = this.paxModelConverter.getConverter();
 
-  constructor(private auth: Auth, private firestore: Firestore, private authenticationUserConverter: AuthenticationConverter) {
+  constructor(private auth: Auth, private firestore: Firestore, private authenticationUserConverter: AuthenticationConverter, private paxModelConverter: PaxModelConverter) {
     this.authUserCollectionRef = collection(this.firestore, 'authenticated_users').withConverter(this.authenticationUserConverter.getAuthenticationConverter());
-    this.usersCollectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
+    this.usersCollectionRef = collection(this.firestore, 'users').withConverter(this.paxConverter);
     this.watchAuthState();
   }
 
@@ -32,6 +34,7 @@ export class UserAuthenticationService {
         const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
         const resultData = (await getDoc(docRef)).data();
         this.authUserData.next(resultData);
+        this.cachedCurrentAuthData = resultData;
       }
     });
   }
@@ -48,11 +51,11 @@ export class UserAuthenticationService {
         // create new document if one doesn't exist for some reason (they should have one)
         await this.createNewAuthenticatedUserDoc(user.uid, user.email!, docRef);
         result = await getDoc(docRef);
-        this.authUserData.next(result.data());
-      } else {
-        this.authUserData.next(result.data());
       }
-      return result.data()!;
+      const resultData = result.data();
+      this.authUserData.next(resultData);
+      this.cachedCurrentAuthData = resultData;
+      return resultData;
     }).catch((error) => {
       if (error?.message.includes('auth/email-already-in-use')) {
         throw new Error("Email is already in use. You may need to log in.");
@@ -74,14 +77,17 @@ export class UserAuthenticationService {
         // create new document if one doesn't exist for some reason (they should have one)
         await this.createNewAuthenticatedUserDoc(user.uid, user.email!, docRef);
         result = await getDoc(docRef);
-        this.authUserData.next(result.data());
+        const resultData = result.data();
+        this.authUserData.next(resultData);
+        this.cachedCurrentAuthData = resultData;
       } else {
         if (data.paxDataId) {
           const userDocRef = doc(this.usersCollectionRef, data.paxDataId);
           const userData = (await getDoc(userDocRef)).data();
           data.paxData = userData;
         }
-        this.authUserData.next(result.data());
+        this.authUserData.next(data);
+        this.cachedCurrentAuthData = data;
       }
       return data;
     }).catch((error) => {
@@ -113,6 +119,7 @@ export class UserAuthenticationService {
             data.paxData = userData;
           }
           this.authUserData.next(data);
+          this.cachedCurrentAuthData = data;
           return data;
         }
       })
@@ -123,6 +130,9 @@ export class UserAuthenticationService {
   }
 
   async signOutUser(): Promise<void> {
+    this.authUserData.next(undefined);
+    this.cachedCurrentAuthData = undefined;
+    localStorage.removeItem('userData');
     return await signOut(this.auth);
   }
 
@@ -147,7 +157,7 @@ export class UserAuthenticationService {
   async tryClaimF3Info(user: AuthenticatedUser, claimUserInfo: Partial<IClaimUserInfo>): Promise<Array<PaxUser>> {
     if (user && claimUserInfo) {
       let emailQuery, emailQuerySnapshot, phoneQuery, phoneQuerySnapshot, f3NameQuery, f3NameQuerySnapshot;
-      const collectionRef = collection(this.firestore, 'users').withConverter(paxUserConverter);
+      const collectionRef = collection(this.firestore, 'users').withConverter(this.paxConverter);
       const docs = [];
       if (claimUserInfo.email) {
         emailQuery = query(collectionRef, where("email", "==", claimUserInfo.email));
@@ -181,12 +191,11 @@ export class UserAuthenticationService {
   }
 
   async completeF3InfoClaim(user: AuthenticatedUser, paxUser: IPaxUser): Promise<void> {
-    const authDocRef = doc(this.authUserCollectionRef, user.getId()).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
+    const authDocRef = doc(this.authUserCollectionRef, user.id).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
     const userDocRef = doc(this.usersCollectionRef, paxUser.id);
     const batch = writeBatch(this.firestore);
     
     batch.update(authDocRef, {
-      paxDataRef: userDocRef,
       paxDataId: userDocRef.id
     });
     batch.update(userDocRef, {
@@ -195,6 +204,7 @@ export class UserAuthenticationService {
     await batch.commit();
     const result = (await getDoc(authDocRef)).data();
     this.authUserData.next(result);
+    this.cachedCurrentAuthData = result;
     return;
   }
 
@@ -239,8 +249,8 @@ export class UserAuthenticationService {
     const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", userId));
     const authQueryResult = await getDocs(authQuery);
     if (authQueryResult.empty) {
-      // user doesn't have an auth account
-      throw new Error("User does not have a linked authentication account");
+      // user doesn't have an auth account, do nothing
+      return null;
     } else {
       const userDoc = authQueryResult.docs[0];
       return userDoc.data() as AuthenticatedUser;

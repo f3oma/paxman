@@ -1,12 +1,11 @@
 .container {
   padding: 16px 32px;
-  h1 {
-    margin-bottom: 12px;
-    font-size: 32px;
-  }
-  h5 {
-    margin-top: 12px;
-    margin-bottom: 4px;
+
+  .editData {
+    display: flex;
+    margin: 12px 0;
+    background-color: #000;
+    color: #fff;
   }
 
   .action-btns {
@@ -16,14 +15,29 @@
     flex-direction: row;
     gap: 12px;
 
-    #siteq-btn {
-      color: #000;
-      background-color: orange;
-    }
+    .admin-only {
+      padding: 16px;
+      border: 2px solid black;
+      border-radius: 15px;
 
-    #admin-btn {
-      color: #fff;
-      background-color: rgb(138, 30, 30);
+      .action-btn {
+        box-shadow: 0 1px 3px #6565656c;
+      }
+
+      #siteq-btn {
+        color: #000;
+        background-color: orange;
+      }
+
+      #delete-btn {
+        color: #fff;
+        background-color: rgb(122, 24, 129);
+      }
+  
+      #delete-btn {
+        color: #fff;
+        background-color: rgb(138, 30, 30);
+      }
     }
   }
 }

@@ -1,7 +1,10 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router, RouterEvent, Event, NavigationStart, NavigationEnd } from '@angular/router';
-import { Subscription, filter } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, filter, tap } from 'rxjs';
 import { UserAuthenticationService } from './services/user-authentication.service';
+import { AuthenticatedUser, UserRole } from './models/authenticated-user.model';
+import { IPaxUser } from './models/users.model';
+import { PaxManagerService } from './services/pax-manager.service';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +13,9 @@ import { UserAuthenticationService } from './services/user-authentication.servic
 })
 export class AppComponent {
   title = 'TBD';
-  user: any = null;
+  authenticatedUser: AuthenticatedUser | undefined = undefined;
   isLoggedIn = false;
+  isAdmin = false;
 
   screenWidth = 600;
 
@@ -27,16 +31,36 @@ export class AppComponent {
   isCollapsed = false;
   subscriptions: Subscription[] = [];
 
+  public authUserData$: Subscription;
+  public userDataSubject: BehaviorSubject<IPaxUser | undefined> = new BehaviorSubject<IPaxUser | undefined>(undefined);
+  public paxUserData$: Observable<IPaxUser | undefined> = this.userDataSubject.asObservable();
+
   constructor(
     private auth: UserAuthenticationService,
+    private paxManagerService: PaxManagerService,
     private readonly router: Router
   ) {
     this.isLoggedIn = this.auth.isLoggedIn;
-    this.subscriptions.push(
-      this.auth.authUserData$.subscribe((res) => {
-        this.user = res;
-      })
-    );
+    this.authUserData$ = this.auth.authUserData$
+      .pipe(
+        tap(async (data) => {
+          if (!data) {
+            return;
+          }
+          if (data.roles?.includes(UserRole.Admin) || data.roles?.includes(UserRole.SiteQ)) {
+            this.isAdmin = true;
+          }
+          const paxDataId = data?.paxDataId;
+          if (paxDataId && paxDataId !== undefined) {
+              await this.getPaxUserData(paxDataId);
+          }
+        })
+      )
+      .subscribe((res) => {
+        this.authenticatedUser = res;
+      });
+
+    this.subscriptions.push(this.authUserData$);
 
     this.router.events.pipe(
       filter((e: Event): e is NavigationStart => e instanceof NavigationStart && this.screenWidth < 768)
@@ -53,13 +77,22 @@ export class AppComponent {
     })
   }
 
+  async ngOnInit() {
+
+  }
+
   ngOnDestroy() {
     this.subscriptions.forEach((s) => s.unsubscribe());
   }
 
   async signOut() {
     await this.auth.signOutUser();
-    this.user = null;
+    this.authenticatedUser = undefined;
     this.router.navigate(['login']);
+  }
+
+  private async getPaxUserData(id: string) {
+    const paxData = (await this.paxManagerService.getDataByAuthId(id)).data();
+    this.userDataSubject.next(paxData?.toProperties());
   }
 }

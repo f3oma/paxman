@@ -1,0 +1,22 @@
+<div class="user-data-view">
+    <h1>{{user.f3Name}}</h1>
+    <p>F3Omaha PAX <b>#{{user.paxNumber}}</b> of {{totalPaxCount}}</p>
+    <h5>Name</h5>
+    <p>{{user.firstName}} {{user.lastName}}</p>
+    <h5>Joined</h5>
+    <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
+    <div class="eh-by" *ngIf="ehUser && ehUser !== undefined">
+        <h5>EH'd by</h5>
+        <p>{{ehUser.f3Name}}</p>  
+    </div>
+    <h5>Sector</h5>
+    <p>{{user.sector}}</p>
+    <h5>Email</h5>
+    <a [href]="'mailto:' + user.email">{{user.email}}</a>
+    <h5>Phone</h5>
+    <a [href]="getPhoneNumber(user.phoneNumber)">{{user.phoneNumber?.toDashedForm() ?? ''}}</a>
+    <h5>Information Privacy</h5>
+    <p>{{user.hideContactInformation ? 'Contact info hidden' : 'Other PAX can contact'}}</p>
+    <h5>User Status</h5>
+    <p>{{user.activeUser ? 'Active F3 Member' : 'Inactive'}}</p>
+</div>
