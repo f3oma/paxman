@@ -13,7 +13,6 @@ export interface IAuthenticatedUserEntity {
   email: string;
   paxDataId: string | undefined;
   roles: Array<string>;
-  siteQAORef: DocumentReference<IAODataEntity> | undefined;
 }
 
 export interface IAuthenticatedUser {
@@ -22,7 +21,6 @@ export interface IAuthenticatedUser {
   paxDataId: string | undefined;
   paxData: PaxUser | undefined;
   roles: Array<UserRole>;
-  siteQAO: AOData | undefined;
 }
 
 export class AuthenticatedUser {
@@ -31,21 +29,18 @@ export class AuthenticatedUser {
   private _paxDataId: string | undefined;
   private _paxData: PaxUser | undefined;
   private _roles: Array<UserRole>;
-  private _siteQAO: AOData | undefined;
 
   constructor(
     id: string, 
     email: string, 
     paxDataId?: string, 
     paxData?: PaxUser, 
-    roles?: string[],
-    siteQAO?: AOData | undefined) {
+    roles?: string[]) {
     this._id = id;
     this._email = email;
     this._paxDataId = paxDataId;
     this._paxData = paxData;
     this._roles = roles ? roles.map((e) => e as UserRole) : [];
-    this._siteQAO = siteQAO;
   }
 
   public get id(): string {
@@ -64,12 +59,12 @@ export class AuthenticatedUser {
     return this._paxData;
   }
 
-  public get roles(): Array<UserRole> {
-    return this._roles;
+  public set paxData(data: PaxUser | undefined) {
+    this._paxData = data;
   }
 
-  public get siteQAO(): AOData | undefined {
-    return this._siteQAO;
+  public get roles(): Array<UserRole> {
+    return this._roles;
   }
 
   public toProperties(): IAuthenticatedUser {
@@ -79,7 +74,6 @@ export class AuthenticatedUser {
       paxDataId: this.paxDataId,
       email: this.email,
       roles: this.roles,
-      siteQAO: this.siteQAO
     }
   }
 }

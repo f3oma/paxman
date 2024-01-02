@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Location Selection</h1>
+<div mat-dialog-content>
+  <p>Select User's AO</p>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Location</mat-label>
+      <input formControlName="location" autocorrect="off" [matAutocomplete]="autoLoc" matInput type="text" placeholder="Location" required>
+      <mat-autocomplete #autoLoc="matAutocomplete" [displayWith]="displayLocationNameOptions">
+          <mat-option *ngFor="let option of filteredLocationOptions$ | async" [value]="option">
+            {{option.name}}
+          </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="select()" cdkFocusInitial>Confirm</button>
+</div>

@@ -44,6 +44,15 @@
             <mat-hint>Leave blank if none</mat-hint>
         </mat-form-field>
         <mat-form-field appearance="fill">
+            <mat-label>EH Location</mat-label>
+            <input formControlName="ehLocation"[(ngModel)]="selectedEhLocation" autocorrect="off" [matAutocomplete]="autoLoc" matInput type="text" placeholder="EH Location">
+            <mat-autocomplete #autoLoc="matAutocomplete" [displayWith]="displayLocationNameOptions">
+              <mat-option *ngFor="let option of filteredLocationOptions$ | async" [value]="option">
+                {{option.name}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        <mat-form-field appearance="fill">
             <mat-label>Email Notifications</mat-label>
             <mat-select formControlName="notifications" [(ngModel)]="user.notificationFrequency">
             <mat-option value="All">All notifications</mat-option>

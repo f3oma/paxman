@@ -4,6 +4,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
 import { IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
 
@@ -28,19 +30,37 @@ export class UserDataEditComponent {
     sector: new FormControl(''),
     ehByF3Name: new FormControl(''),
     zipcode: new FormControl(''),
-    notifications: new FormControl('')
+    notifications: new FormControl(''),
+    ehLocation: new FormControl(''),
   });
 
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredEhF3Options$: Observable<any[]> = this.filteredEhF3OptionsSubject.asObservable();
-  selectedEhName: Object | undefined = undefined;
+  selectedEhName: { userRef: string, f3Name: string } | undefined = undefined;
 
-  constructor(private paxManagerService: PaxManagerService, private paxSearchService: PaxSearchService) {
+  filteredLocationOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredLocationOptions$: Observable<any[]> = this.filteredLocationOptionsSubject.asObservable();
+  selectedEhLocation: { aoRef: string, name: string }  | undefined = undefined;
+
+  constructor(
+    private paxManagerService: PaxManagerService,
+    private paxSearchService: PaxSearchService,
+    private locationSearchService: LocationSearchService,
+    private aoManagerService: AOManagerService) {
     this.form.controls['ehByF3Name'].valueChanges.pipe(
       debounceTime(1000),
       map(async (value: string) => {
         if (value) {
           await this.updateAutocompleteResults(value);
+        }
+        return [];
+      })).subscribe();
+
+    this.form.controls['ehLocation'].valueChanges.pipe(
+      debounceTime(1000),
+      map(async (value: string) => {
+        if (value) {
+          await this.updateLocationAutocompleteResults(value);
         }
         return [];
       })).subscribe();
@@ -53,7 +73,17 @@ export class UserDataEditComponent {
         this.selectedEhName = {
           userRef: `users/${refData.id}`, 
           f3Name: refData!.f3Name
-        }
+        };
+      }
+    }
+
+    if (this.user.ehLocationRef) {
+      const refData = await this.aoManagerService.getDataByRef(this.user.ehLocationRef);
+      if (refData !== undefined) {
+        this.selectedEhLocation = {
+          aoRef: `ao_data/${refData.id}`, 
+          name: refData!.name
+        };
       }
     }
   }
@@ -72,7 +102,20 @@ export class UserDataEditComponent {
     return option.f3Name;
   }
 
+  public displayLocationNameOptions(option: any) {
+    if (!option) {
+      return '';
+    }
+    return option.name;
+  }
+
   public async saveData(user: IPaxUser) {
+    if (this.selectedEhName) {
+      this.user.ehByUserRef = this.paxManagerService.getUserReference(this.selectedEhName?.userRef);
+    }
+    if (this.selectedEhLocation) {
+      this.user.ehLocationRef = this.aoManagerService.getAoLocationReference(this.selectedEhLocation.aoRef);
+    }
     await this.paxManagerService.updateUser(user);
     this.userSavedEmitter.emit(true);
   }
@@ -98,5 +141,16 @@ export class UserDataEditComponent {
       };
     })
     this.filteredEhF3OptionsSubject.next(pax);
+  }
+
+  private async updateLocationAutocompleteResults(partialLocationName: string): Promise<void> {
+    const result = await this.locationSearchService.findByName(partialLocationName);
+    const locations = result.map((res) => {
+      return { 
+        aoRef: res.path, 
+        name: res.name 
+      };
+    })
+    this.filteredLocationOptionsSubject.next(locations);
   }
 }

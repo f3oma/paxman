@@ -40,7 +40,7 @@ export class LoginComponent {
       try {
         const user: AuthenticatedUser = await this.userAuthenticationService.loginUserEmailPassword(email, password);
         if (user) {
-          this.navigate(user);
+          await this.navigate(user);
         }
       } catch (err: any) {
         console.error(err);
@@ -54,15 +54,15 @@ export class LoginComponent {
 
   public async loginWithGoogle() {
     const user: AuthenticatedUser = await this.userAuthenticationService.loginWithGoogle();
-    this.navigate(user);
+    await this.navigate(user);
   }
 
-  private navigate(user: AuthenticatedUser) {
+  private async navigate(user: AuthenticatedUser) {
     // If the user does not have PAX data, push them to claim it on profile page...
     if (user.paxDataId === undefined) {
-      this.router.navigate(['profile']);
+      await this.router.navigate(['profile']);
     } else {
-      this.router.navigate(['home']);
+      await this.router.navigate(['home']);
     }
   }
 }

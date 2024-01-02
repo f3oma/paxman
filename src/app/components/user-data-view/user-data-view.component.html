@@ -7,7 +7,7 @@
     <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
     <div class="eh-by" *ngIf="ehUser && ehUser !== undefined">
         <h5>EH'd by</h5>
-        <p>{{ehUser.f3Name}}</p>  
+        <a [href]="'/users/' + ehUser.id">{{ehUser.f3Name}}</a>  
     </div>
     <h5>Sector</h5>
     <p>{{user.sector}}</p>

@@ -33,6 +33,7 @@ import { UserDataViewComponent } from './components/user-data-view/user-data-vie
 import { UserDataEditComponent } from './components/user-data-edit/user-data-edit.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
+import { LinkSiteQAODialog } from './dialogs/link-site-q-ao/link-site-q-ao-dialog.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     SiteDetailComponent,
     UserDataViewComponent,
     UserDataEditComponent,
-    ClaimDataConfirmationDialog
+    ClaimDataConfirmationDialog,
+    LinkSiteQAODialog
   ],
   imports: [
     BrowserModule,

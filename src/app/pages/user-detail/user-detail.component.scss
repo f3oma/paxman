@@ -20,6 +20,19 @@
       border: 2px solid black;
       border-radius: 15px;
 
+      .btns {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+      }
+
+      .admin-error {
+        padding: 4px;
+        background-color: #c54141;
+        color: #fff;
+        border-radius: 7px;
+      }
+
       .action-btn {
         box-shadow: 0 1px 3px #6565656c;
       }
@@ -29,7 +42,7 @@
         background-color: orange;
       }
 
-      #delete-btn {
+      #admin-btn {
         color: #fff;
         background-color: rgb(122, 24, 129);
       }

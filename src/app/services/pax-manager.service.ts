@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc } from "@angular/fire/firestore";
 import { IPaxUser, PaxUser } from "../models/users.model";
-import { PaxModelConverter, paxUserConverter } from "../utils/pax-model.converter";
+import { PaxModelConverter } from "../utils/pax-model.converter";
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class PaxManagerService {
     return await addDoc(userCollection, user);
   }
 
-  public async getPaxInfoByRef(ref: DocumentReference<DocumentData>) {
+  public async getPaxInfoByRef(ref: DocumentReference<PaxUser>) {
     const documentReference = ref.withConverter(this.paxConverter);
     return (await getDoc(documentReference)).data();
   }

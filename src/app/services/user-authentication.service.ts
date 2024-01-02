@@ -1,12 +1,13 @@
 import { Injectable } from "@angular/core";
-import { Auth, onAuthStateChanged, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, AuthProvider } from "@angular/fire/auth";
+import { Auth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, AuthProvider } from "@angular/fire/auth";
 import { collection, CollectionReference, doc, DocumentData, DocumentReference, Firestore, getDoc, getDocs, query, QueryDocumentSnapshot, setDoc, where } from "@angular/fire/firestore";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AuthenticatedUser, UserRole } from "../models/authenticated-user.model";
 import { AuthenticationConverter } from "../utils/auth-user-model.converter";
 import { IClaimUserInfo, IPaxUser, PaxUser } from "../models/users.model";
-import { PaxModelConverter, paxUserConverter } from "../utils/pax-model.converter";
+import { PaxModelConverter } from "../utils/pax-model.converter";
 import { arrayRemove, arrayUnion, updateDoc, writeBatch } from "firebase/firestore";
+import { PaxManagerService } from "./pax-manager.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,13 +16,17 @@ export class UserAuthenticationService {
 
   private authUserData: Subject<AuthenticatedUser | undefined> = new BehaviorSubject<AuthenticatedUser | undefined>(undefined);
   public authUserData$ = this.authUserData.asObservable();
-  public cachedCurrentAuthData: AuthenticatedUser | undefined;
 
-  private authUserCollectionRef: CollectionReference<DocumentData>; // Authenticated User data
-  private usersCollectionRef: CollectionReference<DocumentData>; // Users from migration
+  private authUserCollectionRef: CollectionReference<AuthenticatedUser>; // Authenticated User data
+  private usersCollectionRef: CollectionReference<PaxUser>; // Users from migration
   private paxConverter = this.paxModelConverter.getConverter();
 
-  constructor(private auth: Auth, private firestore: Firestore, private authenticationUserConverter: AuthenticationConverter, private paxModelConverter: PaxModelConverter) {
+  constructor(
+    private auth: Auth, 
+    private firestore: Firestore, 
+    private authenticationUserConverter: AuthenticationConverter, 
+    private paxModelConverter: PaxModelConverter,
+    private paxManagerService: PaxManagerService) {
     this.authUserCollectionRef = collection(this.firestore, 'authenticated_users').withConverter(this.authenticationUserConverter.getAuthenticationConverter());
     this.usersCollectionRef = collection(this.firestore, 'users').withConverter(this.paxConverter);
     this.watchAuthState();
@@ -39,6 +44,19 @@ export class UserAuthenticationService {
     });
   }
 
+  public set cachedCurrentAuthData(data: AuthenticatedUser | undefined) {
+    localStorage.setItem('nonPaxData', JSON.stringify(data));
+  }
+
+  public get cachedCurrentAuthData(): AuthenticatedUser | undefined {
+    const authData = localStorage.getItem('nonPaxData');
+    if (authData !== null && authData !== 'undefined') {
+      const props = JSON.parse(authData);
+      return new AuthenticatedUser(props._id, props._email, props._paxDataId, props._paxData, props._roles);
+    }
+    return undefined;
+  }
+
   async registerEmailPassword(email: string, password: string): Promise<AuthenticatedUser> {
     // User needs to enter data in order to retrieve an account from the DB and update it.
     return createUserWithEmailAndPassword(this.auth, email, password).then(async (userCredential) => {
@@ -46,8 +64,7 @@ export class UserAuthenticationService {
       localStorage.setItem('userData', JSON.stringify(user));
       const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
       let result = await getDoc(docRef);
-      let data = result && result.exists() ? result.data() : undefined;
-      if (data === undefined) {
+      if (!result.exists()) {
         // create new document if one doesn't exist for some reason (they should have one)
         await this.createNewAuthenticatedUserDoc(user.uid, user.email!, docRef);
         result = await getDoc(docRef);
@@ -72,24 +89,26 @@ export class UserAuthenticationService {
       localStorage.setItem('userData', JSON.stringify(user));
       const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
       let result = await getDoc(docRef);
-      let data = result.data();
       if (!result.exists()) {
         // create new document if one doesn't exist for some reason (they should have one)
         await this.createNewAuthenticatedUserDoc(user.uid, user.email!, docRef);
-        result = await getDoc(docRef);
-        const resultData = result.data();
+        const resultData = (await getDoc(docRef)).data();
         this.authUserData.next(resultData);
         this.cachedCurrentAuthData = resultData;
+        return resultData;
       } else {
+        let data = result.data() as AuthenticatedUser;
         if (data.paxDataId) {
-          const userDocRef = doc(this.usersCollectionRef, data.paxDataId);
-          const userData = (await getDoc(userDocRef)).data();
-          data.paxData = userData;
+          const userDocRef = await this.paxManagerService.getUserReference('users/' + data.paxDataId);
+          if (userDocRef) {
+            const userData = await this.paxManagerService.getPaxInfoByRef(userDocRef);
+            data.paxData = userData;
+          }
         }
         this.authUserData.next(data);
         this.cachedCurrentAuthData = data;
+        return data;
       }
-      return data;
     }).catch((error) => {
       throw error;
     });
@@ -105,14 +124,15 @@ export class UserAuthenticationService {
         localStorage.setItem('userData', JSON.stringify(user));
         const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
         let result = (await getDoc(docRef));
-        let data = result.data();
         if (!result.exists()) {
           // create new document if one doesn't exist for some reason (they should have one)
           await this.createNewAuthenticatedUserDoc(user.uid, user.email!, docRef);
-          const result = (await getDoc(docRef)).data();
-          this.authUserData.next(result);
-          return data;
+          const newDocData = (await getDoc(docRef)).data();
+          this.authUserData.next(newDocData);
+          this.cachedCurrentAuthData = newDocData;
+          return newDocData;
         } else {
+          let data = result.data();
           if (data.paxDataId) {
             const userDocRef = doc(this.usersCollectionRef, data.paxDataId);
             const userData = (await getDoc(userDocRef)).data();
@@ -208,6 +228,19 @@ export class UserAuthenticationService {
     return;
   }
 
+  public async validatePromoteRole(paxUserData: IPaxUser): Promise<boolean> {
+    // We need to make sure the user has an auth account
+    // Search the user auth collection for paxdataid that matches
+    // if none exists, user doesn't have an auth account
+    const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", paxUserData.id));
+    const authQueryResult = await getDocs(authQuery);
+
+    if (authQueryResult.empty) {
+      throw new Error("User has not linked their authentication account and data.");
+    }
+    return true;
+  }
+
   public async promoteRole(userRole: UserRole, paxUserData: IPaxUser) {
     // We need to make sure the user has an auth account
     // Search the user auth collection for paxdataid that matches
@@ -216,7 +249,7 @@ export class UserAuthenticationService {
     const authQueryResult = await getDocs(authQuery);
 
     if (authQueryResult.empty) {
-      throw new Error("User does not have a linked authentication account");
+      throw new Error("User has not linked their authentication account and data.");
     } else {
       const userDoc = authQueryResult.docs[0];
       const userDocRef = userDoc.ref;
@@ -255,6 +288,10 @@ export class UserAuthenticationService {
       const userDoc = authQueryResult.docs[0];
       return userDoc.data() as AuthenticatedUser;
     }
+  }
+
+  public async getAuthenticationDocumentReference(authId: string) {
+      return doc(this.authUserCollectionRef, authId);
   }
 
 }

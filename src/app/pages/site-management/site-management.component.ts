@@ -12,7 +12,7 @@ import { AOManagerService } from 'src/app/services/ao-manager.service';
 })
 export class SiteManagementComponent {
 
-  public displayedColumns: string[] = ['name', 'weekDay', 'startTimeCST', 'sector'];
+  public displayedColumns: string[] = ['name', 'weekDay', 'startTimeCST', 'siteQ'];
   public tableData: AOData[] = [];
   public dataSource: any;
 

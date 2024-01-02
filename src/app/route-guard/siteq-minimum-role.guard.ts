@@ -20,7 +20,7 @@ export class SiteQMinimumRoleAuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    if (this.authService.isLoggedIn !== true && !this.authService.cachedCurrentAuthData) { // first check
+    if (!this.authService.isLoggedIn && !this.authService.cachedCurrentAuthData) {
       this.goToLogin(state);
       return false;
     } else {

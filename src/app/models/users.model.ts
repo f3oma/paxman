@@ -11,6 +11,12 @@ export enum NotificationFrequency {
   None = 'None'
 }
 
+export interface IClaimUserInfo {
+  f3Name: string,
+  phoneNumber: PhoneNumber | undefined,
+  email: string;
+}
+
 export interface IPaxUser {
   id: string;
   firstName: string;
@@ -25,16 +31,11 @@ export interface IPaxUser {
   sector: string;
   zipcode?: number | undefined;
   notificationFrequency: NotificationFrequency;
+  authDataId?: string;
 
   // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
   ehByUserRef: EhUserRef; 
   ehLocationRef?: AoLocationRef;
-}
-
-export interface IClaimUserInfo {
-  f3Name: string,
-  phoneNumber: PhoneNumber | undefined,
-  email: string;
 }
 
 export interface IPaxUserEntity {
@@ -53,6 +54,7 @@ export interface IPaxUserEntity {
   notificationFrequency: NotificationFrequency;
   ehByUserRef: EhUserRef;
   ehLocationRef?: AoLocationRef;
+  authDataId?: string;
 }
 
 export class PaxUser {
@@ -71,6 +73,7 @@ export class PaxUser {
   private _zipcode: number | undefined;
   private _notificationFrequency: NotificationFrequency;
   private _ehLocationRef: AoLocationRef;
+  private _authDataId: string | undefined;
 
   constructor(
     id: string, 
@@ -87,7 +90,8 @@ export class PaxUser {
     sector: string,
     zipcode: number | undefined,
     notificationFrequency: NotificationFrequency,
-    ehLocationRef: AoLocationRef) {
+    ehLocationRef: AoLocationRef,
+    authDataId: string | undefined) {
     this._id = id;
     this._firstName = firstName;
     this._lastName = lastName;
@@ -103,6 +107,7 @@ export class PaxUser {
     this._zipcode = zipcode;
     this._notificationFrequency = notificationFrequency;
     this._ehLocationRef = ehLocationRef;
+    this._authDataId = authDataId;
   }
 
   public get id(): string {
@@ -163,6 +168,10 @@ export class PaxUser {
 
   public get ehLocationRef(): AoLocationRef {
     return this._ehLocationRef;
+  }
+
+  public get authDataId(): string | undefined {
+    return this._authDataId;
   }
 
   public getLowercaseF3Name(): string {

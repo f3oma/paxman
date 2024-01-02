@@ -30,7 +30,7 @@ export class PersonalProfileAuthGuard implements CanActivate {
     if (this.siteQMinimumAuthGuard.canActivate(next, state)) {
         return true;
     } else {
-        if (this.authService.isLoggedIn !== true && !this.authService.cachedCurrentAuthData) {
+        if (!this.authService.isLoggedIn && !this.authService.cachedCurrentAuthData) {
             const queryParams = {
                 from: state.url
             }
