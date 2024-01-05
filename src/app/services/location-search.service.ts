@@ -23,7 +23,8 @@ import { environment } from "src/environments/environment";
         return this.idx.search(partialLocationName, {
             exactOnSingleWordQuery: "attribute",
             restrictSearchableAttributes: ['name'],
-            typoTolerance: false
+            typoTolerance: "min",
+            removeWordsIfNoResults: "allOptional"
         }).then(({ hits }) => {
             return hits;
         });

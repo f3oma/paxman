@@ -109,8 +109,8 @@ export class AddPaxComponent {
         activeUser: true,
         hideContactInformation: false,
         paxNumber: paxNumber + 1,
-        sector: this.form.controls['sector'].value,
-        zipcode: this.form.controls['zipcode'].value,
+        // sector: this.form.controls['sector'].value,
+        // zipcode: this.form.controls['zipcode'].value,
         ehLocationRef: locationRef,
         notificationFrequency: NotificationFrequency.All
       };

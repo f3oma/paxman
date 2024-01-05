@@ -27,9 +27,9 @@ export class UserDataEditComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     hideContactInformation: new FormControl(''),
     activeUser: new FormControl(''),
-    sector: new FormControl(''),
+    // sector: new FormControl(''),
     ehByF3Name: new FormControl(''),
-    zipcode: new FormControl(''),
+    // zipcode: new FormControl(''),
     notifications: new FormControl(''),
     ehLocation: new FormControl(''),
   });
@@ -48,7 +48,7 @@ export class UserDataEditComponent {
     private locationSearchService: LocationSearchService,
     private aoManagerService: AOManagerService) {
     this.form.controls['ehByF3Name'].valueChanges.pipe(
-      debounceTime(1000),
+      debounceTime(200),
       map(async (value: string) => {
         if (value) {
           await this.updateAutocompleteResults(value);
@@ -57,7 +57,7 @@ export class UserDataEditComponent {
       })).subscribe();
 
     this.form.controls['ehLocation'].valueChanges.pipe(
-      debounceTime(1000),
+      debounceTime(200),
       map(async (value: string) => {
         if (value) {
           await this.updateLocationAutocompleteResults(value);
@@ -78,6 +78,7 @@ export class UserDataEditComponent {
     }
 
     if (this.user.ehLocationRef) {
+      console.log(this.user.ehLocationRef.id);
       const refData = await this.aoManagerService.getDataByRef(this.user.ehLocationRef);
       if (refData !== undefined) {
         this.selectedEhLocation = {
@@ -110,10 +111,10 @@ export class UserDataEditComponent {
   }
 
   public async saveData(user: IPaxUser) {
-    if (this.selectedEhName) {
+    if (this.selectedEhName !== undefined) {
       this.user.ehByUserRef = this.paxManagerService.getUserReference(this.selectedEhName?.userRef);
     }
-    if (this.selectedEhLocation) {
+    if (this.selectedEhLocation !== undefined) {
       this.user.ehLocationRef = this.aoManagerService.getAoLocationReference(this.selectedEhLocation.aoRef);
     }
     await this.paxManagerService.updateUser(user);

@@ -19,7 +19,7 @@
             <phone-input formControlName="tel" [(ngModel)]="user.phoneNumber" autocomplete="off" required="false"></phone-input>
             <mat-hint>Include area code</mat-hint>
         </mat-form-field>
-        <mat-form-field appearance="fill">
+        <!-- <mat-form-field appearance="fill">
             <mat-label>Sector</mat-label>
             <mat-select formControlName="sector" [(ngModel)]="user.sector">
             <mat-option value="DC - West">DC - West</mat-option>
@@ -32,7 +32,7 @@
             <mat-label>My zip code</mat-label>
             <input formControlName="zipcode" [(ngModel)]="user.zipcode" autocorrect="off" autocomplete="off" matInput type="number" placeholder="68100" required>
             <mat-hint>Helps F3 with sector analytics</mat-hint>
-        </mat-form-field>
+        </mat-form-field> -->
         <mat-form-field appearance="fill">
             <mat-label>EH'd by (F3 name)</mat-label>
             <input formControlName="ehByF3Name" [(ngModel)]="selectedEhName" autocorrect="off" [matAutocomplete]="auto" matInput type="text" placeholder="EH'd by">
