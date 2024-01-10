@@ -2,6 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Test Build Success on PR
+run-name: 🚀 ${{ github.actor }} is running PaxNet Dev Deploy
 on: pull_request
 
 jobs:
@@ -9,17 +10,21 @@ jobs:
     if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - id: 'Checkout'
+        uses: actions/checkout@v4
 
-      - id: 'setup'
+      - id: 'Setup'
         uses: 'actions/setup-node@v1'
         with:
           node-version: 20.x
 
-      - id: 'build'
-        run: npm install & npm run build
+      - id: 'Install'
+        run: npm install
+
+      - id: 'Build'
+        run: npm run build
       
-      - id: 'deploy'
+      - id: 'Deploy'
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
