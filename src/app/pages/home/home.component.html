@@ -1,12 +1,24 @@
 <div class="home-container">
   <div class="top-head">
-    <h1>Welcome to PaxMan</h1>
-    <p>PAX Management tool</p>
+    <img src="/assets/logo.svg" alt="Logo">
+    <p>Welcome to F3 Omaha's Internal Pax Network</p>
   </div>
-  <div class="content">
-    <h2>Quick actions</h2>
-    <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/profile']">Claim My Data <mat-icon>person</mat-icon></button>
-    <button mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
-    <button mat-button class="action-btn" [routerLink]="['/search']">Search PAX <mat-icon>search</mat-icon></button>
+  <div class="content" *ngIf="isLoggedIn; else loggedOut">
+    <div class="quick-actions">
+      <h4>Quick actions</h4>
+      <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/profile']">Claim My Data <mat-icon>person</mat-icon></button>
+      <button *ngIf="hasClaimedData"mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
+      <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']">Search PAX <mat-icon>search</mat-icon></button>
+    </div>
+    <div class="new-pax-today">
+      <h4>Today's New Pax:</h4>
+      <p>{{ latestPaxNames }}</p>
+    </div>
   </div>
 </div>
+
+<ng-template #loggedOut>
+  <div class="content">
+    <button *ngIf="!isLoggedIn" mat-button id="login-btn" class="action-btn" [routerLink]="['/profile']">Log in to continue<mat-icon>lock</mat-icon></button>
+  </div>
+</ng-template>

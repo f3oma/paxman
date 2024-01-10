@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AccountCreatedSuccessfullyDialog } from 'src/app/dialogs/account-created-successfully/account-created-successfully.component';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
 @Component({
@@ -20,7 +22,8 @@ export class RegisterComponent {
 
   constructor(
     private readonly userAuthService: UserAuthenticationService,
-    private readonly router: Router) {
+    private readonly router: Router,
+    private readonly matDialog: MatDialog) {
       this.registerForm.addValidators(this.checkPasswords);
       this.registerForm.updateValueAndValidity();
     }
@@ -31,8 +34,11 @@ export class RegisterComponent {
     const confirmPassword = this.registerForm.controls['confirmPassword'].value;
     if (this.registerForm.valid && email && password && confirmPassword === password) {
       try {
-        const result = await this.userAuthService.registerEmailPassword(email, password);
-        this.router.navigate(['login']);
+        await this.userAuthService.registerEmailPassword(email, password);
+        const dialogRef = this.matDialog.open(AccountCreatedSuccessfullyDialog);
+        dialogRef.afterClosed().subscribe(async (res) => {
+          await this.router.navigate(['login']);
+        })
       } catch (err: any) {
         this.signInErrorMessage = err.message;
       }

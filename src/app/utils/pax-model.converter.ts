@@ -1,6 +1,6 @@
 import { DocumentData, QueryDocumentSnapshot, Timestamp } from "@angular/fire/firestore";
 import { PhoneNumber } from "../models/phonenumber.model";
-import { IPaxUserEntity, NotificationFrequency, PaxUser } from "../models/users.model";
+import { IPaxUser, IPaxUserEntity, NotificationFrequency, PaxUser } from "../models/users.model";
 import { Injectable } from "@angular/core";
 
 @Injectable({
@@ -27,8 +27,6 @@ export class PaxModelConverter {
           activeUser: data.activeUser,
           hideContactInformation: data.hideContactInformation,
           paxNumber: data.paxNumber,
-          sector: data.sector,
-          zipcode: data.zipcode,
           notificationFrequency: data.notificationFrequency,
           ehLocationRef: data.ehLocationRef,
           authDataId: data.authDataId !== undefined ? data.authDataId : null
@@ -57,22 +55,22 @@ export class PaxModelConverter {
         }
     
         return new PaxUser(
-          snap.id, 
-          data.firstName, 
-          data.lastName, 
-          data.email, 
-          phoneNumber, 
-          data.f3Name, 
-          data.joinDate.toDate(), 
-          data.ehByUserRef,
-          data.hideContactInformation,
-          data.activeUser,
-          data.paxNumber,
-          data.sector,
-          data.zipcode,
-          data.notificationFrequency,
-          data.ehLocationRef,
-          data.authDataId);
+          snap.id,
+          <IPaxUser> {
+            firstName: data.firstName, 
+            lastName: data.lastName, 
+            email: data.email, 
+            phoneNumber: phoneNumber, 
+            f3Name: data.f3Name, 
+            joinDate: data.joinDate.toDate(), 
+            ehByUserRef: data.ehByUserRef,
+            hideContactInformation: data.hideContactInformation,
+            activeUser: data.activeUser,
+            paxNumber: data.paxNumber,
+            notificationFrequency: data.notificationFrequency,
+            ehLocationRef: data.ehLocationRef,
+            authDataId: data.authDataId
+          });
       }
     }
   }

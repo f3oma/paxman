@@ -1,10 +1,23 @@
 .home-container {
   padding: 16px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70%;
+  text-align: center;
+  width: 100%;
+
   .top-head {
+    margin-bottom: 8px;
     h1 {
       font-size: 32px;
       font-weight: 700;
       margin-bottom: 4px;
+    }
+    p {
+      font-weight: bold;
+      font-size: 18px;
     }
   }
   .content {
@@ -13,19 +26,30 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    .action-btn {
-      width: 100%;
-      background-color: #ffa600;
-      color: #000;
-      font-weight: 700;
-      font-size: 16px;
-      margin: 8px;
-      padding: 24px;
-      max-width: 800px;
-    }
-    #claim-data-btn {
-      background-color: #2d364c;
-      color: #fff;
+    width: 100%;
+
+    .quick-actions {
+      margin: 24px;
+      
+      .action-btn {
+        width: 100%;
+        background-color: #ffa600;
+        color: #000;
+        font-weight: 700;
+        font-size: 16px;
+        margin: 8px;
+        padding: 24px;
+        max-width: 800px;
+      }
+      #claim-data-btn {
+        background-color: #2d364c;
+        color: #fff;
+      }
     }
   }
+}
+
+#login-btn {
+  background-color: #2d364c;
+  color: #fff;
 }

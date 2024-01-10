@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc } from "@angular/fire/firestore";
+import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs } from "@angular/fire/firestore";
 import { IPaxUser, PaxUser } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
+import { AOData } from "../models/ao.model";
 
 @Injectable({
   providedIn: 'root'
@@ -50,4 +51,18 @@ export class PaxManagerService {
     }
     return null;
   }
+
+  public async updateSiteQUserLocation(aoRef: DocumentReference<AOData>, userRef: DocumentReference<PaxUser>) {
+    return await updateDoc(userRef, {
+      siteQLocationRef: aoRef
+    })
+  }
+
+  public async getDailyPax(): Promise<PaxUser[]> {
+    const date = new Date().setHours(0, 0, 0, 0);
+    const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
+    const q = query(userCollection, where("joinDate", ">", date));
+    return (await getDocs(q)).docs.map((doc) => doc.data() as PaxUser);
+  }
+
 }

@@ -27,13 +27,18 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ClaimDataConfirmationDialog, ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { SiteManagementComponent } from './pages/site-management/site-management.component';
-import { SiteDetailComponent } from './pages/site-detail/site-detail.component';
+import { SiteManagementComponent } from './pages/admin-home/site-management/site-management.component';
+import { SiteDetailComponent } from './pages/admin-home/site-management/site-detail/site-detail.component';
 import { UserDataViewComponent } from './components/user-data-view/user-data-view.component';
 import { UserDataEditComponent } from './components/user-data-edit/user-data-edit.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
 import { LinkSiteQAODialog } from './dialogs/link-site-q-ao/link-site-q-ao-dialog.component';
+import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
+import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-pax-list.component';
+import { AccountCreatedSuccessfullyDialog } from './dialogs/account-created-successfully/account-created-successfully.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -52,7 +57,10 @@ import { LinkSiteQAODialog } from './dialogs/link-site-q-ao/link-site-q-ao-dialo
     UserDataViewComponent,
     UserDataEditComponent,
     ClaimDataConfirmationDialog,
-    LinkSiteQAODialog
+    LinkSiteQAODialog,
+    AdminHomeComponent,
+    AdminPaxListComponent,
+    AccountCreatedSuccessfullyDialog,
   ],
   imports: [
     BrowserModule,
@@ -73,7 +81,9 @@ import { LinkSiteQAODialog } from './dialogs/link-site-q-ao/link-site-q-ao-dialo
     MatCheckboxModule,
     MatTableModule,
     MatSortModule,
-    MatDialogModule
+    MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent],

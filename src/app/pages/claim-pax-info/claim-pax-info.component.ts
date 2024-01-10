@@ -86,6 +86,7 @@ export class ClaimPaxInfoComponent {
       attributesToRetrieve: [
         'f3Name',
         'firstName',
+        'authDataId',
         'path'
       ],
       attributesToHighlight: []

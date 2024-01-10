@@ -1,7 +1,18 @@
 <div class="container">
-    <h1>Site List</h1>
+    <h1>Site Management</h1>
     <p>View and update AO information</p>
+    
+    <div class="manage-my-site" *ngIf="!isAdmin; else adminView">
+        <h4>Manage my sites</h4>
+        <div class="my-site">
+            <h3>{{siteQAO?.name}}</h3>
+            <p>{{siteQAO?.address}}</p>
+            <button id="manage-site-btn" mat-flat-button [routerLink]="['/admin/site-management/', siteQAO?.id]">Manage site</button>
+        </div>
+    </div>   
+</div>
 
+<ng-template #adminView>
     <div class="site-list">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
             <ng-container matColumnDef="name">
@@ -32,4 +43,4 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
     </div>
-</div>
+</ng-template>
