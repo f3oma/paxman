@@ -45,9 +45,9 @@ export class AppComponent {
       .pipe(
         tap(async (data) => {
           if (!data) {
-            return;
+            this.authenticatedUser = undefined;
           }
-          if (data.roles?.includes(UserRole.Admin) || data.roles?.includes(UserRole.SiteQ)) {
+          if (data?.roles?.includes(UserRole.Admin) || data?.roles?.includes(UserRole.SiteQ)) {
             this.isAdmin = true;
           }
           const paxDataId = data?.paxDataId;

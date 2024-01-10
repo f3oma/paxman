@@ -13,6 +13,7 @@ export interface IAuthenticatedUserEntity {
   email: string;
   paxDataId: string | undefined;
   roles: Array<string>;
+  siteQLocationRef?: DocumentReference<AOData>;
 }
 
 export interface IAuthenticatedUser {
@@ -21,6 +22,7 @@ export interface IAuthenticatedUser {
   paxDataId: string | undefined;
   paxData: PaxUser | undefined;
   roles: Array<UserRole>;
+  siteQLocationRef?: DocumentReference<AOData>;
 }
 
 export class AuthenticatedUser {
@@ -29,18 +31,21 @@ export class AuthenticatedUser {
   private _paxDataId: string | undefined;
   private _paxData: PaxUser | undefined;
   private _roles: Array<UserRole>;
+  private _siteQLocationRef?: DocumentReference<AOData>;
 
   constructor(
     id: string, 
     email: string, 
     paxDataId?: string, 
     paxData?: PaxUser, 
-    roles?: string[]) {
+    roles?: string[],
+    siteQLocationRef?: DocumentReference<AOData>) {
     this._id = id;
     this._email = email;
     this._paxDataId = paxDataId;
     this._paxData = paxData;
     this._roles = roles ? roles.map((e) => e as UserRole) : [];
+    this._siteQLocationRef = siteQLocationRef;
   }
 
   public get id(): string {
@@ -67,6 +72,10 @@ export class AuthenticatedUser {
     return this._roles;
   }
 
+  public get siteQLocationRef(): DocumentReference<AOData> | undefined {
+    return this._siteQLocationRef;
+  }
+
   public toProperties(): IAuthenticatedUser {
     return {
       id: this.id,
@@ -74,6 +83,7 @@ export class AuthenticatedUser {
       paxDataId: this.paxDataId,
       email: this.email,
       roles: this.roles,
+      siteQLocationRef: this.siteQLocationRef
     }
   }
 }

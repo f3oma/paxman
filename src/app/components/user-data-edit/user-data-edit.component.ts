@@ -17,6 +17,7 @@ import { PaxSearchService } from 'src/app/services/pax-search.service';
 export class UserDataEditComponent {
 
   @Input('user') user!: IPaxUser;
+  @Input('isEditorAdmin') isEditorAdmin: boolean = false;
   @Output('userSaved') userSavedEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('userCanceled') userCanceledEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -32,6 +33,8 @@ export class UserDataEditComponent {
     // zipcode: new FormControl(''),
     notifications: new FormControl(''),
     ehLocation: new FormControl(''),
+    f3Name: new FormControl(''),
+    joinDate: new FormControl('')
   });
 
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
@@ -78,7 +81,6 @@ export class UserDataEditComponent {
     }
 
     if (this.user.ehLocationRef) {
-      console.log(this.user.ehLocationRef.id);
       const refData = await this.aoManagerService.getDataByRef(this.user.ehLocationRef);
       if (refData !== undefined) {
         this.selectedEhLocation = {

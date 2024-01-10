@@ -11,11 +11,8 @@
   </button>
   <div class="collapse navbar-collapse align-right" id="navbarCollapse" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="authenticatedUser">
         <a class="nav-link" routerLink="/search">Search</a>
-      </li>
-      <li class="nav-item" *ngIf="isAdmin">
-        <a class="nav-link" routerLink="/site-management">Locations</a>
       </li>
       <li class="nav-item" *ngIf="authenticatedUser">
         <a class="nav-link" routerLink="/add-pax">Add PAX</a>
@@ -28,8 +25,9 @@
         </a>
         <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
           <a ngbDropdownItem class="dropdown-item" [routerLink]="['/profile']">My Profile</a>
+          <a ngbDropdownItem class="dropdown-item" [routerLink]="['/admin']" *ngIf="isAdmin">Admin Console</a>
           <div class="dropdown-divider"></div>
-          <a  ngbDropdownItem class="dropdown-item" (click)="signOut()">Log Out</a>
+          <a ngbDropdownItem class="dropdown-item" (click)="signOut()">Log Out</a>
         </div>
       </li>
       <li class="nav-item" *ngIf="!authenticatedUser">

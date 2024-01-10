@@ -59,7 +59,7 @@ export class LoginComponent {
 
   private async navigate(user: AuthenticatedUser) {
     // If the user does not have PAX data, push them to claim it on profile page...
-    if (user.paxDataId === undefined) {
+    if (!user.paxDataId || user.paxDataId === undefined) {
       await this.router.navigate(['profile']);
     } else {
       await this.router.navigate(['home']);

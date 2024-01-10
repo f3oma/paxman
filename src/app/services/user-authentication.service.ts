@@ -8,6 +8,7 @@ import { IClaimUserInfo, IPaxUser, PaxUser } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { arrayRemove, arrayUnion, updateDoc, writeBatch } from "firebase/firestore";
 import { PaxManagerService } from "./pax-manager.service";
+import { AOData } from "../models/ao.model";
 
 @Injectable({
   providedIn: 'root'
@@ -34,12 +35,16 @@ export class UserAuthenticationService {
 
   async watchAuthState() {
     onAuthStateChanged(this.auth, async (user) => {
-      if (user) {
+      if (user && user !== undefined) {
         localStorage.setItem('userData', JSON.stringify(user));
         const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
         const resultData = (await getDoc(docRef)).data();
         this.authUserData.next(resultData);
         this.cachedCurrentAuthData = resultData;
+      } else {
+        this.authUserData.next(undefined);
+        this.cachedCurrentAuthData = undefined;
+        localStorage.removeItem('userData');
       }
     });
   }
@@ -57,9 +62,9 @@ export class UserAuthenticationService {
     return undefined;
   }
 
-  async registerEmailPassword(email: string, password: string): Promise<AuthenticatedUser> {
+  async registerEmailPassword(email: string, password: string): Promise<void> {
     // User needs to enter data in order to retrieve an account from the DB and update it.
-    return createUserWithEmailAndPassword(this.auth, email, password).then(async (userCredential) => {
+    createUserWithEmailAndPassword(this.auth, email, password).then(async (userCredential) => {
       const user = userCredential.user;
       localStorage.setItem('userData', JSON.stringify(user));
       const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
@@ -72,7 +77,6 @@ export class UserAuthenticationService {
       const resultData = result.data();
       this.authUserData.next(resultData);
       this.cachedCurrentAuthData = resultData;
-      return resultData;
     }).catch((error) => {
       if (error?.message.includes('auth/email-already-in-use')) {
         throw new Error("Email is already in use. You may need to log in.");
@@ -150,9 +154,9 @@ export class UserAuthenticationService {
   }
 
   async signOutUser(): Promise<void> {
+    localStorage.removeItem('userData');
     this.authUserData.next(undefined);
     this.cachedCurrentAuthData = undefined;
-    localStorage.removeItem('userData');
     return await signOut(this.auth);
   }
 
@@ -290,8 +294,25 @@ export class UserAuthenticationService {
     }
   }
 
-  public async getAuthenticationDocumentReference(authId: string) {
+  public getAuthenticationDocumentReference(authId: string) {
       return doc(this.authUserCollectionRef, authId);
   }
 
+  public async getLinkedAuthDataRef(userId: string): Promise<DocumentReference<AuthenticatedUser> | null> {
+    const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", userId));
+    const authQueryResult = await getDocs(authQuery);
+    if (authQueryResult.empty) {
+      // user doesn't have an auth account, do nothing
+      return null;
+    } else {
+      return authQueryResult.docs[0].ref;
+    }
+  }
+
+
+  public async updateSiteQUserLocation(aoRef: DocumentReference<AOData>, authUserRef: DocumentReference<AuthenticatedUser>) {
+    return await updateDoc(authUserRef, {
+      siteQLocationRef: aoRef
+    })
+  }
 }

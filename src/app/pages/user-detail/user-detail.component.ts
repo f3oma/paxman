@@ -102,8 +102,15 @@ export class UserDetailComponent {
   public async linkSiteQAndAO(locationDbPath: string, user: IPaxUser) {
     const aoRef = this.aoManagerService.getAoLocationReference(locationDbPath);
     const userRef = this.paxManagerService.getUserReference(`users/${user.id}`);
-    if (aoRef && userRef) {
-      await this.aoManagerService.updateSiteQUser(aoRef, userRef);
+    const authRef = await this.userAuthService.getLinkedAuthDataRef(user.id);
+    if (aoRef && userRef && authRef) {
+      return await Promise.all([
+        this.aoManagerService.updateSiteQUser(aoRef, userRef),
+        this.paxManagerService.updateSiteQUserLocation(aoRef, userRef),
+        this.userAuthService.updateSiteQUserLocation(aoRef, authRef),
+      ]);
+    } else {
+      throw new Error("Unable to link accounts, missing references")
     }
   }
 

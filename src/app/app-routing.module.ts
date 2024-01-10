@@ -9,11 +9,13 @@ import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
 import { BasicAuthenticatedAuthGuard } from './route-guard/basic-authenticated.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
-import { SiteManagementComponent } from './pages/site-management/site-management.component';
-import { SiteDetailComponent } from './pages/site-detail/site-detail.component';
+import { SiteManagementComponent } from './pages/admin-home/site-management/site-management.component';
+import { SiteDetailComponent } from './pages/admin-home/site-management/site-detail/site-detail.component';
 import { AdminRoleAuthGuard } from './route-guard/admin-role.guard';
 import { SiteQMinimumRoleAuthGuard } from './route-guard/siteq-minimum-role.guard';
 import { PersonalProfileAuthGuard } from './route-guard/personal-profile.guard';
+import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
+import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-pax-list.component';
 
 const routes: Routes = [
   {
@@ -43,16 +45,6 @@ const routes: Routes = [
     canActivate: [BasicAuthenticatedAuthGuard]
   },
   {
-    path: 'site-management',
-    component: SiteManagementComponent,
-    canActivate: [SiteQMinimumRoleAuthGuard]
-  },
-  {
-    path: 'site-management/:id',
-    component: SiteDetailComponent,
-    canActivate: [SiteQMinimumRoleAuthGuard]
-  },
-  {
     path: 'claim-info',
     component: ClaimPaxInfoComponent,
     canActivate: [BasicAuthenticatedAuthGuard]
@@ -67,6 +59,31 @@ const routes: Routes = [
     component: UserDetailComponent,
     canActivate: [PersonalProfileAuthGuard]
   },
+  {
+    path: 'admin',
+    canActivate: [SiteQMinimumRoleAuthGuard],
+    children: [
+      {
+        path: '',
+        component: AdminHomeComponent,
+      },
+      {
+        path: 'site-management',
+        component: SiteManagementComponent,
+        canActivate: [SiteQMinimumRoleAuthGuard]
+      },
+      {
+        path: 'site-management/:id',
+        component: SiteDetailComponent,
+        canActivate: [SiteQMinimumRoleAuthGuard]
+      },
+      {
+        path: 'pax-list',
+        component: AdminPaxListComponent,
+        canActivate: [AdminRoleAuthGuard]
+      }
+    ]
+  }
 ];
 
 @NgModule({

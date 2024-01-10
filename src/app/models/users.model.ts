@@ -28,14 +28,13 @@ export interface IPaxUser {
   hideContactInformation: boolean;
   activeUser: boolean;
   paxNumber: number;
-  sector: string;
-  zipcode?: number | undefined;
   notificationFrequency: NotificationFrequency;
   authDataId?: string;
 
   // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
   ehByUserRef: EhUserRef; 
   ehLocationRef?: AoLocationRef;
+  siteQLocationRef?: DocumentReference<AOData>;
 }
 
 export interface IPaxUserEntity {
@@ -49,12 +48,11 @@ export interface IPaxUserEntity {
   hideContactInformation: boolean;
   activeUser: boolean;
   paxNumber: number;
-  sector: string;
-  zipcode?: number | undefined;
   notificationFrequency: NotificationFrequency;
   ehByUserRef: EhUserRef;
   ehLocationRef?: AoLocationRef;
   authDataId?: string;
+  siteQLocationRef?: DocumentReference<AOData>;
 }
 
 export class PaxUser {
@@ -69,45 +67,29 @@ export class PaxUser {
   private _hideContactInformation: boolean;
   private _activeUser: boolean;
   private _paxNumber: number;
-  private _sector: string;
-  private _zipcode: number | undefined;
   private _notificationFrequency: NotificationFrequency;
   private _ehLocationRef: AoLocationRef;
   private _authDataId: string | undefined;
+  private _siteQLocationRef: DocumentReference<AOData> | undefined;
 
   constructor(
     id: string, 
-    firstName: string, 
-    lastName: string, 
-    email: string, 
-    phoneNumber: PhoneNumber | undefined, 
-    f3Name: string,
-    joinDate: Date,
-    ehByUserRef: EhUserRef,
-    hideContactInformation: boolean,
-    activeUser: boolean,
-    paxNumber: number,
-    sector: string,
-    zipcode: number | undefined,
-    notificationFrequency: NotificationFrequency,
-    ehLocationRef: AoLocationRef,
-    authDataId: string | undefined) {
+    paxData: IPaxUser) {
     this._id = id;
-    this._firstName = firstName;
-    this._lastName = lastName;
-    this._email = email;
-    this._phoneNumber = phoneNumber;
-    this._f3Name = f3Name;
-    this._joinDate = joinDate;
-    this._ehByUserRef = ehByUserRef;
-    this._hideContactInformation = hideContactInformation;
-    this._activeUser = activeUser;
-    this._paxNumber = paxNumber;
-    this._sector = sector;
-    this._zipcode = zipcode;
-    this._notificationFrequency = notificationFrequency;
-    this._ehLocationRef = ehLocationRef;
-    this._authDataId = authDataId;
+    this._firstName = paxData.firstName;
+    this._lastName = paxData.lastName;
+    this._email = paxData.email;
+    this._phoneNumber = paxData.phoneNumber;
+    this._f3Name = paxData.f3Name;
+    this._joinDate = paxData.joinDate;
+    this._ehByUserRef = paxData.ehByUserRef;
+    this._hideContactInformation = paxData.hideContactInformation;
+    this._activeUser = paxData.activeUser;
+    this._paxNumber = paxData.paxNumber;
+    this._notificationFrequency = paxData.notificationFrequency;
+    this._ehLocationRef = paxData.ehLocationRef;
+    this._authDataId = paxData.authDataId;
+    this._siteQLocationRef = paxData.siteQLocationRef;
   }
 
   public get id(): string {
@@ -150,16 +132,8 @@ export class PaxUser {
     return this._activeUser;
   }
 
-  public get sector(): string {
-    return this._sector;
-  }
-
   public get paxNumber(): number {
     return this._paxNumber;
-  }
-
-  public get zipcode(): number | undefined {
-    return this._zipcode;
   }
 
   public get notificationFrequency(): NotificationFrequency {
@@ -174,8 +148,16 @@ export class PaxUser {
     return this._authDataId;
   }
 
+  public get siteQLocationRef(): DocumentReference<AOData> | undefined {
+    return this._siteQLocationRef;
+  }
+
   public getLowercaseF3Name(): string {
     return this._f3Name.toLowerCase();
+  }
+
+  public isClaimed(): boolean {
+    return this._authDataId !== undefined;
   }
 
   public toProperties(): IPaxUser {
@@ -191,10 +173,9 @@ export class PaxUser {
       hideContactInformation: this.hideContactInformation,
       activeUser: this.activeUser,
       paxNumber: this.paxNumber,
-      sector: this.sector,
-      zipcode: this.zipcode,
       notificationFrequency: this.notificationFrequency,
       ehLocationRef: this.ehLocationRef,
+      siteQLocationRef: this.siteQLocationRef,
     }
   }
 

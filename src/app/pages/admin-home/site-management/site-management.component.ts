@@ -2,8 +2,12 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, ViewChild } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { DocumentReference } from 'firebase/firestore';
 import { AOData } from 'src/app/models/ao.model';
+import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { PaxManagerService } from 'src/app/services/pax-manager.service';
+import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
 @Component({
   selector: 'app-site-management',
@@ -12,15 +16,37 @@ import { AOManagerService } from 'src/app/services/ao-manager.service';
 })
 export class SiteManagementComponent {
 
+  isAdmin = false;
+  siteQAO: AOData | undefined;
+
   public displayedColumns: string[] = ['name', 'weekDay', 'startTimeCST', 'siteQ'];
   public tableData: AOData[] = [];
   public dataSource: any;
 
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private aoManagerService: AOManagerService) {
+  constructor(
+    private aoManagerService: AOManagerService, 
+    private userAuthService: UserAuthenticationService,
+    private paxManagementService: PaxManagerService) {
+
     this.dataSource = null;
-    this.getAOData();
+
+    // Look at the logged in user for admin / siteq permissions
+    this.userAuthService.authUserData$.subscribe((res) => {
+      if (res) {
+        if (res.roles.includes(UserRole.Admin)) {
+          this.isAdmin = true;
+          this.getAOData();
+        } else if (res.roles.includes(UserRole.SiteQ) && res.siteQLocationRef) {
+          this.getSiteQAO(res.siteQLocationRef);
+        }
+      }
+    })
+  }
+
+  async getSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
+    this.siteQAO = await this.aoManagerService.getDataByRef(siteQLocationRef);
   }
 
   async getAOData() {

@@ -1,7 +1,7 @@
 <div class="container" *ngIf="userData$ | async as user">
 
   <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
-  <user-data-edit [user]="user" *ngIf="editMode" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
+  <user-data-edit [user]="user" *ngIf="editMode" [isEditorAdmin]="isAdmin" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
 
   <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>
 

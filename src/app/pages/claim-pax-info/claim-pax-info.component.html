@@ -11,13 +11,16 @@
   </div>
   <div class="results-list">
     <div class="pax" *ngFor="let pax of resultPaxList$ | async">
-      <div class="pax-detail">
-        <h5>{{pax.f3Name}}</h5>
-        <p>{{pax.firstName}}</p>
-      </div>
-      <div class="actions">
-        <button mat-flat-button (click)="claimDataFromSearch(pax)">Claim Data</button>
-      </div>
+      <!-- Restrict to unclaimed data only -->
+      <ng-container *ngIf="pax.authDataId === undefined">
+        <div class="pax-detail">
+          <h5>{{pax.f3Name}}</h5>
+          <p>{{pax.firstName}}</p>
+        </div>
+        <div class="actions">
+          <button id="claim-data-btn" mat-flat-button (click)="claimDataFromSearch(pax)">Claim Data</button>
+        </div>
+      </ng-container>
     </div>
   </div>
 
