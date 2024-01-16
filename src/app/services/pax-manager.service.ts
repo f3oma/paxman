@@ -58,11 +58,11 @@ export class PaxManagerService {
     })
   }
 
-  public async getDailyPax(): Promise<PaxUser[]> {
-    const date = new Date().setHours(0, 0, 0, 0);
+  public async getWeeklyPax(): Promise<PaxUser[]> {
+    var oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
-    const q = query(userCollection, where("joinDate", ">", date));
+    const q = query(userCollection, where("joinDate", ">", oneWeekAgo));
     return (await getDocs(q)).docs.map((doc) => doc.data() as PaxUser);
   }
-
 }
