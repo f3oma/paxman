@@ -40,7 +40,7 @@ export class HomeComponent {
   }
 
   async getPaxFromToday() {
-    const pax: PaxUser[] = await this.paxManagerService.getDailyPax();
+    const pax: PaxUser[] = await this.paxManagerService.getWeeklyPax();
     if (pax && pax.length > 0) {
       this.latestPaxNames = pax.map((p) => p.f3Name).join(", ");
     }
