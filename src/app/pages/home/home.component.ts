@@ -16,7 +16,7 @@ export class HomeComponent {
   public hasClaimedData: boolean = true;
   public isLoggedIn: boolean = false;
 
-  public latestPaxNames: string = 'None today';
+  public latestPaxNames: string = '';
 
   constructor(
     private userAuthService: UserAuthenticationService,
