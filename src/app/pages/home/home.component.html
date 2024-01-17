@@ -10,8 +10,8 @@
       <button *ngIf="hasClaimedData"mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
       <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']">Search PAX <mat-icon>search</mat-icon></button>
     </div>
-    <div class="new-pax-today">
-      <h4>Today's New Pax:</h4>
+    <div class="new-pax" *ngIf="latestPaxNames !== ''">
+      <h4>New Pax:</h4>
       <p>{{ latestPaxNames }}</p>
     </div>
   </div>

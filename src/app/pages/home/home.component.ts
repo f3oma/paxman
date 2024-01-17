@@ -16,7 +16,7 @@ export class HomeComponent {
   public hasClaimedData: boolean = true;
   public isLoggedIn: boolean = false;
 
-  public latestPaxNames: string = 'None today';
+  public latestPaxNames: string = '';
 
   constructor(
     private userAuthService: UserAuthenticationService,
@@ -40,7 +40,7 @@ export class HomeComponent {
   }
 
   async getPaxFromToday() {
-    const pax: PaxUser[] = await this.paxManagerService.getDailyPax();
+    const pax: PaxUser[] = await this.paxManagerService.getWeeklyPax();
     if (pax && pax.length > 0) {
       this.latestPaxNames = pax.map((p) => p.f3Name).join(", ");
     }
