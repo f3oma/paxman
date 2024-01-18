@@ -106,6 +106,14 @@ export class UserAuthenticationService {
           const userDocRef = await this.paxManagerService.getUserReference('users/' + data.paxDataId);
           if (userDocRef) {
             const userData = await this.paxManagerService.getPaxInfoByRef(userDocRef);
+
+            // Temp fix for nulled AuthDataId...
+            if (userData?.authDataId === null || userData?.authDataId === undefined) {
+              await updateDoc(userDocRef, {
+                authDataId: result.id
+              });
+            }
+            
             data.paxData = userData;
           }
         }
