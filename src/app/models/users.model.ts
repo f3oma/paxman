@@ -2,7 +2,7 @@ import { DocumentReference, Timestamp } from "@angular/fire/firestore";
 import { PhoneNumber } from "./phonenumber.model";
 import { AOData } from "./ao.model";
 
-export type EhUserRef = DocumentReference<PaxUser> | undefined | null;
+export type UserRef = DocumentReference<PaxUser> | undefined | null;
 export type AoLocationRef = DocumentReference<AOData> | undefined | null;
 
 export enum NotificationFrequency {
@@ -32,7 +32,7 @@ export interface IPaxUser {
   authDataId?: string;
 
   // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
-  ehByUserRef: EhUserRef; 
+  ehByUserRef: UserRef; 
   ehLocationRef?: AoLocationRef;
   siteQLocationRef?: DocumentReference<AOData>;
 }
@@ -49,7 +49,7 @@ export interface IPaxUserEntity {
   activeUser: boolean;
   paxNumber: number;
   notificationFrequency: NotificationFrequency;
-  ehByUserRef: EhUserRef;
+  ehByUserRef: UserRef;
   ehLocationRef?: AoLocationRef;
   authDataId?: string;
   siteQLocationRef?: DocumentReference<AOData>;
@@ -63,7 +63,7 @@ export class PaxUser {
   private _phoneNumber: PhoneNumber | undefined;
   private _f3Name: string;
   private _joinDate: Date;
-  private _ehByUserRef: EhUserRef;
+  private _ehByUserRef: UserRef;
   private _hideContactInformation: boolean;
   private _activeUser: boolean;
   private _paxNumber: number;
@@ -120,7 +120,7 @@ export class PaxUser {
     return this._joinDate;
   }
 
-  public get ehByUserRef(): EhUserRef {
+  public get ehByUserRef(): UserRef {
     return this._ehByUserRef;
   }
 

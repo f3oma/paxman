@@ -46,6 +46,42 @@
         color: #fff;
       }
     }
+
+    .recent-pax-list {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      width: 400px;
+      padding: 14px;
+      gap: 4px;
+
+      .pax-line {
+        text-align: left;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px;
+        background-color: #eee;
+
+        h5 {
+          font-weight: bold;
+        }
+        p {
+          margin: 0;
+        }
+      }
+
+      #welcome-text {
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: bold;
+        color: #2d364c;
+        padding: 8px;
+      }
+    }
   }
 }
 

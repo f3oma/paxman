@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs } from "@angular/fire/firestore";
-import { IPaxUser, PaxUser } from "../models/users.model";
+import { AoLocationRef, UserRef, IPaxUser, PaxUser } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { AOData } from "../models/ao.model";
+import { AODataConverter } from "../utils/ao-data.converter";
 
 @Injectable({
   providedIn: 'root'
@@ -10,8 +11,12 @@ import { AOData } from "../models/ao.model";
 export class PaxManagerService {
 
   paxConverter = this.paxModelConverter.getConverter();
+  locationConverter = this.locationModelConverter.getConverter();
 
-  constructor(private readonly firestore: Firestore, private paxModelConverter: PaxModelConverter) { 
+  constructor(
+    private readonly firestore: Firestore, 
+    private paxModelConverter: PaxModelConverter,
+    private locationModelConverter: AODataConverter) { 
   }
 
   public async addNewUser(user: Partial<IPaxUser>): Promise<DocumentReference<DocumentData>> {
@@ -24,10 +29,27 @@ export class PaxManagerService {
     return (await getDoc(documentReference)).data();
   }
 
+  // Stores paxCount in localStorage to reduce number of fetches per client.
+  // Updates count daily
   public async getCurrentNumberOfPax(): Promise<number> {
-    const userCollection: CollectionReference = collection(this.firestore, 'users');
-    const q = query(userCollection)
-    return (await getCountFromServer(q)).data().count;
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setHours(0, 0, 0, 0);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const exisingPaxCountRefresh = localStorage.getItem('paxCountRefreshDate');
+    const exisingPaxCount = localStorage.getItem('paxCount');
+
+    if (exisingPaxCountRefresh && exisingPaxCount && new Date(exisingPaxCountRefresh) > yesterday) {
+      return Number(exisingPaxCount);
+    } else {
+      const userCollection: CollectionReference = collection(this.firestore, 'users');
+      const q = query(userCollection);
+      const count = (await getCountFromServer(q)).data().count;
+      localStorage.setItem('paxCount', count.toString());
+      localStorage.setItem('paxCountRefreshDate', today.toDateString());
+      return count;
+    }
   }
 
   public async updateUser(user: Partial<PaxUser>) {
@@ -45,7 +67,7 @@ export class PaxManagerService {
     return await deleteDoc(ref);
   }
 
-  public getUserReference(databaseLocation: string): DocumentReference<PaxUser> | null {
+  public getUserReference(databaseLocation: string): UserRef {
     if (databaseLocation) {
       return doc(this.firestore, databaseLocation).withConverter(this.paxConverter);
     }
@@ -58,11 +80,62 @@ export class PaxManagerService {
     })
   }
 
-  public async getWeeklyPax(): Promise<PaxUser[]> {
-    var oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  // Refreshes weekly pax daily
+  public async getWeeklyPax(): Promise<{ f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[]> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const yesterday = new Date();
+    yesterday.setHours(0, 0, 0, 0);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const weeklyPaxRefreshDate = localStorage.getItem('weeklyPaxDailyRefreshDate');
+    const weeklyPax = localStorage.getItem('weeklyPax');
+
+    if (weeklyPaxRefreshDate && weeklyPax && new Date(weeklyPaxRefreshDate) > yesterday) {
+      const parsed = JSON.parse(weeklyPax);
+      const weeklyUsersCached = [];
+      for (let pax of parsed) {
+        const ehByUserRef = this.getUserReference(pax.ehByUserRefPath);
+        const ehLocationRef = this.getLocationReference(pax.ehLocationRefPath);
+        weeklyUsersCached.push({
+          f3Name: pax.f3Name,
+          ehByUserRef: ehByUserRef,
+          ehLocationRef: ehLocationRef
+        });
+      }
+      return Promise.resolve(weeklyUsersCached);
+    } else {
+      var oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
+      const q = query(userCollection, where("joinDate", ">", oneWeekAgo));
+      const paxUsers: { f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef }[] = (await getDocs(q)).docs
+        .map((doc) => doc.data() as PaxUser)
+        .map((p) => {
+          return {
+            f3Name: p.f3Name,
+            ehByUserRef: p.ehByUserRef,
+            ehLocationRef: p.ehLocationRef
+          }
+        });
+      const cachedPaxUsers = paxUsers.map((p) => {
+        return { f3Name: p.f3Name, ehByUserRefPath: p.ehByUserRef?.path, ehLocationRefPath: p.ehLocationRef?.path };
+      })
+      localStorage.setItem('weeklyPax', JSON.stringify(cachedPaxUsers));
+      localStorage.setItem('weeklyPaxDailyRefreshDate', today.toDateString());
+      return paxUsers;
+    }
+  }
+
+  public async getNumberOfEHsByUserId(userId: string) {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
-    const q = query(userCollection, where("joinDate", ">", oneWeekAgo));
-    return (await getDocs(q)).docs.map((doc) => doc.data() as PaxUser);
+    const userRef = doc(userCollection, userId);
+    const q = (await query(userCollection, where("ehByUserRef", "==", userRef)));
+    const count = (await getCountFromServer(q)).data().count;
+    return count;
+  }
+
+  private getLocationReference(aoDBPath: string) {
+    return doc(this.firestore, aoDBPath) as AoLocationRef;
   }
 }

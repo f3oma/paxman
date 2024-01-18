@@ -3,11 +3,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
+import { UserProfileData } from 'src/app/models/user-profile-data.model';
 import { IPaxUser, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
+import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
   selector: 'user-data-edit',
@@ -34,8 +36,12 @@ export class UserDataEditComponent {
     notifications: new FormControl(''),
     ehLocation: new FormControl(''),
     f3Name: new FormControl(''),
-    joinDate: new FormControl('')
+    joinDate: new FormControl(''),
+    stravaHandle: new FormControl(''),
+    xHandle: new FormControl('')
   });
+
+  public userProfileData: UserProfileData | null = null;
 
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredEhF3Options$: Observable<any[]> = this.filteredEhF3OptionsSubject.asObservable();
@@ -49,7 +55,8 @@ export class UserDataEditComponent {
     private paxManagerService: PaxManagerService,
     private paxSearchService: PaxSearchService,
     private locationSearchService: LocationSearchService,
-    private aoManagerService: AOManagerService) {
+    private aoManagerService: AOManagerService,
+    private userProfileService: UserProfileService) {
     this.form.controls['ehByF3Name'].valueChanges.pipe(
       debounceTime(200),
       map(async (value: string) => {
@@ -84,11 +91,22 @@ export class UserDataEditComponent {
       const refData = await this.aoManagerService.getDataByRef(this.user.ehLocationRef);
       if (refData !== undefined) {
         this.selectedEhLocation = {
-          aoRef: `ao_data/${refData.id}`, 
-          name: refData!.name
+          aoRef: `ao_data/${this.user.ehLocationRef.id}`, 
+          name: refData.name
         };
       }
     }
+
+    const userProfileData = await this.userProfileService.getOrCreateUserProfileById(this.user.id);
+
+    // Add new links here when added...
+    if (userProfileData.links['x'] === undefined) {
+      userProfileData.links['x'] = { url: '' };
+    }
+    if (userProfileData.links['strava'] === undefined) {
+      userProfileData.links['strava'] = { url: '' };
+    }
+    this.userProfileData = userProfileData;
   }
 
   public getEmailErrorMessage(): string {
@@ -117,9 +135,25 @@ export class UserDataEditComponent {
       this.user.ehByUserRef = this.paxManagerService.getUserReference(this.selectedEhName?.userRef);
     }
     if (this.selectedEhLocation !== undefined) {
-      this.user.ehLocationRef = this.aoManagerService.getAoLocationReference(this.selectedEhLocation.aoRef);
+      this.user.ehLocationRef = this.aoManagerService.getAoLocationReference(this.selectedEhLocation?.aoRef);
     }
+    await this.saveUserProfileData(user.id);
     await this.paxManagerService.updateUser(user);
+  }
+
+  private async saveUserProfileData(userId: string) {
+    if (!this.userProfileData) {
+      return;
+    }
+
+    // Correct any empty links
+    for (let record in this.userProfileData.links) {
+      if (this.userProfileData.links[record] === undefined) {
+        this.userProfileData.links[record].url = "";
+      }
+    }
+
+    await this.userProfileService.updateUserProfile(userId, this.userProfileData!);
     this.userSavedEmitter.emit(true);
   }
 

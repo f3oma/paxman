@@ -10,9 +10,20 @@
       <button *ngIf="hasClaimedData"mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
       <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']">Search PAX <mat-icon>search</mat-icon></button>
     </div>
-    <div class="new-pax" *ngIf="latestPaxNames !== ''">
-      <h4>New Pax:</h4>
-      <p>{{ latestPaxNames }}</p>
+    <div class="new-pax" *ngIf="latestPax && latestPax.length > 0">
+      <h4>New Pax</h4>
+      <div class="recent-pax-list">
+        <div class="pax-line" *ngFor="let pax of latestPax">
+          <div class="pax-data">
+            <h5>{{pax.f3Name}}</h5>
+            <p>EH'd at: <b>{{pax.ehLocationName}}</b></p>
+            <p>EH'd by: <b>{{pax.ehUserF3Name}}</b></p>
+          </div>
+          <div class="welcome">
+            <p id="welcome-text">WELCOME!</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

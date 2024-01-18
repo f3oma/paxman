@@ -1,0 +1,74 @@
+<!-- TODO: Add in search here that reloads userData$ -->
+<div class="container">
+  <div class="error" *ngIf="showPaxNotFoundError">
+    <p>The requested pax data was not found, try searching again.</p>
+  </div>
+  <div class="search" *ngIf="isSearching">
+    <h1>Admin Pax Search</h1>
+    <p>Find and Edit PAX by F3 Name, First, or Last name</p>
+    <div class="search-bar">
+      <mat-form-field appearance="fill">
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Enter F3 Name, First name, or last name" type="text" [(ngModel)]="currentSearchValue" (ngModelChange)="searchValueBehaviorSubject.next($event)">
+        <button *ngIf="currentSearchValue" matSuffix mat-icon-button aria-label="Clear" (click)="currentSearchValue=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <div class="results-list">
+      <div class="pax" *ngFor="let pax of resultPaxList$ | async">
+        <div class="pax-detail" (click)="selectPaxFromResults(pax.objectID)">
+          <h5>{{pax.f3Name}}</h5>
+          <p>{{pax.firstName}} {{ pax.lastName}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="userData$ | async as user">
+    <ng-container *ngIf="editMode">
+      <h1>Editing {{user.f3Name}}'s Data</h1>
+      <p>Save when finished</p>
+      <user-data-edit [user]="user" [isEditorAdmin]="isAdmin" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
+    </ng-container>
+    <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
+    <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>
+    <div class="action-btns">
+      <div class="admin-only" *ngIf="isAdmin">
+        <p><b>Promote Roles</b></p>
+        <p class="admin-error" *ngIf="adminErrorMessage !== ''">{{adminErrorMessage}}</p>
+        <div class="btns">
+          <button *ngIf="!hasExistingRole('SiteQ')" class="action-btn" id="siteq-btn" mat-flat-button (click)="promoteRole('SiteQ', user)">Promote to SiteQ</button>
+          <button *ngIf="!hasExistingRole('Admin')" class="action-btn" id="admin-btn" mat-flat-button (click)="promoteRole('Admin', user)">Promote to Admin</button>
+          <button class="action-btn" id="delete-btn" mat-flat-button (click)="deleteUser(user)">Permenantly Delete User</button>  
+        </div>
+      </div>
+      <div class="admin-only" *ngIf="isAdmin">
+        <p><b>Add/Remove Badges</b></p>
+        <div class="badge-list">
+          <div class="section-head">
+            <h5>Current Badges</h5>
+            <p>Click to remove badge</p>
+          </div>
+          <div class="badge"
+          (click)="tryRemoveBadge(badge, user)"
+          *ngFor="let badge of userCurrentBadges"
+          [style.background-color]="badge.backgroundColor"
+          [style.background-image]="badge.backgroundImage"
+          [style.color]="badge.textColor">{{badge.text}}</div>
+        </div>
+        <div class="badge-list">
+          <div class="section-head">
+            <h5>Available Badges</h5>
+            <p>Click to add badges</p>
+          </div>
+          <div class="badge"
+          (click)="tryAddBadge(badge, user)"
+          *ngFor="let badge of availableBadges"
+          [style.background-color]="badge.backgroundColor"
+          [style.background-image]="badge.backgroundImage"
+          [style.color]="badge.textColor">{{badge.text}}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

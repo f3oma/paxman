@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
-import { PaxUser } from 'src/app/models/users.model';
+import { AoLocationRef, UserRef, PaxUser } from 'src/app/models/users.model';
+import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
@@ -17,10 +18,12 @@ export class HomeComponent {
   public isLoggedIn: boolean = false;
 
   public latestPaxNames: string = '';
+  public latestPax: { f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
 
   constructor(
     private userAuthService: UserAuthenticationService,
-    private paxManagerService: PaxManagerService
+    private paxManagerService: PaxManagerService,
+    private aoManagerService: AOManagerService
   ) {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;
@@ -40,9 +43,23 @@ export class HomeComponent {
   }
 
   async getPaxFromToday() {
-    const pax: PaxUser[] = await this.paxManagerService.getWeeklyPax();
-    if (pax && pax.length > 0) {
-      this.latestPaxNames = pax.map((p) => p.f3Name).join(", ");
+    const paxList: { f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[] = await this.paxManagerService.getWeeklyPax();
+    const latestPax: { f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
+    for (let pax of paxList) {
+      let paxEhUser = undefined, paxEhLocation = undefined;
+      if (pax.ehByUserRef)
+        paxEhUser = await this.paxManagerService.getPaxInfoByRef(pax.ehByUserRef);
+
+      if (pax.ehLocationRef)
+        paxEhLocation = await this.aoManagerService.getDataByRef(pax.ehLocationRef);
+
+      latestPax.push({
+        f3Name: pax.f3Name,
+        ehUserF3Name: paxEhUser !== undefined ? paxEhUser.f3Name : 'None',
+        ehLocationName: paxEhLocation !== undefined ? paxEhLocation.name : 'Unknown'
+      });
     }
+
+    this.latestPax = latestPax;
   }
 }

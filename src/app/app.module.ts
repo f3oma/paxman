@@ -38,7 +38,12 @@ import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-pax-list.component';
 import { AccountCreatedSuccessfullyDialog } from './dialogs/account-created-successfully/account-created-successfully.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatNativeDateModule } from '@angular/material/core';
+import { ActivityGraphComponent } from './components/activity-graph/activity-graph.component';
+import { MatExpansionModule} from '@angular/material/expansion';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/admin-user-detail.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +66,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     AdminHomeComponent,
     AdminPaxListComponent,
     AccountCreatedSuccessfullyDialog,
+    ActivityGraphComponent,
+    AdminUserDetailComponent,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +91,9 @@ import { MatNativeDateModule } from '@angular/material/core';
     MatSortModule,
     MatDialogModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatExpansionModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent],

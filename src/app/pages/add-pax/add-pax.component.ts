@@ -5,7 +5,7 @@ import { DocumentData, DocumentReference } from 'firebase/firestore';
 import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, first, map, switchMap } from 'rxjs';
 import { AOData } from 'src/app/models/ao.model';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
-import { IPaxUser, NotificationFrequency, PaxUser } from 'src/app/models/users.model';
+import { IPaxUser, NotificationFrequency, PaxUser, UserRef } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
@@ -84,7 +84,7 @@ export class AddPaxComponent {
         return false;
       }
       const ehedBy = this.form.controls['ehByF3Name'].value;
-      let ehRef: DocumentReference<PaxUser> | null = null;
+      let ehRef: UserRef = null;
       if (ehedBy) {
         ehRef = this.paxManagerService.getUserReference(ehedBy.userRef);
       }
@@ -109,11 +109,13 @@ export class AddPaxComponent {
         activeUser: true,
         hideContactInformation: false,
         paxNumber: paxNumber + 1,
-        // sector: this.form.controls['sector'].value,
-        // zipcode: this.form.controls['zipcode'].value,
         ehLocationRef: locationRef,
         notificationFrequency: NotificationFrequency.All
       };
+
+      // Removed:
+      // sector: this.form.controls['sector'].value,
+      // zipcode: this.form.controls['zipcode'].value,
     
       const newUserAdded = await this.paxManagerService.addNewUser(pax);
       if (newUserAdded && newUserAdded.id) {

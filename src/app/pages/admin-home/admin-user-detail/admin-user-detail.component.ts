@@ -1,48 +1,47 @@
-import { transition, trigger, useAnimation } from '@angular/animations';
-import { Location } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import algoliasearch from 'algoliasearch';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { LinkSiteQAODialog } from 'src/app/dialogs/link-site-q-ao/link-site-q-ao-dialog.component';
-import { AOData } from 'src/app/models/ao.model';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
-import { UserProfileData } from 'src/app/models/user-profile-data.model';
-import { IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { Badge } from 'src/app/models/user-profile-data.model';
+import { IPaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
-import { fadeIn, fadeOut } from 'src/app/utils/animations';
+import { availableBadges } from 'src/app/utils/badges';
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-user-detail',
-  templateUrl: './user-detail.component.html',
-  styleUrls: ['./user-detail.component.scss'],
-  animations: [
-    trigger("profileAnimation", [
-      transition("void => *", [useAnimation(fadeIn)]),
-      transition("* => void", [useAnimation(fadeOut)]),
-    ])
-  ],
+  selector: 'app-admin-user-detail',
+  templateUrl: './admin-user-detail.component.html',
+  styleUrls: ['./admin-user-detail.component.scss']
 })
-export class UserDetailComponent {
+export class AdminUserDetailComponent {
+
+  public currentSearchValue: string = '';
+  public searchValueBehaviorSubject = new Subject<string>();
+  public isSearching = true;
+  public showPaxNotFoundError = false;
+  public availableBadges: Badge[] = [];
+  public userCurrentBadges: Badge[] = [];
+
+  private resultPaxList = new BehaviorSubject<Array<any>>([]);
+  public resultPaxList$ = this.resultPaxList.asObservable();
+
+  private algoliaSearch = algoliasearch(environment.algoliasearch.APP_ID, environment.algoliasearch.API_KEY);
+  private idx = this.algoliaSearch.initIndex('dev_f3OmahaPax');
+  
   userDataSubject = new Subject<IPaxUser | undefined>();
   userData$: Observable<IPaxUser | undefined> = this.userDataSubject.asObservable();
   existingRoles: UserRole[] = [];
 
-  public loading = true;
   public isAdmin = false; // Only admins can promote to admin
   public isAuthorizedUser = false; // Can view content and promote to SiteQ
   public editMode: boolean = false;
   adminErrorMessage: string = "";
-
-  public totalPaxCount: number = 2100 // non-zero in case it fails to load
-  public ehUser: PaxUser | undefined = undefined;
-  public userSiteQLocation: AOData | undefined = undefined;
-  public userEhLocation: AOData | undefined = undefined;
-  public userProfileData: UserProfileData | undefined = undefined;
-  public isPersonalProfile: boolean = false;
 
   constructor(
     private readonly paxManagerService: PaxManagerService,
@@ -51,64 +50,70 @@ export class UserDetailComponent {
     private dialog: MatDialog,
     private readonly aoManagerService: AOManagerService,
     private router: Router,
-    private userProfileService: UserProfileService,
-    private location: Location
+    private userProfileService: UserProfileService
   ) {
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false; // Always reload if url param changes
-    // Look at the logged in user for admin / siteq permissions
-    this.userAuthService.authUserData$.subscribe((res) => {
-      if (res) {
-        if (res.roles.includes(UserRole.Admin)) {
-          this.isAdmin = true;
-          this.isAuthorizedUser = true;
-        }
-        if (res.roles.includes(UserRole.SiteQ)) {
-          this.isAuthorizedUser = true;
-        }
-      }
-    })
-  }
-
-  determineIfIsUsersProfile(userId: string) {
-    this.isPersonalProfile = this.userAuthService.cachedCurrentAuthData?.paxDataId === userId;
+    this.isAdmin = true;
+    this.isAuthorizedUser = true;
+    this.searchValueBehaviorSubject.pipe(
+      debounceTime(500),
+      distinctUntilChanged(),
+    ).subscribe((val) => {
+      this.searchPax(val);
+    });
   }
 
   async ngOnInit() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id !== null) {
+      this.isSearching = false;
       await this.getUserData(id);
       await this.getCurrentUserRoles(id);
       await this.getUserProfileData(id);
-      this.determineIfIsUsersProfile(id);
-      this.totalPaxCount = await this.paxManagerService.getCurrentNumberOfPax();
+    } else {
+      this.isSearching = true;
     }
   }
 
+  async getUserProfileData(userId: string) {
+    this.userProfileService.getOrCreateUserProfileById(userId).then((userProfile) => {
+      this.availableBadges = availableBadges.filter((b) => !userProfile.badges.map((t => t.text)).includes(b.text));
+      this.userCurrentBadges = userProfile.badges;
+    })
+  }
 
-  private async getUserProfileData(userId: string) {
-    const data = await this.userProfileService.getProfileByUserId(userId);
-    if (data) {
-      this.userProfileData = data;
+  async searchPax(searchValue: string) {
+    // determine what we are searching, if debounce is hit, begin search
+    if (searchValue === '') {
+      this.resultPaxList.next([]);
+      return;
     }
+
+    this.idx.search(searchValue).then(({ hits }) => {
+      this.resultPaxList.next(hits);
+    });
   }
 
   public toggleEditMode() {
     this.editMode = !this.editMode
   }
 
-  public async viewInAdminCenter(user: IPaxUser) {
-    await this.router.navigate(['/admin/user-data-edit/', user.id]);
+  async selectPaxFromResults(paxUserId: string) {
+    this.isSearching = false;
+    await this.getUserData(paxUserId);
+    await this.getCurrentUserRoles(paxUserId);
   }
 
-  private async getUserData(id: string) {
+  public async getUserData(id: string) {
     const paxData = await (await this.paxManagerService.getDataByAuthId(id)).data();
-    this.ehUser = paxData?.ehByUserRef ? await this.paxManagerService.getPaxInfoByRef(paxData.ehByUserRef) : undefined;
-    this.userSiteQLocation = paxData?.siteQLocationRef ? await this.aoManagerService.getDataByRef(paxData.siteQLocationRef) : undefined;
-    this.userEhLocation = paxData?.ehLocationRef ? await this.aoManagerService.getDataByRef(paxData.ehLocationRef) : undefined;
-    this.userDataSubject.next(paxData?.toProperties());
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
+    if (paxData === undefined) {
+      this.isSearching = true;
+      this.showPaxNotFoundError = true;
+      setTimeout(() => {
+        this.showPaxNotFoundError = false;
+      }, 5000);
+    } else {
+      this.userDataSubject.next(paxData?.toProperties());
+    }
   }
 
   public async promoteRole(role: string, user: IPaxUser) {
@@ -123,6 +128,9 @@ export class UserDetailComponent {
           }
         }
         await this.userAuthService.promoteRole(userRole, user);
+        const siteqBadge = this.availableBadges.filter((b) => b.text === 'Site-Q')[0];
+        await this.userProfileService.addBadgeToProfile(siteqBadge, user.id);
+        await this.getUserProfileData(user.id)
       } else {
         return;
       }
@@ -162,10 +170,6 @@ export class UserDetailComponent {
     }
   }
 
-  public goBack() {
-    this.location.back();
-  }
-
   public async getCurrentUserRoles(userId: string) {
     const authUser: AuthenticatedUser | null = await this.userAuthService.getLinkedAuthData(userId);
     if (authUser) {
@@ -183,6 +187,20 @@ export class UserDetailComponent {
       await this.paxManagerService.deleteUser(user);
       alert("User deleted");
       await this.router.navigate(['search']);
+    }
+  }
+
+  public async tryAddBadge(badge: Badge, user: IPaxUser) {
+    if (confirm("Are you sure you want to give this badge?")) {
+      await this.userProfileService.addBadgeToProfile(badge, user.id);
+      await this.getUserProfileData(user.id)
+    }
+  }
+
+  public async tryRemoveBadge(badge: Badge, user: IPaxUser) {
+    if (confirm("Are you sure you want to remove this badge?")) {
+      await this.userProfileService.removeBadgeFromProfile(badge, user.id);
+      await this.getUserProfileData(user.id)
     }
   }
 }
