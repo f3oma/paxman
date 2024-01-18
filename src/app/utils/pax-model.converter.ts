@@ -28,8 +28,7 @@ export class PaxModelConverter {
           hideContactInformation: data.hideContactInformation,
           paxNumber: data.paxNumber,
           notificationFrequency: data.notificationFrequency,
-          ehLocationRef: data.ehLocationRef,
-          authDataId: data.authDataId !== undefined ? data.authDataId : null
+          ehLocationRef: data.ehLocationRef
         }
       },
       fromFirestore: (snap: QueryDocumentSnapshot): PaxUser => {
