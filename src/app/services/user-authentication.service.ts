@@ -140,6 +140,14 @@ export class UserAuthenticationService {
           if (data.paxDataId) {
             const userDocRef = doc(this.usersCollectionRef, data.paxDataId);
             const userData = (await getDoc(userDocRef)).data();
+
+            // Temp fix for nulled AuthDataId...
+            if (userData?.authDataId === null || userData?.authDataId === undefined) {
+              await updateDoc(userDocRef, {
+                authDataId: result.id
+              });
+            }
+            
             data.paxData = userData;
           }
           this.authUserData.next(data);
