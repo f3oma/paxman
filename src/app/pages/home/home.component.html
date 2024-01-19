@@ -25,6 +25,20 @@
         </div>
       </div>
     </div>
+    <div class="new-pax" *ngIf="anniversaryPax && anniversaryPax.length > 0">
+      <h4>Anniversaries</h4>
+      <div class="recent-pax-list">
+        <div class="pax-line" *ngFor="let pax of anniversaryPax">
+          <div class="pax-data">
+            <h5>{{pax.f3Name}}</h5>
+            <p>Joined: {{pax.joinDate | date: 'MM-dd-YYYY'}}</p>
+          </div>
+          <div class="welcome">
+            <p id="welcome-text">{{pax.anniversaryYear}} YEAR</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

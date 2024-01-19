@@ -15,13 +15,13 @@
               [style.color]="badge.textColor">{{badge.text}}</div>
           </ng-container>
         </div>
-        <div class="social-icons" *ngIf="userProfileData">
-          <div class="link" *ngIf="userProfileData.links['strava'] !== undefined">
+        <div class="social-icons" *ngIf="userProfileData && userProfileData.links !== {}">
+          <div class="link" *ngIf="userProfileData.links['strava'] && userProfileData.links['strava'].url !== ''">
             <a [href]="'https://strava.com/athletes/' + userProfileData.links['strava'].url" target="_blank">
               <img id="icon" src="/assets/strava_icon.png"> <span id="link-text">Strava</span>
             </a>
           </div>
-          <div class="link" *ngIf="userProfileData.links['x'] !== undefined">
+          <div class="link" *ngIf="userProfileData.links['x'] && userProfileData.links['x'].url !== ''">
             <a [href]="'https://x.com/' + userProfileData.links['x'].url" target="_blank">
               <img id="icon" src="/assets/x_icon.svg"> <span id="link-text">X</span>
             </a>

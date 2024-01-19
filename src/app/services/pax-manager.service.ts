@@ -127,6 +127,38 @@ export class PaxManagerService {
     }
   }
 
+  async getAnniversaryPax(): Promise<{ id: string, f3Name: string, anniversaryYear: number, joinDate: Date }[]> {
+    const dates = this.getAnniversaryDates();
+    const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
+    const q = query(userCollection, where("joinDate", "==", dates[2]));
+    return (await getDocs(q)).docs
+        .map((doc) => doc.data() as PaxUser)
+        .map((p) => {
+          console.log("HERE");
+          const todayYear = new Date().getFullYear();
+          const anniversaryDate = dates.find((d) => d === p.joinDate);
+          const anniversaryYear = todayYear - anniversaryDate!.getFullYear();
+          return {
+            id: p.id,
+            f3Name: p.f3Name,
+            anniversaryYear,
+            joinDate: p.joinDate
+          }
+        });
+  }
+
+  private getAnniversaryDates(): Date[] {
+    const todayYear = new Date().getFullYear();
+    const anniversaryDates = [];
+    for (let i = 1; i < 10; i++) {
+      const anniYear = new Date();
+      anniYear.setMonth(5, 24);
+      anniYear.setFullYear(todayYear - i);
+      anniversaryDates.push(anniYear);
+    }
+    return anniversaryDates;
+  }
+
   public async getNumberOfEHsByUserId(userId: string) {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
     const userRef = doc(userCollection, userId);

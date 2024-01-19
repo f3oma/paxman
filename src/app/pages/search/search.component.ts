@@ -24,7 +24,6 @@ export class SearchComponent {
   private algoliaSearch = algoliasearch(environment.algoliasearch.APP_ID, environment.algoliasearch.API_KEY);
   private idx = this.algoliaSearch.initIndex('dev_f3OmahaPax');
 
-  public canViewUserDetails = false;
   public isAuthenticated = false;
   public hasClaimedData = false;
 
@@ -44,9 +43,6 @@ export class SearchComponent {
         if (res.paxDataId) {
           this.hasClaimedData = true;
         }
-        if (res.roles.includes(UserRole.Admin) || res.roles.includes(UserRole.SiteQ)) {
-          this.canViewUserDetails = true;
-        }
       }
     })
   }
@@ -64,7 +60,7 @@ export class SearchComponent {
   }
 
   routeToPaxPage(paxId: string) {
-    if (this.canViewUserDetails) {
+    if (this.hasClaimedData) {
       this.router.navigate(['users', paxId]);
     }
   }

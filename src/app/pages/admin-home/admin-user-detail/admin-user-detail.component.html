@@ -24,18 +24,19 @@
       </div>
     </div>
   </div>
+  <button *ngIf="!editMode && !isSearching" mat-raised-button (click)="backToSearch()" style="margin-bottom: 8px;"><mat-icon>arrow_back</mat-icon> Search another</button>
   <ng-container *ngIf="userData$ | async as user">
+    <div class="data-claim-warning" *ngIf="!editMode && !user.authDataId">
+      User has not claimed their data
+    </div>
     <ng-container *ngIf="editMode">
       <h1>Editing {{user.f3Name}}'s Data</h1>
       <p>Save when finished</p>
       <user-data-edit [user]="user" [isEditorAdmin]="isAdmin" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
     </ng-container>
-    <div class="data-claim-warning" *ngIf="!user.authDataId">
-      User has not claimed their data
-    </div>
     <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
     <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>
-    <div class="action-btns">
+    <div class="action-btns" *ngIf="editMode">
       <div class="admin-only" *ngIf="isAdmin">
         <p><b>Promote Roles</b></p>
         <p class="admin-error" *ngIf="adminErrorMessage !== ''">{{adminErrorMessage}}</p>

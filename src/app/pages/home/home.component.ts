@@ -19,6 +19,7 @@ export class HomeComponent {
 
   public latestPaxNames: string = '';
   public latestPax: { f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
+  public anniversaryPax: { id: string; f3Name: string; anniversaryYear: number; joinDate: Date; }[] = []
 
   constructor(
     private userAuthService: UserAuthenticationService,
@@ -28,6 +29,7 @@ export class HomeComponent {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;
       this.getPaxFromToday();
+      // this.getPaxWithAnniversaries()
     }
     this.authUserData$ = this.userAuthService.authUserData$.pipe(
         tap(async (data) => {
@@ -61,5 +63,9 @@ export class HomeComponent {
     }
 
     this.latestPax = latestPax;
+  }
+
+  async getPaxWithAnniversaries() {
+    this.anniversaryPax = await this.paxManagerService.getAnniversaryPax();;
   }
 }

@@ -74,6 +74,11 @@ export class AdminUserDetailComponent {
     }
   }
 
+  backToSearch() {
+    this.isSearching = true;
+    this.userDataSubject.next(undefined);
+  }
+
   async getUserProfileData(userId: string) {
     this.userProfileService.getOrCreateUserProfileById(userId).then((userProfile) => {
       this.availableBadges = availableBadges.filter((b) => !userProfile.badges.map((t => t.text)).includes(b.text));
