@@ -1,0 +1,113 @@
+.container {
+  padding: 16px 32px;
+
+  .error {
+    background-color: #ef9494;
+    color: #000;
+    padding: 8px;
+    border-radius: 7px;
+    margin-bottom: 16px;
+    
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  h1 {
+    margin-bottom: 4px;
+    font-size: 32px;
+    font-weight: bold;
+  }
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .editData {
+    display: flex;
+    margin: 12px 0;
+    background-color: #000;
+    color: #fff;
+  }
+
+  .action-btns {
+    margin-top: 12px;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .admin-only {
+      padding: 16px;
+      border: 2px solid black;
+      border-radius: 15px;
+
+      .badge-list {
+        text-align: left;
+        margin-bottom: 16px;
+
+        .section-head {
+          h5 {
+            font-size: 18px;
+            margin: 0;
+          }
+        }
+      }
+
+      .btns {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .admin-error {
+        padding: 4px;
+        background-color: #c54141;
+        color: #fff;
+        border-radius: 7px;
+      }
+
+      .action-btn {
+        box-shadow: 0 1px 3px #6565656c;
+      }
+
+      #siteq-btn {
+        color: #000;
+        background-color: orange;
+      }
+
+      #admin-btn {
+        color: #fff;
+        background-color: rgb(122, 24, 129);
+      }
+  
+      #delete-btn {
+        color: #fff;
+        background-color: rgb(138, 30, 30);
+      }
+    }
+  }
+}
+
+.badge {
+  font-size: 14px;
+  text-transform: uppercase;
+  padding: 8px;
+  margin: 0;
+  box-shadow: 0 5px 5px -3px #0000000d, 0 3px 14px 2px #0000000d;
+  cursor: pointer;
+  margin-right: 4px;
+}    
+
+.badge.none {
+  color: #000;
+  background-color: #fff;
+}
+
+.badge-list {
+  text-align: center;
+}
+

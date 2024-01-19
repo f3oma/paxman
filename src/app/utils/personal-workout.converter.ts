@@ -27,7 +27,7 @@ export class PersonalWorkoutConverter {
         },
         fromFirestore: (snap: QueryDocumentSnapshot): any => {
             const data: IPersonalWorkoutDataEntity = snap.data() as IPersonalWorkoutDataEntity;
-            let aoLocation = undefined;
+            let aoLocation: AOData | undefined = undefined;
             if (data.aoLocationRef) {
                 getDoc(data.aoLocationRef.withConverter(this.aoLocationConverter.getConverter())).then((res) => {
                     aoLocation = res.data() as AOData;

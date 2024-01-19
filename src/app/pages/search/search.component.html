@@ -20,7 +20,7 @@
       <div class="pax-contact" *ngIf="isAuthenticated">
         <button mat-icon-button (click)="phoneCall(pax.phoneNumber)" *ngIf="hasClaimedData && pax.phoneNumber !== '' && !pax.hideContactInformation"><mat-icon>phone</mat-icon></button>
         <button mat-icon-button (click)="sendEmail(pax.email)" *ngIf="hasClaimedData && pax.email !== '' && !pax.hideContactInformation"><mat-icon>email</mat-icon></button>
-        <button mat-icon-button (click)="routeToPaxPage(pax.objectID)" *ngIf="canViewUserDetails"><mat-icon>person</mat-icon></button>
+        <button mat-icon-button (click)="routeToPaxPage(pax.objectID)"><mat-icon>person</mat-icon></button>
       </div>
     </div>
   </div>

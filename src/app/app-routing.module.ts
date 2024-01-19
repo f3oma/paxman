@@ -16,6 +16,8 @@ import { SiteQMinimumRoleAuthGuard } from './route-guard/siteq-minimum-role.guar
 import { PersonalProfileAuthGuard } from './route-guard/personal-profile.guard';
 import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-pax-list.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/admin-user-detail.component';
 
 const routes: Routes = [
   {
@@ -55,6 +57,11 @@ const routes: Routes = [
     canActivate: [BasicAuthenticatedAuthGuard]
   },
   {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [BasicAuthenticatedAuthGuard]
+  },
+  {
     path: 'users/:id',
     component: UserDetailComponent,
     canActivate: [PersonalProfileAuthGuard]
@@ -81,7 +88,17 @@ const routes: Routes = [
         path: 'pax-list',
         component: AdminPaxListComponent,
         canActivate: [AdminRoleAuthGuard]
-      }
+      },
+      {
+        path: 'user-data-edit',
+        component: AdminUserDetailComponent,
+        canActivate: [AdminRoleAuthGuard]
+      },
+      {
+        path: 'user-data-edit/:id',
+        component: AdminUserDetailComponent,
+        canActivate: [AdminRoleAuthGuard]
+      },
     ]
   }
 ];

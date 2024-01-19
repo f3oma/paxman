@@ -15,7 +15,7 @@ export interface IAOData {
     popup: boolean;
     siteQUser: PaxUser | undefined;
     startTimeCST: string;
-    twitterAccount: string;
+    xAccount: string;
     weekDay: string;
     sector: Sector;
 }
@@ -26,7 +26,7 @@ export interface IAODataEntity {
     popup: boolean;
     siteQUserRef: DocumentReference<PaxUser>;
     startTimeCST: string; // stored as '05:15'
-    twitterAccount: string; // stored with @ symbol
+    xAccount: string; // stored with @ symbol
     weekDay: string;
     sector: Sector;
 }
@@ -38,7 +38,7 @@ export class AOData {
     private _popup: boolean;
     private _siteQUser: PaxUser | undefined;
     private _startTimeCST: string;
-    private _twitterAccount: string;
+    private _xAccount: string;
     private _weekDay: string;
     private _sector: Sector;
 
@@ -49,7 +49,7 @@ export class AOData {
         popup: boolean,
         siteQUser: PaxUser | undefined,
         startTimeCST: string,
-        twitterAccount: string,
+        xAccount: string,
         weekDay: string,
         sector: Sector) {
             this._id = id;
@@ -58,7 +58,7 @@ export class AOData {
             this._popup = popup;
             this._siteQUser = siteQUser;
             this._startTimeCST = startTimeCST;
-            this._twitterAccount = twitterAccount;
+            this._xAccount = xAccount;
             this._weekDay = weekDay;
             this._sector = sector;
     }
@@ -87,8 +87,8 @@ export class AOData {
         return this._startTimeCST;
     }
 
-    public get twitterAccount(): string {
-        return this._twitterAccount;
+    public get xAccount(): string {
+        return this._xAccount;
     }
 
     public get weekDay(): string {

@@ -155,7 +155,6 @@ export class UserAuthenticationService {
                 authDataId: result.id
               });
             }
-            
             data.paxData = userData;
           }
           this.authUserData.next(data);
@@ -234,7 +233,6 @@ export class UserAuthenticationService {
     const authDocRef = doc(this.authUserCollectionRef, user.id).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
     const userDocRef = doc(this.usersCollectionRef, paxUser.id);
     const batch = writeBatch(this.firestore);
-    
     batch.update(authDocRef, {
       paxDataId: userDocRef.id
     });

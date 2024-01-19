@@ -187,7 +187,7 @@ export class ClaimPaxInfoComponent {
     if (this.authenticatedUser) {
       await this.userAuth.completeF3InfoClaim(this.authenticatedUser, paxInfo);
       alert("Your F3 Information has been claimed!");
-      await this.router.navigate(['profile']);
+      await this.router.navigate(['users', paxInfo.id]);
     } else {
       throw new Error("User not logged in");
     }

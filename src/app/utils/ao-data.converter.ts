@@ -38,7 +38,7 @@ export class AODataConverter {
       popup: data.popup,
       siteQUserRef: siteQDataRef,
       startTimeCST: data.startTimeCST, 
-      twitterAccount: data.twitterAccount,
+      xAccount: data.xAccount,
       weekDay: data.weekDay
     }
   }
@@ -48,6 +48,6 @@ export class AODataConverter {
     if (data.siteQUserRef) {
       siteQUser = (await getDoc(data.siteQUserRef.withConverter(paxModelConverter.getConverter()))).data() as PaxUser;
     }
-    return new AOData(id, data.name, data.address, data.popup, siteQUser, data.startTimeCST, data.twitterAccount, data.weekDay, data.sector);
+    return new AOData(id, data.name, data.address, data.popup, siteQUser, data.startTimeCST, data.xAccount, data.weekDay, data.sector);
   }
 }
