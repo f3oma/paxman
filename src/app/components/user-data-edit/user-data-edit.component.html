@@ -23,6 +23,9 @@
                 <mat-label>Phone number</mat-label>
                 <phone-input formControlName="tel" [(ngModel)]="user.phoneNumber" autocomplete="off" required="false"></phone-input>
             </mat-form-field>
+            <div class="checkbox">
+                <mat-checkbox formControlName="hideContactInformation" [(ngModel)]="user.hideContactInformation" (change)="updateHideContactInfoValue($event, user)">Hide my contact information from other Pax</mat-checkbox>
+            </div>
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -60,6 +63,10 @@
                   </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+            <div class="checkbox">
+                <p>My current F3 status</p>
+                <mat-checkbox formControlName="activeUser" [(ngModel)]="user.activeUser" (change)="updateActiveStatusValue($event, user)">Active F3 Member</mat-checkbox>
+            </div>
         </mat-expansion-panel>
 
         <mat-expansion-panel>
@@ -101,22 +108,6 @@
                 <mat-option value="None">No contact</mat-option>
                 </mat-select>
             </mat-form-field>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                Privacy
-              </mat-panel-title>
-            </mat-expansion-panel-header>
-            <div class="checkbox">
-                <p>My current F3 status</p>
-                <mat-checkbox formControlName="activeUser" [(ngModel)]="user.activeUser" (change)="updateActiveStatusValue($event, user)">Active F3 Member</mat-checkbox>
-            </div>
-            <div class="checkbox">
-                <p>Determines whether other PAX can contact you</p>
-                <mat-checkbox formControlName="hideContactInformation" [(ngModel)]="user.hideContactInformation" (change)="updateHideContactInfoValue($event, user)">Hide my contact information</mat-checkbox>
-            </div>
         </mat-expansion-panel>
     </form>
 

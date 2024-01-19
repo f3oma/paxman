@@ -56,6 +56,12 @@
             <p>{{userEhLocation.name}}</p>  
           </ng-container>
         </div>
+        <div class="info-section">
+          <ng-container *ngIf="user.phoneNumber && !user.hideContactInformation">
+            <h5>Phone</h5>
+            <a type="tel" [href]="'tel:' + user.phoneNumber.toDashedForm()">{{user.phoneNumber.toDashedForm()}}</a>
+          </ng-container>
+        </div>
       </div>
     
       <div class="action-btns">
