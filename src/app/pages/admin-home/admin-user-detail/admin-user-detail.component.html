@@ -64,8 +64,7 @@
           <div class="badge"
           (click)="tryAddBadge(badge, user)"
           *ngFor="let badge of availableBadges"
-          [style.background-color]="badge.backgroundColor"
-          [style.background-image]="badge.backgroundImage"
+          [style.background]="badge.backgroundColor"
           [style.color]="badge.textColor">{{badge.text}}</div>
         </div>
       </div>
