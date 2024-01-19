@@ -14,7 +14,7 @@ export const availableBadges: Array<Badge> = [
     {
         text: 'Sector Leader',
         textColor: '#fff',
-        backgroundColor: '#000'
+        backgroundColor: '#222'
     },
     {
         text: 'Site-Q',
@@ -34,16 +34,26 @@ export const availableBadges: Array<Badge> = [
     {
         text: 'First F',
         textColor: '#fff',
-        backgroundColor: '#e94b4b'
+        backgroundColor: '#455ee8'
     },
     {
         text: 'Second F',
         textColor: '#fff',
-        backgroundColor: '#ff7262'
+        backgroundColor: 'rgb(10 107 28)'
     },
     {
         text: 'Third F',
         textColor: '#fff',
         backgroundColor: '#800080'
+    },
+    {
+        text: 'Nantan',
+        textColor: '#fff',
+        backgroundColor: '#000'
+    },
+    {
+        text: 'Nantan Emeritus',
+        textColor: '#fff',
+        backgroundColor: '#626262'
     }
 ];
