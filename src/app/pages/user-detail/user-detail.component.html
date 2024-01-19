@@ -11,8 +11,7 @@
           <ng-container *ngIf="userProfileData.badges.length > 0">
             <div class="badge" 
               *ngFor="let badge of userProfileData.badges"
-              [style.background-color]="badge.backgroundColor"
-              [style.background-image]="badge.backgroundImage"
+              [style.background]="badge.backgroundColor"
               [style.color]="badge.textColor">{{badge.text}}</div>
           </ng-container>
         </div>
@@ -33,7 +32,7 @@
       <div class="bordered-container">
         <div class="info-section">
           <h5>Name</h5>
-          <p>{{user.firstName}}</p>
+          <p>{{user.firstName}} {{user.lastName}}</p>
         </div>
         <div class="info-section">
           <ng-container *ngIf="userSiteQLocation">
