@@ -158,7 +158,16 @@ export class UserDataEditComponent {
 
     // Correct any empty links
     for (let record in this.userProfileData.links) {
-      if (this.userProfileData.links[record] === undefined) {
+      const link = this.userProfileData.links[record];
+      
+      if (link && link.url.includes('http')) {
+        const lastSlashIndex = link.url.lastIndexOf('/');
+        const username = link.url.substring(lastSlashIndex + 1);
+        this.userProfileData.links[record].url = username;
+        continue;
+      }
+
+      if (link === undefined) {
         this.userProfileData.links[record].url = "";
       }
     }
