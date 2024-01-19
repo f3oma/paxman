@@ -34,7 +34,7 @@ export interface IPaxUser {
   // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
   ehByUserRef: UserRef; 
   ehLocationRef?: AoLocationRef;
-  siteQLocationRef?: DocumentReference<AOData>;
+  siteQLocationRef?: AoLocationRef;
 }
 
 export interface IPaxUserEntity {
@@ -70,7 +70,7 @@ export class PaxUser {
   private _notificationFrequency: NotificationFrequency;
   private _ehLocationRef: AoLocationRef;
   private _authDataId: string | undefined;
-  private _siteQLocationRef: DocumentReference<AOData> | undefined;
+  private _siteQLocationRef: AoLocationRef;
 
   constructor(
     id: string, 
@@ -148,7 +148,7 @@ export class PaxUser {
     return this._authDataId;
   }
 
-  public get siteQLocationRef(): DocumentReference<AOData> | undefined {
+  public get siteQLocationRef(): AoLocationRef {
     return this._siteQLocationRef;
   }
 

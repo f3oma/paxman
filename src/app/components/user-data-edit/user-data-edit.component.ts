@@ -133,10 +133,20 @@ export class UserDataEditComponent {
   public async saveData(user: IPaxUser) {
     if (this.selectedEhName !== undefined) {
       this.user.ehByUserRef = this.paxManagerService.getUserReference(this.selectedEhName?.userRef);
+    } else {
+      this.user.ehByUserRef = null;
     }
+
     if (this.selectedEhLocation !== undefined) {
       this.user.ehLocationRef = this.aoManagerService.getAoLocationReference(this.selectedEhLocation?.aoRef);
+    } else {
+      this.user.ehLocationRef = null;
     }
+
+    if (this.user.siteQLocationRef === undefined) {
+      this.user.siteQLocationRef = null;
+    }
+
     await this.saveUserProfileData(user.id);
     await this.paxManagerService.updateUser(user);
   }
