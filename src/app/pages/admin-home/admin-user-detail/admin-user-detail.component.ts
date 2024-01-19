@@ -101,6 +101,7 @@ export class AdminUserDetailComponent {
     this.isSearching = false;
     await this.getUserData(paxUserId);
     await this.getCurrentUserRoles(paxUserId);
+    await this.getUserProfileData(paxUserId);
   }
 
   public async getUserData(id: string) {
@@ -128,9 +129,11 @@ export class AdminUserDetailComponent {
           }
         }
         await this.userAuthService.promoteRole(userRole, user);
-        const siteqBadge = this.availableBadges.filter((b) => b.text === 'Site-Q')[0];
-        await this.userProfileService.addBadgeToProfile(siteqBadge, user.id);
-        await this.getUserProfileData(user.id)
+        if (userRole === UserRole.SiteQ) {
+          const siteqBadge = this.availableBadges.filter((b) => b.text === 'Site-Q')[0];
+          await this.userProfileService.addBadgeToProfile(siteqBadge, user.id);
+          await this.getUserProfileData(user.id)
+        }
       } else {
         return;
       }
