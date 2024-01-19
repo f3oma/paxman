@@ -64,7 +64,7 @@ const routes: Routes = [
   {
     path: 'users/:id',
     component: UserDetailComponent,
-    canActivate: [PersonalProfileAuthGuard]
+    canActivate: [BasicAuthenticatedAuthGuard]
   },
   {
     path: 'admin',

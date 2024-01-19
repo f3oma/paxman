@@ -59,9 +59,9 @@ export class SearchComponent {
     });
   }
 
-  routeToPaxPage(paxId: string) {
+  async routeToPaxPage(paxId: string) {
     if (this.hasClaimedData) {
-      this.router.navigate(['users', paxId]);
+      await this.router.navigate(['users', paxId]);
     }
   }
 

@@ -176,12 +176,12 @@ export class UserAuthenticationService {
   }
 
   get isLoggedIn(): boolean {
-    const localData = localStorage.getItem('userData') || null;
-    if(!localData || localData === 'undefined') {
+    const localData = localStorage.getItem('userData');
+    if(!localData) {
       return false;
     }
     const user = JSON.parse(localData);
-    return (user !== null || user !== "") ? true : false;
+    return user ? true : false;
   }
 
   private async createNewAuthenticatedUserDoc(firebaseUid: string, email: string, docRef: DocumentReference): Promise<void> {
