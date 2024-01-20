@@ -29,7 +29,7 @@ export class HomeComponent {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;
       this.getPaxFromToday();
-      // this.getPaxWithAnniversaries()
+      this.getPaxWithAnniversaries()
     }
     this.authUserData$ = this.userAuthService.authUserData$.pipe(
         tap(async (data) => {
