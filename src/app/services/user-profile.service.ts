@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { CollectionReference, Firestore, addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "@angular/fire/firestore";
 import { PaxUser } from "../models/users.model";
 import { Badge, UserProfileData } from "../models/user-profile-data.model";
+import { PaxManagerService } from "./pax-manager.service";
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +16,7 @@ export class UserProfileService {
         countOfEHUsers: 0
     }
 
-    constructor(private readonly firestore: Firestore) {}
+    constructor(private readonly firestore: Firestore, private paxManagerService: PaxManagerService) {}
 
     async getOrCreateUserProfileById(id: string): Promise<UserProfileData> {
         const userProfile = await this.getProfileByUserId(id);
@@ -43,6 +44,8 @@ export class UserProfileService {
 
     public async createProfileData(userId: string, profileData: UserProfileData) {
         const createReference = doc(this.userCollection, userId);
+        const paxCount = await this.paxManagerService.getNumberOfEHsByUserId(userId);
+        profileData.countOfEHUsers = paxCount;
         return await setDoc(createReference, profileData);
     }
 
@@ -50,6 +53,10 @@ export class UserProfileService {
         if (!profileData) {
             return;
         }
+
+        // Update this while we're here...
+        const paxCount = await this.paxManagerService.getNumberOfEHsByUserId(userId);
+        profileData.countOfEHUsers = paxCount;
         
         const docRef = doc(this.userCollection, userId);
         return await updateDoc(docRef, {

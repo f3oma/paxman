@@ -84,7 +84,6 @@ export class UserDetailComponent {
     }
   }
 
-
   private async getUserProfileData(userId: string) {
     const data = await this.userProfileService.getProfileByUserId(userId);
     if (data) {

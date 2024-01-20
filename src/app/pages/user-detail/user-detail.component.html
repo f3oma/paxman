@@ -45,6 +45,12 @@
           <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
         </div>
         <div class="info-section">
+          <ng-container *ngIf="userProfileData && userProfileData.countOfEHUsers > 0">
+            <h5>My EH Count</h5>
+            <p>{{userProfileData.countOfEHUsers}} people</p>
+          </ng-container>
+        </div>
+        <div class="info-section">
           <ng-container *ngIf="ehUser && ehUser !== undefined">
             <h5>EH'd by</h5>
             <a [href]="'/users/' + ehUser.id">{{ehUser.f3Name}}</a>  
