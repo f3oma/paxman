@@ -8,12 +8,10 @@ import { SearchComponent } from './pages/search/search.component';
 import { UserDetailComponent } from './pages/user-detail/user-detail.component';
 import { ClaimPaxInfoComponent } from './pages/claim-pax-info/claim-pax-info.component';
 import { BasicAuthenticatedAuthGuard } from './route-guard/basic-authenticated.guard';
-import { ProfileComponent } from './pages/profile/profile.component';
 import { SiteManagementComponent } from './pages/admin-home/site-management/site-management.component';
 import { SiteDetailComponent } from './pages/admin-home/site-management/site-detail/site-detail.component';
 import { AdminRoleAuthGuard } from './route-guard/admin-role.guard';
 import { SiteQMinimumRoleAuthGuard } from './route-guard/siteq-minimum-role.guard';
-import { PersonalProfileAuthGuard } from './route-guard/personal-profile.guard';
 import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-pax-list.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -49,11 +47,6 @@ const routes: Routes = [
   {
     path: 'claim-info',
     component: ClaimPaxInfoComponent,
-    canActivate: [BasicAuthenticatedAuthGuard]
-  },
-  {
-    path: 'profile',
-    component: ProfileComponent,
     canActivate: [BasicAuthenticatedAuthGuard]
   },
   {

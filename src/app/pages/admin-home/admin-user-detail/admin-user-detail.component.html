@@ -32,7 +32,7 @@
     <ng-container *ngIf="editMode">
       <h1>Editing {{user.f3Name}}'s Data</h1>
       <p>Save when finished</p>
-      <user-data-edit [user]="user" [isEditorAdmin]="isAdmin" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
+      <user-data-edit [user]="user" [userProfileData]="userProfileData" [isEditorAdmin]="isAdmin" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
     </ng-container>
     <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
     <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>

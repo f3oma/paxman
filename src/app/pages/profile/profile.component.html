@@ -1,7 +1,7 @@
 <div class="container" *ngIf="authUserData$ | async as authUser">
   <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
     <user-data-view [user]="user" *ngIf="!editMode"></user-data-view>
-    <user-data-edit [user]="user" *ngIf="editMode" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
+    <user-data-edit [user]="user"  *ngIf="editMode" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></user-data-edit>
     <button mat-flat-button class="editData" (click)="toggleEditMode()" *ngIf="!editMode">Edit Information</button>
 </div>
   

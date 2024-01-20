@@ -1,8 +1,8 @@
 <div class="container" *ngIf="authUserData$ | async as authUser">
-    <h1>User Settings</h1>
-    <p>Modify your personal information & preferences</p>
     <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
-        <user-data-edit [user]="user" [isEditorAdmin]="false" (userSaved)="navigateToProfile()" (userCanceled)="navigateToProfile()"></user-data-edit>
+        <h1>User Settings</h1>
+        <p>Modify your personal information & preferences</p>
+        <user-data-edit [user]="user" [userProfileData]="userProfileData" [isEditorAdmin]="false" (userSaved)="navigateToProfile()" (userCanceled)="navigateToProfile()"></user-data-edit>
     </div>
 </div>
     

@@ -5,7 +5,7 @@ import algoliasearch from 'algoliasearch';
 import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 import { LinkSiteQAODialog } from 'src/app/dialogs/link-site-q-ao/link-site-q-ao-dialog.component';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
-import { Badge } from 'src/app/models/user-profile-data.model';
+import { Badge, UserProfileData } from 'src/app/models/user-profile-data.model';
 import { IPaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
@@ -42,6 +42,8 @@ export class AdminUserDetailComponent {
   public isAuthorizedUser = false; // Can view content and promote to SiteQ
   public editMode: boolean = false;
   adminErrorMessage: string = "";
+
+  userProfileData: UserProfileData | null = null;
 
   constructor(
     private readonly paxManagerService: PaxManagerService,
@@ -83,6 +85,7 @@ export class AdminUserDetailComponent {
     this.userProfileService.getOrCreateUserProfileById(userId).then((userProfile) => {
       this.availableBadges = availableBadges.filter((b) => !userProfile.badges.map((t => t.text)).includes(b.text));
       this.userCurrentBadges = userProfile.badges;
+      this.userProfileData = userProfile;
     })
   }
 

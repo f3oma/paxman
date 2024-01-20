@@ -19,6 +19,7 @@ import { UserProfileService } from 'src/app/services/user-profile.service';
 export class UserDataEditComponent {
 
   @Input('user') user!: IPaxUser;
+  @Input('userProfileData') userProfileData!: UserProfileData | null;
   @Input('isEditorAdmin') isEditorAdmin: boolean = false;
   @Output('userSaved') userSavedEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('userCanceled') userCanceledEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -40,8 +41,6 @@ export class UserDataEditComponent {
     stravaHandle: new FormControl(''),
     xHandle: new FormControl('')
   });
-
-  public userProfileData: UserProfileData | null = null;
 
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredEhF3Options$: Observable<any[]> = this.filteredEhF3OptionsSubject.asObservable();
@@ -97,16 +96,13 @@ export class UserDataEditComponent {
       }
     }
 
-    const userProfileData = await this.userProfileService.getOrCreateUserProfileById(this.user.id);
-
     // Add new links here when added...
-    if (userProfileData.links['x'] === undefined) {
-      userProfileData.links['x'] = { url: '' };
+    if (this.userProfileData && this.userProfileData.links['x'] === undefined) {
+      this.userProfileData.links['x'] = { url: '' };
     }
-    if (userProfileData.links['strava'] === undefined) {
-      userProfileData.links['strava'] = { url: '' };
+    if (this.userProfileData && this.userProfileData.links['strava'] === undefined) {
+      this.userProfileData.links['strava'] = { url: '' };
     }
-    this.userProfileData = userProfileData;
   }
 
   public getEmailErrorMessage(): string {
