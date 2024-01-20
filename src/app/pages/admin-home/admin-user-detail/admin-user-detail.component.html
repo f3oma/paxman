@@ -43,7 +43,7 @@
         <div class="btns">
           <button *ngIf="!hasExistingRole('SiteQ')" class="action-btn" id="siteq-btn" mat-flat-button (click)="promoteRole('SiteQ', user)">Promote to SiteQ</button>
           <button *ngIf="!hasExistingRole('Admin')" class="action-btn" id="admin-btn" mat-flat-button (click)="promoteRole('Admin', user)">Promote to Admin</button>
-          <button class="action-btn" id="delete-btn" mat-flat-button (click)="deleteUser(user)">Permenantly Delete User</button>  
+          <button class="action-btn" id="delete-btn" mat-flat-button (click)="deleteUser(user)">Permanently Delete User</button>  
         </div>
       </div>
       <div class="admin-only" *ngIf="isAdmin">

@@ -191,7 +191,7 @@ export class AdminUserDetailComponent {
   }
 
   public async deleteUser(user: IPaxUser): Promise<void> {
-    if (confirm("Are you sure you want to *permanantly* remove this Pax data?")) {
+    if (confirm("Are you sure you want to *permanently* remove this Pax data?")) {
       await this.paxManagerService.deleteUser(user);
       alert("User deleted");
       await this.router.navigate(['search']);
