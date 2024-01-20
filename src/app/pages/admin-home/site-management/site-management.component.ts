@@ -2,6 +2,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, ViewChild } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { DocumentReference } from 'firebase/firestore';
 import { AOData } from 'src/app/models/ao.model';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
@@ -28,7 +29,8 @@ export class SiteManagementComponent {
   constructor(
     private aoManagerService: AOManagerService, 
     private userAuthService: UserAuthenticationService,
-    private paxManagementService: PaxManagerService) {
+    private paxManagementService: PaxManagerService,
+    private router: Router) {
 
     this.dataSource = null;
 
@@ -45,6 +47,10 @@ export class SiteManagementComponent {
     })
   }
 
+  public async viewSiteDetail(row: AOData) {
+    await this.router.navigate(['admin/site-management', row.id]);
+  }
+
   async getSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
     this.siteQAO = await this.aoManagerService.getDataByRef(siteQLocationRef);
   }
@@ -53,7 +59,7 @@ export class SiteManagementComponent {
     const tableData = await this.aoManagerService.getAllAOData();
     const dayMap = this.getDayMap();
     const sorted = tableData
-      .filter((a) => a.weekDay !== '')
+      .filter((a) => a.weekDay !== null)
       .sort((a, b) => dayMap.get(a.weekDay) > dayMap.get(b.weekDay) ? 1 : -1);
 
     this.tableData = sorted;

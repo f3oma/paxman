@@ -71,7 +71,7 @@ export class UserProfileService {
     }
 
     public async removeBadgeFromProfile(badge: Badge, userId: string) {
-        const profile = await this.getOrCreateUserProfileById(userId);
+        await this.getOrCreateUserProfileById(userId);
         const docRef = doc(this.userCollection, userId);
         return await updateDoc(docRef, {
             badges: arrayRemove(badge)

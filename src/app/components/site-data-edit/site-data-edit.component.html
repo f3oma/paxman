@@ -1,0 +1,139 @@
+<div class="main">
+    <form class="site-form" [formGroup]="form">
+        <mat-expansion-panel expanded="true">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Site Details</mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-form-field appearance="fill">
+                <mat-label>Site Name</mat-label>
+                <input formControlName="name" [(ngModel)]="site.name" autocomplete="off" matInput type="text" placeholder="Site Name" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Location</mat-label>
+                <input formControlName="location" [(ngModel)]="site.location" autocomplete="off" matInput type="text" placeholder="Location Name" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Address</mat-label>
+                <input formControlName="address" [(ngModel)]="site.address" autocomplete="off" matInput type="text" placeholder="Address" required>
+                <mat-hint>One line - 1234 S. Example Ave. Omaha, NE. 68114</mat-hint>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Sector</mat-label>
+                <mat-select formControlName="sector" [(ngModel)]="site.sector">
+                <mat-option value="DC - West">DC - West</mat-option>
+                <mat-option value="DC - East">DC - East</mat-option>
+                <mat-option value="DC - Central">DC - Central</mat-option>
+                <mat-option value="Sarpy">Sarpy</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>Site Leaders</mat-panel-title>
+            </mat-expansion-panel-header>
+            <h5>Active Site-Qs</h5>
+            <mat-form-field appearance="fill">
+                <mat-label>Active Site-Qs</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Active Site-Q selection">
+                  <mat-chip-row *ngFor="let siteQ of temporaryActiveSiteQUsers" (removed)="removeActive(siteQ)">
+                    {{siteQ.f3Name}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + siteQ.f3Name">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                </mat-chip-grid>
+                <input placeholder="New Active SiteQ..." #activeSiteQInput formControlName="activeSiteQUsers"
+                  [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"/>
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActiveSiteQ($event)" [displayWith]="displayF3NameOptions">
+                    <mat-option *ngFor="let option of filteredActiveSiteQOptions$ | async" [value]="option">
+                        <h5>{{option.f3Name}}</h5>
+                        <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                    </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+            <h5>Retired Site-Qs</h5>
+            <mat-form-field appearance="fill">
+                <mat-label>Retired Site-Qs</mat-label>
+                <mat-chip-grid #chipGridRet aria-label="Retired Site-Q selection">
+                  <mat-chip-row *ngFor="let siteQ of temporaryRetiredSiteQUsers" (removed)="removeRetired(siteQ)">
+                    {{siteQ.f3Name}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + siteQ.f3Name">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                </mat-chip-grid>
+                <input placeholder="New Retired SiteQ..." #retiredSiteQInput formControlName="retiredSiteQUsers"
+                  [matChipInputFor]="chipGridRet" [matAutocomplete]="autoRet"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
+                  <mat-autocomplete #autoRet="matAutocomplete" (optionSelected)="addRetiredSiteQ($event)" [displayWith]="displayF3NameOptions">
+                    <mat-option *ngFor="let option of filteredRetiredSiteQOptions$ | async" [value]="option">
+                        <h5>{{option.f3Name}}</h5>
+                        <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Workout Data
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-form-field appearance="fill">
+                <mat-label>Start time</mat-label>
+                <input formControlName="startTimeCST" [(ngModel)]="site.startTimeCST" autocomplete="off" matInput type="text" placeholder="Start time" required>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Day of week</mat-label>
+                <mat-select formControlName="weekDay" [(ngModel)]="site.weekDay">
+                    <mat-option value="Sun">Sunday</mat-option>
+                    <mat-option value="Mon">Monday</mat-option>
+                    <mat-option value="Tues">Tuesday</mat-option>
+                    <mat-option value="Wed">Wednesday</mat-option>
+                    <mat-option value="Thurs">Thursday</mat-option>
+                    <mat-option value="Fri">Friday</mat-option>
+                    <mat-option value="Sat">Saturday</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Site Socials
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="same-line">
+                <img id="icon" src="/assets/x_icon.svg" />
+                <mat-form-field appearance="fill">
+                    <mat-label>X Handle</mat-label>
+                    <span matPrefix style="padding: 2px">@</span>
+                    <input formControlName="xAccount" [(ngModel)]="site.xAccount" autocomplete="off" matInput type="text" placeholder="X Handle">
+                    <mat-hint>https://x.com/<b>site-handle</b></mat-hint>
+                </mat-form-field>
+            </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Additional data
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="checkbox">
+                <p>Is the site a popup?</p>
+                <mat-checkbox formControlName="popup" [(ngModel)]="site.popup" (change)="updatePopupValue($event, site)">Is popup?</mat-checkbox>
+            </div>
+            <div class="checkbox">
+                <p>Is this a rotating site?</p>
+                <mat-checkbox formControlName="rotating" [(ngModel)]="site.rotating" (change)="updateRotatingValue($event, site)">Is rotating?</mat-checkbox>
+            </div>
+        </mat-expansion-panel>
+    </form>
+
+    <div class="actions">
+        <button mat-raised-button class="saveData" (click)="saveData(site)">Save</button>
+        <button mat-flat-button (click)="cancel()">Cancel</button>
+    </div>
+</div>

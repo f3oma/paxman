@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, collection, doc, getDoc } from "@angular/fire/firestore";
-import { AOData, IAOData, IAODataEntity } from "../models/ao.model";
+import { CollectionReference, DocumentData, DocumentReference, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, arrayUnion, collection, doc, getDoc } from "@angular/fire/firestore";
+import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity } from "../models/ao.model";
 import { PaxModelConverter } from "./pax-model.converter";
 import { PaxUser } from "../models/users.model";
 
@@ -17,9 +17,10 @@ export class AODataConverter {
     const toDomain = this.toDomain;
     const toEntity = this.toEntity;
     const paxModelConverter = this.paxModelConverter;
+    const paxUserCollection = this.paxUserCollection;
     return {
       toFirestore: (data: IAOData): DocumentData => {
-        return toEntity(data);
+        return toEntity(data, paxUserCollection);
       },
       fromFirestore(snap: QueryDocumentSnapshot) {
         return toDomain(snap.data() as IAODataEntity, snap.id, paxModelConverter);
@@ -27,27 +28,54 @@ export class AODataConverter {
     }
   }
 
-  toEntity(data: IAOData): IAODataEntity {
-    let siteQDataRef = null;
-    if (data.siteQUser) {
-      siteQDataRef = doc(this.paxUserCollection, data.siteQUser.id);
+  toEntity(data: IAOData, paxUserCollection: CollectionReference<DocumentData>): IAODataEntity {
+    let activeSiteQDataRefs: DocumentReference<DocumentData>[] = [];
+    if ((data.activeSiteQUsers && data.activeSiteQUsers.length > 0)) {
+      for (let siteQ of data.activeSiteQUsers) {
+        activeSiteQDataRefs.push(doc(paxUserCollection, siteQ.id));
+      }
     }
+
+    let retiredSiteQDataRefs: DocumentReference<DocumentData>[] = [];
+    if ((data.retiredSiteQUsers && data.retiredSiteQUsers.length > 0)) {
+      for (let siteQ of data.retiredSiteQUsers) {
+        retiredSiteQDataRefs.push(doc(paxUserCollection, siteQ.id));
+      }
+    }
+    
     return <IAODataEntity> {
       name: data.name,
       address: data.address,
+      location: data.location,
       popup: data.popup,
-      siteQUserRef: siteQDataRef,
+      rotating: data.rotating,
+      activeSiteQUserRefs: activeSiteQDataRefs,
+      retiredSiteQUserRefs: retiredSiteQDataRefs,
       startTimeCST: data.startTimeCST, 
       xAccount: data.xAccount,
-      weekDay: data.weekDay
+      weekDay: data.weekDay.toString(),
+      sector: data.sector
     }
   }
 
   async toDomain(data: IAODataEntity, id: string, paxModelConverter: PaxModelConverter): Promise<AOData> {
-    let siteQUser = undefined;
-    if (data.siteQUserRef) {
-      siteQUser = (await getDoc(data.siteQUserRef.withConverter(paxModelConverter.getConverter()))).data() as PaxUser;
+    let activeSiteQUsers: PaxUser[] = [];
+    if (data.activeSiteQUserRefs && data.activeSiteQUserRefs.length > 0) {
+      for (let siteQUserRef of data.activeSiteQUserRefs) {
+        if (siteQUserRef !== null)
+        activeSiteQUsers.push((await getDoc(siteQUserRef.withConverter(paxModelConverter.getConverter()))).data() as PaxUser);
+      }
     }
-    return new AOData(id, data.name, data.address, data.popup, siteQUser, data.startTimeCST, data.xAccount, data.weekDay, data.sector);
+
+    let retiredSiteQUsers: PaxUser[] = [];
+    if (data.retiredSiteQUserRefs && data.retiredSiteQUserRefs.length > 0) {
+      for (let siteQUserRef of data.retiredSiteQUserRefs) {
+        if (siteQUserRef !== null)
+        retiredSiteQUsers.push((await getDoc(siteQUserRef.withConverter(paxModelConverter.getConverter()))).data() as PaxUser);
+      }
+    }
+
+    const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
+    return new AOData(id, data.name, data.address, data.location, data.popup, data.rotating, activeSiteQUsers, retiredSiteQUsers, data.startTimeCST, data.xAccount, weekDay, data.sector);
   }
 }

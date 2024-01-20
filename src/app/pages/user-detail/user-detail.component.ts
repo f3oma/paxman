@@ -122,7 +122,7 @@ export class UserDetailComponent {
             return;
           }
         }
-        await this.userAuthService.promoteRole(userRole, user);
+        await this.userAuthService.promoteRole(userRole, user.id);
       } else {
         return;
       }
@@ -139,7 +139,7 @@ export class UserDetailComponent {
     const dialogRef = this.dialog.open(LinkSiteQAODialog);
     return dialogRef.afterClosed().toPromise().then(async (data) => {
       if (data && data.aoRef !== '') {
-        await this.linkSiteQAndAO(data.aoRef, user);
+        await this.linkActiveSiteQAndAO(data.aoRef, user);
         return true;
       } else {
         return false;
@@ -147,13 +147,13 @@ export class UserDetailComponent {
     });
   }
 
-  public async linkSiteQAndAO(locationDbPath: string, user: IPaxUser) {
+  public async linkActiveSiteQAndAO(locationDbPath: string, user: IPaxUser) {
     const aoRef = this.aoManagerService.getAoLocationReference(locationDbPath);
     const userRef = this.paxManagerService.getUserReference(`users/${user.id}`);
     const authRef = await this.userAuthService.getLinkedAuthDataRef(user.id);
     if (aoRef && userRef && authRef) {
       return await Promise.all([
-        this.aoManagerService.updateSiteQUser(aoRef, userRef),
+        this.aoManagerService.updateActiveSiteQUsers(aoRef, userRef),
         this.paxManagerService.updateSiteQUserLocation(aoRef, userRef),
         this.userAuthService.updateSiteQUserLocation(aoRef, authRef),
       ]);

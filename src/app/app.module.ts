@@ -44,6 +44,8 @@ import { ActivityGraphComponent } from './components/activity-graph/activity-gra
 import { MatExpansionModule} from '@angular/material/expansion';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/admin-user-detail.component';
+import { SiteDataEditComponent } from './components/site-data-edit/site-data-edit.component';
+import { MatChipsModule } from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -68,7 +70,8 @@ import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/a
     AccountCreatedSuccessfullyDialog,
     ActivityGraphComponent,
     AdminUserDetailComponent,
-    SettingsComponent
+    SettingsComponent,
+    SiteDataEditComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +96,8 @@ import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/a
     MatDatepickerModule,
     MatNativeDateModule,
     MatExpansionModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatChipsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

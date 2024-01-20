@@ -49,7 +49,8 @@
                 <input formControlName="ehByF3Name" [(ngModel)]="selectedEhName" autocorrect="off" [matAutocomplete]="auto" matInput type="text" placeholder="EH'd by">
                 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayF3NameOptions">
                 <mat-option *ngFor="let option of filteredEhF3Options$ | async" [value]="option">
-                    {{option.f3Name}}
+                    <h5>{{option.f3Name}}</h5>
+                    <p style="margin-bottom: 0;">{{option.fullName}}</p>
                 </mat-option>
                 </mat-autocomplete>
                 <mat-hint>Leave blank if none</mat-hint>

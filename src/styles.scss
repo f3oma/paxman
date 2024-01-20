@@ -38,9 +38,7 @@ $homebase-theme: mat.define-light-theme((
 html, body { height: 100%; }
 body { 
   margin: 0; 
-  font-family: "Inter", "Helvetica Neue", sans-serif !important;
+  font-family: "Inter";
   font-size: 14px;
   color: #333;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }

@@ -159,7 +159,7 @@ export class UserDataEditComponent {
     // Correct any empty links
     for (let record in this.userProfileData.links) {
       const link = this.userProfileData.links[record];
-      
+
       if (link && link.url.includes('http')) {
         const lastSlashIndex = link.url.lastIndexOf('/');
         const username = link.url.substring(lastSlashIndex + 1);
@@ -193,7 +193,8 @@ export class UserDataEditComponent {
     const pax = result.map((res) => {
       return { 
         userRef: res.path, 
-        f3Name: res.f3Name 
+        f3Name: res.f3Name,
+        fullName: res.firstName + " " + res.lastName,
       };
     })
     this.filteredEhF3OptionsSubject.next(pax);

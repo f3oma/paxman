@@ -259,11 +259,11 @@ export class UserAuthenticationService {
     return true;
   }
 
-  public async promoteRole(userRole: UserRole, paxUserData: IPaxUser) {
+  public async promoteRole(userRole: UserRole, userId: string) {
     // We need to make sure the user has an auth account
     // Search the user auth collection for paxdataid that matches
     // if none exists, user doesn't have an auth account
-    const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", paxUserData.id));
+    const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", userId));
     const authQueryResult = await getDocs(authQuery);
 
     if (authQueryResult.empty) {
@@ -277,11 +277,11 @@ export class UserAuthenticationService {
     }
   }
 
-  public async removeRole(userRole: UserRole, paxUserData: IPaxUser) {
+  public async removeRole(userRole: UserRole, userId: string) {
     // We need to make sure the user has an auth account
     // Search the user auth collection for paxdataid that matches
     // if none exists, user doesn't have an auth account
-    const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", paxUserData.id));
+    const authQuery = query(this.authUserCollectionRef, where("paxDataId", "==", userId));
     const authQueryResult = await getDocs(authQuery);
 
     if (authQueryResult.empty) {

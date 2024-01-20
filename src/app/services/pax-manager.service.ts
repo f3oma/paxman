@@ -80,6 +80,13 @@ export class PaxManagerService {
     })
   }
 
+  public async removeSiteQUserLocation(userId: string) {
+    const userRef = this.getUserReference('users/' + userId) as DocumentReference<DocumentData>;
+    return await updateDoc(userRef, {
+      siteQLocationRef: null
+    })
+  }
+
   // Refreshes weekly pax daily
   public async getWeeklyPax(): Promise<{ f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[]> {
     const today = new Date();

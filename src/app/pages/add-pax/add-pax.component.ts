@@ -184,7 +184,8 @@ export class AddPaxComponent {
     const pax = result.map((res) => {
       return { 
         userRef: res.path, 
-        f3Name: res.f3Name 
+        f3Name: res.f3Name ,
+        fullName: res.firstName + ' ' + res.lastName
       };
     })
     this.filteredEhF3OptionsSubject.next(pax);
