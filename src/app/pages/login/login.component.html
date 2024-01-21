@@ -17,7 +17,10 @@
     <hr/>
     <p>Need an account? <a routerLink="/register"><b>Sign up with email</b></a></p>
     <p>or</p>
-    <button class="sign-up-btn" id="google" (click)="loginWithGoogle()">Continue with Google</button>
+    <div class="sso">
+      <button class="sign-up-btn" id="google" (click)="loginWithGoogle()">Continue with Google</button>
+      <button class="sign-up-btn" id="X" (click)="loginWithX()">Continue with X</button>
+    </div>
   </div>
 </div>
 

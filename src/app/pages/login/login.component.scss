@@ -43,9 +43,20 @@
         font-weight: bold;
       }
 
+      .sso {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
       #google {
         color: #fff;
         background-color: rgb(0, 140, 255);
+      }
+
+      #X {
+        color: #fff;
+        background-color: #111;
       }
 
       #submit {

@@ -53,8 +53,27 @@ export class LoginComponent {
   }
 
   public async loginWithGoogle() {
-    const user: AuthenticatedUser = await this.userAuthenticationService.loginWithGoogle();
-    await this.navigate(user);
+    try {
+      const user: AuthenticatedUser = await this.userAuthenticationService.loginWithGoogle();
+      await this.navigate(user);
+    } catch (err) {
+      const error = err as Error;
+      if (error.message.includes('account-exists-with-different-credential')) {
+        this.signInErrorMessage = "An account already exists using this associated email";
+      }
+    }
+  }
+
+  public async loginWithX() {
+    try {
+      const user: AuthenticatedUser = await this.userAuthenticationService.loginWithX();
+      await this.navigate(user);
+    } catch (err) {
+      const error = err as Error;
+      if (error.message.includes('account-exists-with-different-credential')) {
+        this.signInErrorMessage = "An account already exists using this associated email";
+      }
+    }
   }
 
   private async navigate(user: AuthenticatedUser) {
