@@ -16,6 +16,7 @@ import { AdminHomeComponent } from './pages/admin-home/admin-home.component';
 import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-pax-list.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/admin-user-detail.component';
+import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,10 @@ const routes: Routes = [
     path: 'users/:id',
     component: UserDetailComponent,
     canActivate: [BasicAuthenticatedAuthGuard]
+  },
+  {
+    path: 'users/:id/unsubscribe',
+    component: UnsubscribeComponent
   },
   {
     path: 'admin',

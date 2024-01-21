@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs, or, Timestamp, and } from "@angular/fire/firestore";
-import { AoLocationRef, UserRef, IPaxUser, PaxUser } from "../models/users.model";
+import { AoLocationRef, UserRef, IPaxUser, PaxUser, NotificationFrequency } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { AOData } from "../models/ao.model";
 import { AODataConverter } from "../utils/ao-data.converter";
@@ -9,7 +9,6 @@ import { AODataConverter } from "../utils/ao-data.converter";
   providedIn: 'root'
 })
 export class PaxManagerService {
-
   paxConverter = this.paxModelConverter.getConverter();
   locationConverter = this.locationModelConverter.getConverter();
 
@@ -85,6 +84,13 @@ export class PaxManagerService {
     return await updateDoc(userRef, {
       siteQLocationRef: null
     })
+  }
+
+  public async unsubscribeEmailsForUser(id: string) {
+    const userRef = this.getUserReference('users/' + id) as DocumentReference<DocumentData>;
+    return await updateDoc(userRef, {
+      notificationFrequency: NotificationFrequency.None
+    });
   }
 
   // Refreshes weekly pax daily

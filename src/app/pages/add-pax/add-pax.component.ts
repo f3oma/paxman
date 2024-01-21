@@ -7,6 +7,7 @@ import { AOData } from 'src/app/models/ao.model';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
 import { AoLocationRef, IPaxUser, NotificationFrequency, PaxUser, UserRef } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
 import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
@@ -45,6 +46,7 @@ export class AddPaxComponent {
     private readonly paxManagerService: PaxManagerService,
     private readonly locationSearchService: LocationSearchService,
     private readonly aoManagerService: AOManagerService,
+    private readonly paxWelcomeEmailService: PaxWelcomeEmailService,
     private readonly router: Router) {
       this.f3NameFormControl.setAsyncValidators(this.paxF3NameValidator());
       this.form.controls['ehByF3Name'].valueChanges.pipe(
@@ -119,6 +121,7 @@ export class AddPaxComponent {
       // zipcode: this.form.controls['zipcode'].value,
     
       const newUserAdded = await this.paxManagerService.addNewUser(pax);
+      await this.paxWelcomeEmailService.sendWelcomeEmailToPax(newUserAdded.id, pax.f3Name!);
       if (newUserAdded && newUserAdded.id) {
         window.alert(`Welcome to F3 Omaha, ${this.form.controls['f3Name'].value}!`);
         this.router.navigate(['home']);

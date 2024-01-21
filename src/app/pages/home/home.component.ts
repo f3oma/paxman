@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
 import { AoLocationRef, UserRef, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
@@ -24,7 +25,8 @@ export class HomeComponent {
   constructor(
     private userAuthService: UserAuthenticationService,
     private paxManagerService: PaxManagerService,
-    private aoManagerService: AOManagerService
+    private aoManagerService: AOManagerService,
+    private mailService: PaxWelcomeEmailService
   ) {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;

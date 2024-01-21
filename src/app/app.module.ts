@@ -46,6 +46,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/admin-user-detail.component';
 import { SiteDataEditComponent } from './components/site-data-edit/site-data-edit.component';
 import { MatChipsModule } from '@angular/material/chips';
+import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +72,8 @@ import { MatChipsModule } from '@angular/material/chips';
     ActivityGraphComponent,
     AdminUserDetailComponent,
     SettingsComponent,
-    SiteDataEditComponent
+    SiteDataEditComponent,
+    UnsubscribeComponent
   ],
   imports: [
     BrowserModule,
