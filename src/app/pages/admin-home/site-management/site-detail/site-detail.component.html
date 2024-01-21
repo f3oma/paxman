@@ -39,7 +39,7 @@
                     </div>
                   </ng-container>
                 </div>
-                <div class="info-section">
+                <div class="info-section" style="padding-top: 12px">
                   <ng-container *ngIf="site.retiredSiteQUsers && site.retiredSiteQUsers.length > 0">
                     <h5>Retired Site-Q(s)</h5>
                     <div class="user" *ngFor="let siteq of site.retiredSiteQUsers">
@@ -47,6 +47,14 @@
                     </div>
                   </ng-container>
                 </div>
+                <div class="info-section" style="padding-top: 12px">
+                    <ng-container *ngIf="site.foundingSiteQUsers && site.foundingSiteQUsers.length > 0">
+                      <h5>Site Founders</h5>
+                      <div class="user" *ngFor="let siteq of site.foundingSiteQUsers">
+                          <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                      </div>
+                    </ng-container>
+                  </div>
                 <div class="info-section" style="padding-top: 12px">
                   <h5>Site Metadata</h5>
                   <p>Is site a popup? <b>{{site.popup ? 'Yes' : 'No'}}</b></p>

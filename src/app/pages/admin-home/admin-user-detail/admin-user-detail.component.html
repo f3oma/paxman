@@ -56,8 +56,7 @@
           <div class="badge"
           (click)="tryRemoveBadge(badge, user)"
           *ngFor="let badge of userCurrentBadges"
-          [style.background-color]="badge.backgroundColor"
-          [style.background-image]="badge.backgroundImage"
+          [style.background]="badge.backgroundColor"
           [style.color]="badge.textColor">{{badge.text}}</div>
         </div>
         <div class="badge-list">

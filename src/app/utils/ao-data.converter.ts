@@ -42,6 +42,13 @@ export class AODataConverter {
         retiredSiteQDataRefs.push(doc(paxUserCollection, siteQ.id));
       }
     }
+
+    let foundingSiteQDataRefs: DocumentReference<DocumentData>[] = [];
+    if ((data.foundingSiteQUsers && data.foundingSiteQUsers.length > 0)) {
+      for (let siteQ of data.foundingSiteQUsers) {
+        foundingSiteQDataRefs.push(doc(paxUserCollection, siteQ.id));
+      }
+    }
     
     return <IAODataEntity> {
       name: data.name,
@@ -51,6 +58,7 @@ export class AODataConverter {
       rotating: data.rotating,
       activeSiteQUserRefs: activeSiteQDataRefs,
       retiredSiteQUserRefs: retiredSiteQDataRefs,
+      foundingSiteQUserRefs: foundingSiteQDataRefs,
       startTimeCST: data.startTimeCST, 
       xAccount: data.xAccount,
       weekDay: data.weekDay.toString(),
@@ -75,7 +83,15 @@ export class AODataConverter {
       }
     }
 
+    let foundingSiteQUsers: PaxUser[] = [];
+    if (data.foundingSiteQUserRefs && data.foundingSiteQUserRefs.length > 0) {
+      for (let siteQUserRef of data.foundingSiteQUserRefs) {
+        if (siteQUserRef !== null)
+        foundingSiteQUsers.push((await getDoc(siteQUserRef.withConverter(paxModelConverter.getConverter()))).data() as PaxUser);
+      }
+    }
+
     const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
-    return new AOData(id, data.name, data.address, data.location, data.popup, data.rotating, activeSiteQUsers, retiredSiteQUsers, data.startTimeCST, data.xAccount, weekDay, data.sector);
+    return new AOData(id, data.name, data.address, data.location, data.popup, data.rotating, activeSiteQUsers, retiredSiteQUsers, foundingSiteQUsers, data.startTimeCST, data.xAccount, weekDay, data.sector);
   }
 }

@@ -47,8 +47,10 @@
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"/>
                   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActiveSiteQ($event)" [displayWith]="displayF3NameOptions">
                     <mat-option *ngFor="let option of filteredActiveSiteQOptions$ | async" [value]="option">
-                        <h5>{{option.f3Name}}</h5>
-                        <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                        <div class="option" style="padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                            <h5 style="margin-bottom: 0;">{{option.f3Name}}</h5>
+                            <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                        </div>
                     </mat-option>
                 </mat-autocomplete>
               </mat-form-field>
@@ -68,11 +70,36 @@
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes" />
                   <mat-autocomplete #autoRet="matAutocomplete" (optionSelected)="addRetiredSiteQ($event)" [displayWith]="displayF3NameOptions">
                     <mat-option *ngFor="let option of filteredRetiredSiteQOptions$ | async" [value]="option">
-                        <h5>{{option.f3Name}}</h5>
-                        <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                        <div class="option" style="padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                            <h5 style="margin-bottom: 0;">{{option.f3Name}}</h5>
+                            <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                        </div>
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+            <h5>Founding Site-Q(s)</h5>
+            <mat-form-field appearance="fill">
+                <mat-label>Founding Site-Q(s)</mat-label>
+                <mat-chip-grid #chipGridFounding aria-label="Founding Site-Q selection">
+                  <mat-chip-row *ngFor="let siteQ of temporaryFoundingSiteQUsers" (removed)="removeFounding(siteQ)">
+                    {{siteQ.f3Name}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + siteQ.f3Name">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                </mat-chip-grid>
+                <input placeholder="New Founding SiteQ..." #foundingSiteQInput formControlName="foundingSiteQUsers"
+                  [matChipInputFor]="chipGridFounding" [matAutocomplete]="autoFounding"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"/>
+                  <mat-autocomplete #autoFounding="matAutocomplete" (optionSelected)="addFoundingSiteQ($event)" [displayWith]="displayF3NameOptions">
+                    <mat-option *ngFor="let option of filteredFoundingSiteQOptions$ | async" [value]="option">
+                        <div class="option" style="padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
+                            <h5 style="margin-bottom: 0;">{{option.f3Name}}</h5>
+                            <p style="margin-bottom: 0;">{{option.fullName}}</p>
+                        </div>
+                    </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
         </mat-expansion-panel>
         <mat-expansion-panel>
             <mat-expansion-panel-header>

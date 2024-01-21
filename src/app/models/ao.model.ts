@@ -28,6 +28,7 @@ export interface IAOData {
     rotating: boolean;
     activeSiteQUsers: PaxUser[] | [];
     retiredSiteQUsers: PaxUser[] | [];
+    foundingSiteQUsers: PaxUser[] | [];
     startTimeCST: string;
     xAccount: string;
     weekDay: DayOfWeekAbbv;
@@ -42,6 +43,7 @@ export interface IAODataEntity {
     rotating: boolean;
     activeSiteQUserRefs: DocumentReference<DocumentData>[];
     retiredSiteQUserRefs: DocumentReference<DocumentData>[];
+    foundingSiteQUserRefs: DocumentReference<DocumentData>[];
     startTimeCST: string; // stored as '05:15'
     xAccount: string; // stored without @ symbol
     weekDay: string;
@@ -57,6 +59,7 @@ export class AOData {
     private _rotating: boolean;
     private _activeSiteQUsers: PaxUser[] | [];
     private _retiredSiteQUsers: PaxUser[] | [];
+    private _foundingSiteQUsers: PaxUser[] | [];
     private _startTimeCST: string;
     private _xAccount: string;
     private _weekDay: DayOfWeekAbbv;
@@ -71,6 +74,7 @@ export class AOData {
         rotating: boolean,
         activeSiteQUsers: PaxUser[] | [],
         retiredSiteQUsers: PaxUser[] | [],
+        foundingSiteQUsers: PaxUser[] | [],
         startTimeCST: string,
         xAccount: string,
         weekDay: DayOfWeekAbbv,
@@ -83,6 +87,7 @@ export class AOData {
             this._rotating = rotating;
             this._activeSiteQUsers = activeSiteQUsers;
             this._retiredSiteQUsers = retiredSiteQUsers;
+            this._foundingSiteQUsers = foundingSiteQUsers;
             this._startTimeCST = startTimeCST;
             this._xAccount = xAccount;
             this._weekDay = weekDay;
@@ -121,6 +126,10 @@ export class AOData {
         return this._retiredSiteQUsers;
     }
 
+    public get foundingSiteQUsers(): PaxUser[] | [] {
+        return this._foundingSiteQUsers;
+    }
+
     public get startTimeCST(): string {
         return this._startTimeCST;
     }
@@ -147,6 +156,7 @@ export class AOData {
             rotating: this.rotating,
             activeSiteQUsers: this.activeSiteQUsers,
             retiredSiteQUsers: this.retiredSiteQUsers,
+            foundingSiteQUsers: this.foundingSiteQUsers,
             startTimeCST: this.startTimeCST,
             xAccount: this.xAccount,
             weekDay: this.weekDay,

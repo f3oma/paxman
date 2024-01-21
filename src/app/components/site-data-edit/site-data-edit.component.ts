@@ -29,12 +29,16 @@ export class SiteDataEditComponent implements OnInit {
 
   @ViewChild('activeSiteQInput') activeSiteQInput!: ElementRef<HTMLInputElement>;
   @ViewChild('retiredSiteQInput') retiredSiteQInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('foundingSiteQInput') foundingSiteQInput!: ElementRef<HTMLInputElement>;
 
   filteredActiveSiteQOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredActiveSiteQOptions$: Observable<any[]> = this.filteredActiveSiteQOptionsSubject.asObservable();
 
   filteredRetiredSiteQOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredRetiredSiteQOptions$: Observable<any[]> = this.filteredRetiredSiteQOptionsSubject.asObservable();
+
+  filteredFoundingSiteQOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredFoundingSiteQOptions$: Observable<any[]> = this.filteredFoundingSiteQOptionsSubject.asObservable();
 
   public form: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -47,13 +51,16 @@ export class SiteDataEditComponent implements OnInit {
     popup: new FormControl (''),
     rotating: new FormControl (''),
     activeSiteQUsers: new FormControl(''),
-    retiredSiteQUsers: new FormControl('')
+    retiredSiteQUsers: new FormControl(''),
+    foundingSiteQUsers: new FormControl(''),
   });
 
   temporaryActiveSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
   temporaryRetiredSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
+  temporaryFoundingSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
   originalActiveSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
   originalRetiredSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
+  originalFoundingSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
 
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
@@ -82,6 +89,15 @@ export class SiteDataEditComponent implements OnInit {
             }
             return [];
           })).subscribe();
+        this.form.controls['foundingSiteQUsers'].valueChanges.pipe(
+            debounceTime(200),
+            map(async (value: string) => {
+              if (value) {
+                const results = await this.updateAutocompleteResults(value);
+                this.filteredFoundingSiteQOptionsSubject.next(results);
+              }
+              return [];
+            })).subscribe();
   }
 
   public ngOnInit(): void {
@@ -101,17 +117,29 @@ export class SiteDataEditComponent implements OnInit {
         fullName: a.firstName + " " + a.lastName
       }
     });
+    this.temporaryFoundingSiteQUsers = this.site.foundingSiteQUsers.map((a) => {
+      return {
+        id: a.id,
+        userRef: 'users/' + a.id,
+        f3Name: a.f3Name,
+        fullName: a.firstName + " " + a.lastName
+      }
+    });
     this.originalActiveSiteQUsers = JSON.parse(JSON.stringify(this.temporaryActiveSiteQUsers));
     this.originalRetiredSiteQUsers = JSON.parse(JSON.stringify(this.temporaryRetiredSiteQUsers));
+    this.originalFoundingSiteQUsers = JSON.parse(JSON.stringify(this.temporaryFoundingSiteQUsers));
   }
 
   public async saveData(site: IAOData) {
     if (this.form.valid && this.validateSiteLeaders()) {
+      
       // These are very topical for now and need additional time to
       // validate that the user is not also a site q elsewhere before removing
       // any access. Time should be spent here...
       await this.handleActiveSiteQSwaps();
       await this.handleRetiredSiteQSwaps();
+      await this.handleFoundingSiteQSwaps();
+
       if (this.temporaryRetiredSiteQUsers && this.temporaryRetiredSiteQUsers.length > 0) {
         const retiredSiteQUsers = [];
         for (let siteq of this.temporaryRetiredSiteQUsers) {
@@ -160,12 +188,22 @@ export class SiteDataEditComponent implements OnInit {
     this.retiredSiteQInput.nativeElement.value = '';
   }
 
+  addFoundingSiteQ(event: any): void {
+    const option = event.option.value;
+    this.temporaryFoundingSiteQUsers.push(option);
+    this.foundingSiteQInput.nativeElement.value = '';
+  }
+
   removeActive(siteQ: any): void {
     this.temporaryActiveSiteQUsers = this.temporaryActiveSiteQUsers.filter((a) => a.id !== siteQ.id);
   }
 
   removeRetired(siteQ: any): void {
     this.temporaryRetiredSiteQUsers = this.temporaryRetiredSiteQUsers.filter((a) => a.id !== siteQ.id);
+  }
+
+  removeFounding(siteQ: any): void {
+    this.temporaryFoundingSiteQUsers = this.temporaryFoundingSiteQUsers.filter((a) => a.id !== siteQ.id);
   }
 
   validateSiteLeaders() {
@@ -260,5 +298,28 @@ export class SiteDataEditComponent implements OnInit {
     }
 
     this.site.retiredSiteQUsers = retiredSiteQUsers;
+  }
+
+  private async handleFoundingSiteQSwaps() {
+    const foundingSiteQUsers = [];
+    for (let siteq of this.temporaryFoundingSiteQUsers) {
+      const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
+      const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
+      if (paxUser && paxUser !== undefined) {
+        await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+        await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site Founder')[0], siteq.id);
+        foundingSiteQUsers.push(paxUser);
+      }
+    }
+
+    // If an original member is no longer in retired, remove their access
+    for (let siteq of this.originalFoundingSiteQUsers) {
+      if (foundingSiteQUsers.filter((o) => o.id !== siteq.id)) {
+        await this.userProfileService.removeBadgeFromProfile(availableBadges.filter((b) => b.text === 'Site Founder')[0], siteq.id);
+        await this.authManagerService.removeRole(UserRole.SiteQ, siteq.id);
+      }
+    }
+
+    this.site.foundingSiteQUsers = foundingSiteQUsers;
   }
 }
