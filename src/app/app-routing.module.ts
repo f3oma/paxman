@@ -17,6 +17,7 @@ import { AdminPaxListComponent } from './pages/admin-home/admin-pax-list/admin-p
 import { SettingsComponent } from './pages/settings/settings.component';
 import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/admin-user-detail.component';
 import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
+import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
 
 const routes: Routes = [
   {
@@ -74,12 +75,23 @@ const routes: Routes = [
       },
       {
         path: 'site-management',
-        component: SiteManagementComponent,
-        canActivate: [SiteQMinimumRoleAuthGuard]
+        canActivate: [SiteQMinimumRoleAuthGuard],
+        children: [
+          {
+            path: '',
+            component: SiteManagementComponent,
+            canActivate: [SiteQMinimumRoleAuthGuard]
+          },
+          {
+            path: ':id',
+            component: SiteDetailComponent,
+            canActivate: [SiteQMinimumRoleAuthGuard]
+          },
+        ]
       },
       {
-        path: 'site-management/:id',
-        component: SiteDetailComponent,
+        path: 'add-location',
+        component: AddNewSiteComponent,
         canActivate: [SiteQMinimumRoleAuthGuard]
       },
       {

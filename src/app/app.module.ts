@@ -47,6 +47,7 @@ import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/a
 import { SiteDataEditComponent } from './components/site-data-edit/site-data-edit.component';
 import { MatChipsModule } from '@angular/material/chips';
 import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
+import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscrib
     AdminUserDetailComponent,
     SettingsComponent,
     SiteDataEditComponent,
-    UnsubscribeComponent
+    UnsubscribeComponent,
+    AddNewSiteComponent
   ],
   imports: [
     BrowserModule,

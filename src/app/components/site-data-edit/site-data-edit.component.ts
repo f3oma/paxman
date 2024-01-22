@@ -24,6 +24,7 @@ export class SiteDataEditComponent implements OnInit {
 
   @Input('site') site!: IAOData;
   @Input('isEditorAdmin') isEditorAdmin: boolean = false;
+  @Input('addNewSite') addNewSite: boolean = false;
   @Output('userSaved') userSavedEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('userCanceled') userCanceledEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -132,26 +133,19 @@ export class SiteDataEditComponent implements OnInit {
 
   public async saveData(site: IAOData) {
     if (this.form.valid && this.validateSiteLeaders()) {
-      
+
       // These are very topical for now and need additional time to
       // validate that the user is not also a site q elsewhere before removing
       // any access. Time should be spent here...
       await this.handleActiveSiteQSwaps();
       await this.handleRetiredSiteQSwaps();
       await this.handleFoundingSiteQSwaps();
-
-      if (this.temporaryRetiredSiteQUsers && this.temporaryRetiredSiteQUsers.length > 0) {
-        const retiredSiteQUsers = [];
-        for (let siteq of this.temporaryRetiredSiteQUsers) {
-          const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
-          const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
-          if (paxUser && paxUser !== undefined)
-            retiredSiteQUsers.push(paxUser);
-        }
-        this.site.retiredSiteQUsers = retiredSiteQUsers;
-      }
   
-      await this.aoManagerService.updateSiteData(site);
+      if (this.addNewSite) {
+        await this.aoManagerService.addNewSite(site);
+      } else {
+        await this.aoManagerService.updateSiteData(site);
+      }
       this.userSavedEmitter.emit(true);
     }
   }

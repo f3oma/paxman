@@ -1,7 +1,12 @@
 <div class="container">
-    <h1>Site Management</h1>
-    <p>View and update AO information</p>
-    
+    <div class="header">
+        <div class="column">
+            <h1>Site Management</h1>
+            <p>View and update AO information</p>        
+        </div>
+        <button mat-flat-button id="new-site" *ngIf="isAdmin" [routerLink]="['/admin/add-location']">Add New Site</button>
+    </div>
+
     <div class="manage-my-site" *ngIf="!isAdmin; else adminView">
         <h4>Manage my sites</h4>
         <div class="my-site">

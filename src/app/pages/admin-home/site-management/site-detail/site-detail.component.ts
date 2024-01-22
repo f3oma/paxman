@@ -27,6 +27,7 @@ export class SiteDetailComponent implements OnInit {
 
   public loading = true;
   public editMode = false;
+  public showSiteNotFoundError: boolean = false;
 
   constructor(
     private aoManagerService: AOManagerService,
@@ -42,10 +43,13 @@ export class SiteDetailComponent implements OnInit {
 
   private async getSiteData(siteId: string) {
     const data = await this.aoManagerService.getDataById(siteId);
-    this.siteDataSubject.next(data.toProperties());
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
+    this.loading = false;
+    if (data) {
+      this.siteDataSubject.next(data.toProperties());
+    } else {
+      this.siteDataSubject.next(undefined);
+      this.showSiteNotFoundError = true;
+    }
   }
 
   openGoogleMapsForAddress(address: string) {

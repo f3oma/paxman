@@ -5,17 +5,18 @@
                 <mat-panel-title>Site Details</mat-panel-title>
             </mat-expansion-panel-header>
             <mat-form-field appearance="fill">
-                <mat-label>Site Name</mat-label>
+                <mat-label>F3 Site Name</mat-label>
                 <input formControlName="name" [(ngModel)]="site.name" autocomplete="off" matInput type="text" placeholder="Site Name" required>
             </mat-form-field>
             <mat-form-field appearance="fill">
-                <mat-label>Location</mat-label>
+                <mat-label>Location name</mat-label>
                 <input formControlName="location" [(ngModel)]="site.location" autocomplete="off" matInput type="text" placeholder="Location Name" required>
+                <mat-hint>Example High School</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Address</mat-label>
                 <input formControlName="address" [(ngModel)]="site.address" autocomplete="off" matInput type="text" placeholder="Address" required>
-                <mat-hint>One line - 1234 S. Example Ave. Omaha, NE. 68114</mat-hint>
+                <mat-hint>1234 S. Example Ave. Omaha, NE. 68114</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="fill">
                 <mat-label>Sector</mat-label>

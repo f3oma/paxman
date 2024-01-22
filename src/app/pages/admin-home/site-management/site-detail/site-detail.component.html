@@ -1,67 +1,68 @@
+<ng-container *ngIf="!showSiteNotFoundError; else siteNotFound"></ng-container>
 <ng-container *ngIf="siteData$ | async as site">
     <div class="loading" *ngIf="!loading; else loadingSpinner">
-      <div class="container" *ngIf="site; else siteNotFound" @profileAnimation>
-        <ng-container *ngIf="editMode">
-            <h1>Editing {{site.name}}'s Data</h1>
-            <p>Save when finished</p>
-            <site-data-edit [site]="site" [isEditorAdmin]="true" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></site-data-edit>
-        </ng-container>
-        <ng-container *ngIf="!editMode">
-            <div class="header">
-                <div class="title">
-                  <h1>{{site.name}}</h1>
-                  <button mat-flat-button (click)="toggleEditMode()"><mat-icon>edit</mat-icon> Edit Site Data</button>
-                </div>
-                <p style="margin: 0"><b>{{site.location}}</b></p>
-                <a (click)="openGoogleMapsForAddress(site.address)">{{site.address}}</a>
-                <div class="social-icons" *ngIf="site.xAccount !== ''">
-                  <div class="link">
-                    <a [href]="'https://x.com/' + site.xAccount" target="_blank">
-                      <img id="icon" src="/assets/x_icon.svg"> <span id="link-text">{{site.name}}</span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="bordered-container">
-                <div class="info-section">
-                    <h5>Sector</h5>
-                    <p>{{site.sector}}</p>  
-                </div>
-                <div class="info-section">
-                  <h5>Workout Time</h5>
-                  <p>{{site.weekDay}} @ {{ site.startTimeCST }}</p>
-                </div>
-                <div class="info-section">
-                  <ng-container *ngIf="site.activeSiteQUsers && site.activeSiteQUsers.length > 0">
-                    <h5>Active Site-Q(s)</h5>
-                    <div class="user" *ngFor="let siteq of site.activeSiteQUsers">
-                        <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+        <div class="container" *ngIf="site" @profileAnimation>
+            <ng-container *ngIf="editMode">
+                <h1>Editing {{site.name}}'s Data</h1>
+                <p>Save when finished</p>
+                <site-data-edit [site]="site" [isEditorAdmin]="true" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></site-data-edit>
+            </ng-container>
+            <ng-container *ngIf="!editMode">
+                <div class="header">
+                    <div class="title">
+                    <h1>{{site.name}}</h1>
+                    <button mat-flat-button (click)="toggleEditMode()"><mat-icon>edit</mat-icon> Edit Site Data</button>
                     </div>
-                  </ng-container>
-                </div>
-                <div class="info-section" style="padding-top: 12px">
-                  <ng-container *ngIf="site.retiredSiteQUsers && site.retiredSiteQUsers.length > 0">
-                    <h5>Retired Site-Q(s)</h5>
-                    <div class="user" *ngFor="let siteq of site.retiredSiteQUsers">
-                        <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                    <p style="margin: 0"><b>{{site.location}}</b></p>
+                    <a (click)="openGoogleMapsForAddress(site.address)">{{site.address}}</a>
+                    <div class="social-icons" *ngIf="site.xAccount !== ''">
+                    <div class="link">
+                        <a [href]="'https://x.com/' + site.xAccount" target="_blank">
+                        <img id="icon" src="/assets/x_icon.svg"> <span id="link-text">{{site.name}}</span>
+                        </a>
                     </div>
-                  </ng-container>
+                    </div>
                 </div>
-                <div class="info-section" style="padding-top: 12px">
-                    <ng-container *ngIf="site.foundingSiteQUsers && site.foundingSiteQUsers.length > 0">
-                      <h5>Site Founders</h5>
-                      <div class="user" *ngFor="let siteq of site.foundingSiteQUsers">
-                          <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
-                      </div>
+                <div class="bordered-container">
+                    <div class="info-section">
+                        <h5>Sector</h5>
+                        <p>{{site.sector}}</p>  
+                    </div>
+                    <div class="info-section">
+                    <h5>Workout Time</h5>
+                    <p>{{site.weekDay}} @ {{ site.startTimeCST }}</p>
+                    </div>
+                    <div class="info-section">
+                    <ng-container *ngIf="site.activeSiteQUsers && site.activeSiteQUsers.length > 0">
+                        <h5>Active Site-Q(s)</h5>
+                        <div class="user" *ngFor="let siteq of site.activeSiteQUsers">
+                            <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                        </div>
                     </ng-container>
-                  </div>
-                <div class="info-section" style="padding-top: 12px">
-                  <h5>Site Metadata</h5>
-                  <p>Is site a popup? <b>{{site.popup ? 'Yes' : 'No'}}</b></p>
-                  <p>Is rotating site? <b>{{site.rotating ? 'Yes' : 'No'}}</b></p>
+                    </div>
+                    <div class="info-section" style="padding-top: 12px">
+                    <ng-container *ngIf="site.retiredSiteQUsers && site.retiredSiteQUsers.length > 0">
+                        <h5>Retired Site-Q(s)</h5>
+                        <div class="user" *ngFor="let siteq of site.retiredSiteQUsers">
+                            <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                        </div>
+                    </ng-container>
+                    </div>
+                    <div class="info-section" style="padding-top: 12px">
+                        <ng-container *ngIf="site.foundingSiteQUsers && site.foundingSiteQUsers.length > 0">
+                        <h5>Site Founders</h5>
+                        <div class="user" *ngFor="let siteq of site.foundingSiteQUsers">
+                            <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                        </div>
+                        </ng-container>
+                    </div>
+                    <div class="info-section" style="padding-top: 12px">
+                    <h5>Site Metadata</h5>
+                    <p>Is site a popup? <b>{{site.popup ? 'Yes' : 'No'}}</b></p>
+                    <p>Is rotating site? <b>{{site.rotating ? 'Yes' : 'No'}}</b></p>
+                    </div>
                 </div>
-              </div>
-        </ng-container>
+            </ng-container>
       </div>  
     </div>
   </ng-container>

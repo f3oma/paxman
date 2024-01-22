@@ -1,0 +1,5 @@
+<div class="container">
+    <h1>Add a New AO</h1>
+    <p>Add a new workout location to the site list</p>
+    <site-data-edit [site]="site" [addNewSite]="true" [isEditorAdmin]="true" (userSaved)="navigateToSite()" (userCanceled)="navigateBack()"></site-data-edit>
+</div>
