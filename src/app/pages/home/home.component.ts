@@ -31,7 +31,7 @@ export class HomeComponent {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;
       this.getPaxFromToday();
-      this.getPaxWithAnniversaries()
+      this.getWeeklyPaxWithAnniversaries()
     }
     this.authUserData$ = this.userAuthService.authUserData$.pipe(
         tap(async (data) => {
@@ -67,7 +67,7 @@ export class HomeComponent {
     this.latestPax = latestPax;
   }
 
-  async getPaxWithAnniversaries() {
-    this.anniversaryPax = await this.paxManagerService.getAnniversaryPax();;
+  async getWeeklyPaxWithAnniversaries() {
+    this.anniversaryPax = await this.paxManagerService.getWeeklyAnniversaryPax();
   }
 }

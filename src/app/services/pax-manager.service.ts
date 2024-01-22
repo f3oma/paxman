@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs, or, Timestamp, and } from "@angular/fire/firestore";
+import { addDoc, doc, Firestore, setDoc, getDoc, collection, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs, or, Timestamp, and, orderBy } from "@angular/fire/firestore";
 import { AoLocationRef, UserRef, IPaxUser, PaxUser, NotificationFrequency } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { AOData } from "../models/ao.model";
@@ -145,7 +145,7 @@ export class PaxManagerService {
     }
   }
 
-  async getAnniversaryPax(): Promise<{ id: string, f3Name: string, anniversaryYear: number, joinDate: Date }[]> {
+  async getWeeklyAnniversaryPax(): Promise<{ id: string, f3Name: string, anniversaryYear: number, joinDate: Date }[]> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const yesterday = new Date();
@@ -169,20 +169,20 @@ export class PaxManagerService {
       return Promise.resolve(dailyAnniversaryPaxCached);
     } else {
       const dates = this.getAnniversaryDates();
+      console.log(dates);
       const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
       let queryFilter = [];
       for (let date of dates) {
         queryFilter.push(and(where("joinDate", ">=", date.startTime), where("joinDate", "<", date.endTime)));
       }
-      const q = query(userCollection, or(...queryFilter));
+      const q = query(userCollection, or(...queryFilter), orderBy("joinDate", "asc"));
       const paxList = (await getDocs(q)).docs
           .map((doc) => {
-            console.log(doc);
             return doc.data() as PaxUser
           })
           .map((p) => {
             const todayYear = new Date().getFullYear();
-            const anniversaryDate = dates.find((d) => d.startTime.getDay() === p.joinDate.getDay());
+            const anniversaryDate = dates.find((d) => d.startTime.getDay() === p.joinDate.getDay() && d.startTime.getFullYear() === p.joinDate.getFullYear());
             const anniversaryYear = todayYear - anniversaryDate!.startTime.getFullYear();
             return {
               id: p.id,
@@ -198,18 +198,28 @@ export class PaxManagerService {
   }
 
   private getAnniversaryDates(): { startTime: Date, endTime: Date }[] {
-    const todayYear = new Date().getFullYear();
+    const today = new Date();
+    const dates = [];
+    for (let i = 0; i < 3; i++) {
+      const nextDay = new Date();
+      nextDay.setDate(today.getDate() + i);
+      dates.push(nextDay);
+    } 
+
     const anniversaryDates: { startTime: Date, endTime: Date}[] = [];
-    for (let i = 1; i < 10; i++) {
-      const anniYearStart = new Date();
-      const anniYearEnd = new Date();
-      anniYearStart.setFullYear(todayYear - i);
-      anniYearStart.setHours(0, 0, 0, 0);
-      anniYearEnd.setFullYear(todayYear - i);
-      anniYearEnd.setHours(11, 59, 59, 0);
-      const timestampStart = anniYearStart;
-      const timestampEnd = anniYearEnd;
-      anniversaryDates.push({ startTime: timestampStart, endTime: timestampEnd });
+    for (let date of dates) {
+      for (let i = 1; i < 7; i++) {
+        const todayYear = date.getFullYear();
+        const anniYearStart = new Date(date);
+        const anniYearEnd = new Date(date);
+        anniYearStart.setFullYear(todayYear - i);
+        anniYearStart.setHours(0, 0, 0, 0);
+        anniYearEnd.setFullYear(todayYear - i);
+        anniYearEnd.setHours(11, 59, 59, 0);
+        const timestampStart = anniYearStart;
+        const timestampEnd = anniYearEnd;
+        anniversaryDates.push({ startTime: timestampStart, endTime: timestampEnd });
+      }
     }
     return anniversaryDates;
   }
