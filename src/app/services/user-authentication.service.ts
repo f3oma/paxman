@@ -138,7 +138,6 @@ export class UserAuthenticationService {
   authLogin(provider: AuthProvider): Promise<AuthenticatedUser> {
     return signInWithPopup(this.auth, provider).then(async (res) => {
         const user = res.user;
-        console.log(user);
         localStorage.setItem('userData', JSON.stringify(user));
         const docRef = doc(this.authUserCollectionRef, user.uid).withConverter(this.authenticationUserConverter.getAuthenticationConverter());
         let result = (await getDoc(docRef));

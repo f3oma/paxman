@@ -15,7 +15,6 @@ export class AddNewSiteComponent {
   constructor(private aoManagerService: AOManagerService, private router: Router) {
     const newDefaultSite = this.aoManagerService.defaultNewAO;
     this.site = newDefaultSite.toProperties();
-    console.log(this.site);
   }
 
   async navigateToSite() {

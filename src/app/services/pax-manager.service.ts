@@ -171,7 +171,6 @@ export class PaxManagerService {
       return Promise.resolve(dailyAnniversaryPaxCached);
     } else {
       const dates = this.getAnniversaryDates();
-      console.log(dates);
       const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
       let queryFilter = [];
       for (let date of dates) {
