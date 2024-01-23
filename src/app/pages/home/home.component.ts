@@ -19,7 +19,7 @@ export class HomeComponent {
   public isLoggedIn: boolean = false;
 
   public latestPaxNames: string = '';
-  public latestPax: { f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
+  public latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
   public anniversaryPax: { id: string; f3Name: string; anniversaryYear: number; joinDate: Date; }[] = []
 
   constructor(
@@ -47,8 +47,8 @@ export class HomeComponent {
   }
 
   async getPaxFromToday() {
-    const paxList: { f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[] = await this.paxManagerService.getWeeklyPax();
-    const latestPax: { f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
+    const paxList: { id: string, f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[] = await this.paxManagerService.getWeeklyPax();
+    const latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
     for (let pax of paxList) {
       let paxEhUser = undefined, paxEhLocation = undefined;
       if (pax.ehByUserRef)
@@ -58,6 +58,7 @@ export class HomeComponent {
         paxEhLocation = await this.aoManagerService.getDataByRef(pax.ehLocationRef);
 
       latestPax.push({
+        id: pax.id,
         f3Name: pax.f3Name,
         ehUserF3Name: paxEhUser !== undefined ? paxEhUser.f3Name : 'None',
         ehLocationName: paxEhLocation !== undefined ? paxEhLocation.name : 'Unknown'

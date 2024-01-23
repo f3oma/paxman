@@ -94,7 +94,7 @@ export class PaxManagerService {
   }
 
   // Refreshes weekly pax daily
-  public async getWeeklyPax(): Promise<{ f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[]> {
+  public async getWeeklyPax(): Promise<{ id: string, f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[]> {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const yesterday = new Date();
@@ -116,6 +116,7 @@ export class PaxManagerService {
           ehLocationRef = this.getLocationReference(pax.ehLocationRefPath);
 
         weeklyUsersCached.push({
+          id: pax.id,
           f3Name: pax.f3Name,
           ehByUserRef: ehByUserRef,
           ehLocationRef: ehLocationRef
@@ -127,17 +128,18 @@ export class PaxManagerService {
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
       const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
       const q = query(userCollection, where("joinDate", ">", oneWeekAgo));
-      const paxUsers: { f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef }[] = (await getDocs(q)).docs
+      const paxUsers: { id: string, f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef }[] = (await getDocs(q)).docs
         .map((doc) => doc.data() as PaxUser)
         .map((p) => {
           return {
+            id: p.id,
             f3Name: p.f3Name,
             ehByUserRef: p.ehByUserRef,
             ehLocationRef: p.ehLocationRef
           }
         });
       const cachedPaxUsers = paxUsers.map((p) => {
-        return { f3Name: p.f3Name, ehByUserRefPath: p.ehByUserRef?.path, ehLocationRefPath: p.ehLocationRef?.path };
+        return { id: p.id, f3Name: p.f3Name, ehByUserRefPath: p.ehByUserRef?.path, ehLocationRefPath: p.ehLocationRef?.path };
       })
       localStorage.setItem('weeklyPax', JSON.stringify(cachedPaxUsers));
       localStorage.setItem('weeklyPaxDailyRefreshDate', today.toDateString());
