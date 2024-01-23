@@ -5,6 +5,12 @@ import { PaxModelConverter } from "../utils/pax-model.converter";
 import { AOData } from "../models/ao.model";
 import { AODataConverter } from "../utils/ao-data.converter";
 
+export interface AnniversaryResponse {
+    startDate: Date,
+    endDate: Date,
+    paxList: { id: string, f3Name: string, anniversaryYear: number, joinDate: Date }[]
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -147,20 +153,19 @@ export class PaxManagerService {
     }
   }
 
-  async getWeeklyAnniversaryPax(): Promise<{ id: string, f3Name: string, anniversaryYear: number, joinDate: Date }[]> {
+  async getWeeklyAnniversaryPax(): Promise<AnniversaryResponse> {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const yesterday = new Date();
-    yesterday.setHours(0, 0, 0, 0);
-    yesterday.setDate(yesterday.getDate() - 1);
+    const firstDay = today.getDate() - today.getDay();
+    const weekStartDate = new Date(today.setDate(firstDay));
+    const weekEndDate = new Date(today.setDate(weekStartDate.getDate()+6));
 
     const dailyAnniversaryRefreshDate = localStorage.getItem('dailyAnniversaryRefreshDate');
     const dailyAnniversaryPax = localStorage.getItem('dailyAnniversaryPax');
 
-    if (dailyAnniversaryRefreshDate && dailyAnniversaryPax && new Date(dailyAnniversaryRefreshDate) > yesterday) {
+    if (dailyAnniversaryRefreshDate && dailyAnniversaryPax && new Date(dailyAnniversaryRefreshDate) < weekEndDate) {
       const parsed = JSON.parse(dailyAnniversaryPax);
       const dailyAnniversaryPaxCached = [];
-      for (let pax of parsed) {
+      for (let pax of parsed.paxList) {
         dailyAnniversaryPaxCached.push({
           id: pax.id,
           f3Name: pax.f3Name,
@@ -168,16 +173,31 @@ export class PaxManagerService {
           joinDate: pax.joinDate
         });
       }
-      return Promise.resolve(dailyAnniversaryPaxCached);
+      return Promise.resolve({
+        startDate: new Date(parsed.startDate),
+        endDate: new Date(parsed.endDate),
+        paxList: dailyAnniversaryPaxCached
+      });
     } else {
       const dates = this.getAnniversaryDates();
       const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
-      let queryFilter = [];
+      let queryFilter1 = [];
+      let queryFilter2 = [];
       for (let date of dates) {
-        queryFilter.push(and(where("joinDate", ">=", date.startTime), where("joinDate", "<", date.endTime)));
+        const statement = and(where("joinDate", ">=", date.startTime), where("joinDate", "<", date.endTime));
+        if (queryFilter1.length < 24) {
+          queryFilter1.push(statement)
+        } else {
+          queryFilter2.push(statement);
+        }
       }
-      const q = query(userCollection, or(...queryFilter), orderBy("joinDate", "asc"));
-      const paxList = (await getDocs(q)).docs
+
+      // Need to split the queries into two due to number of queryFilters.
+      const q1 = query(userCollection, or(...queryFilter1), orderBy("joinDate", "asc"));
+      const q2 = query(userCollection, or(...queryFilter2), orderBy("joinDate", "asc"));
+
+      const promise = await Promise.all([await getDocs(q1), await getDocs(q2)]);
+      const paxList = [...promise[0].docs, ...promise[1].docs]
           .map((doc) => {
             return doc.data() as PaxUser
           })
@@ -192,18 +212,26 @@ export class PaxManagerService {
               joinDate: p.joinDate
             }
           });
-        localStorage.setItem('dailyAnniversaryPax', JSON.stringify(paxList));
-        localStorage.setItem('dailyAnniversaryRefreshDate', today.toDateString());
-        return paxList;
+        const response = {
+          startDate: weekStartDate,
+          endDate: weekEndDate,
+          paxList
+        };
+        localStorage.setItem('dailyAnniversaryPax', JSON.stringify(response));
+        localStorage.setItem('dailyAnniversaryRefreshDate', weekEndDate.toDateString());
+        return response;
     }
   }
 
   private getAnniversaryDates(): { startTime: Date, endTime: Date }[] {
     const today = new Date();
+    const firstDay = today.getDate() - today.getDay();
+    const weekStartDate = new Date(today.setDate(firstDay));
+
     const dates = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 7; i++) {
       const nextDay = new Date();
-      nextDay.setDate(today.getDate() + i);
+      nextDay.setDate(weekStartDate.getDate() + i);
       dates.push(nextDay);
     } 
 

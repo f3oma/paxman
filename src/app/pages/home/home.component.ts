@@ -21,6 +21,8 @@ export class HomeComponent {
   public latestPaxNames: string = '';
   public latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
   public anniversaryPax: { id: string; f3Name: string; anniversaryYear: number; joinDate: Date; }[] = []
+  public anniversaryEndDate: Date = new Date();
+  public anniversaryStartDate: Date = new Date();
 
   constructor(
     private userAuthService: UserAuthenticationService,
@@ -69,6 +71,9 @@ export class HomeComponent {
   }
 
   async getWeeklyPaxWithAnniversaries() {
-    this.anniversaryPax = await this.paxManagerService.getWeeklyAnniversaryPax();
+    const anniversaryResponse = await this.paxManagerService.getWeeklyAnniversaryPax();
+    this.anniversaryStartDate = anniversaryResponse.startDate;
+    this.anniversaryEndDate = anniversaryResponse.endDate;
+    this.anniversaryPax = anniversaryResponse.paxList.sort((a, b) => a.anniversaryYear < b.anniversaryYear ? 1 : -1);
   }
 }
