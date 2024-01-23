@@ -231,7 +231,12 @@ export class SiteDataEditComponent implements OnInit {
         activeSiteQUsers.push(paxUser);
         if (this.originalActiveSiteQUsers.filter((o) => o.id === paxUser.id).length === 0) {
           // I'm new!
-          await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+          try {
+            await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+          } catch (e) {
+            // If we land here, the user did not have an authentication account / data claimed.
+            // We are allowing the process to continue anyway.
+          }
           await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], paxUser.id);
         }
       }
@@ -278,7 +283,12 @@ export class SiteDataEditComponent implements OnInit {
       const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
-        await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+        try {
+          await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+        } catch (e) {
+          // If we land here, the user did not have an authentication account / data claimed.
+          // We are allowing the process to continue anyway.
+        }
         retiredSiteQUsers.push(paxUser);
       }
     }
@@ -300,7 +310,12 @@ export class SiteDataEditComponent implements OnInit {
       const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
-        await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+        try {
+          await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
+        } catch (e) {
+          // If we land here, the user did not have an authentication account / data claimed.
+          // We are allowing the process to continue anyway.
+        }
         await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site Founder')[0], siteq.id);
         foundingSiteQUsers.push(paxUser);
       }
