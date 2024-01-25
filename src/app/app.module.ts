@@ -18,6 +18,7 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatSelectModule} from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
@@ -90,6 +91,7 @@ import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
+    provideAnalytics(() => getAnalytics()),
     NgbModule,
     MatSelectModule,
     MatAutocompleteModule,
