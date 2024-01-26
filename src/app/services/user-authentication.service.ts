@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Auth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, AuthProvider, TwitterAuthProvider } from "@angular/fire/auth";
+import { Auth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, AuthProvider, TwitterAuthProvider, sendPasswordResetEmail, confirmPasswordReset } from "@angular/fire/auth";
 import { collection, CollectionReference, doc, DocumentData, DocumentReference, Firestore, getDoc, getDocs, query, QueryDocumentSnapshot, setDoc, where } from "@angular/fire/firestore";
 import { BehaviorSubject, Subject } from "rxjs";
 import { AuthenticatedUser, UserRole } from "../models/authenticated-user.model";
@@ -249,6 +249,14 @@ export class UserAuthenticationService {
     this.authUserData.next(result);
     this.cachedCurrentAuthData = result;
     return;
+  }
+
+  async forgotPasswordEmail(passwordResetEmail: string) {
+    return await sendPasswordResetEmail(this.auth, passwordResetEmail);
+  }
+
+  async confirmPasswordChange(code: string, password: string) {
+    return await confirmPasswordReset(this.auth, code, password);
   }
 
   public async validatePromoteRole(paxUserData: IPaxUser): Promise<boolean> {

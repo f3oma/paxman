@@ -2,6 +2,12 @@
   <h1>Login to PaxNet</h1>
   <p><b>If you've never signed in here before</b>, you'll need to create an account or connect with an authentication provider.</p>
   <div class="center">
+    <div class="sso">
+      <button class="sign-up-btn" id="google" (click)="loginWithGoogle()">Continue with Google</button>
+      <button class="sign-up-btn" id="X" (click)="loginWithX()">Continue with X</button>
+    </div>
+    <hr/>
+    <p>or</p>
     <form [formGroup]="loginForm" class="login-form">
       <div class="error" *ngIf="signInErrorMessage !== ''">{{signInErrorMessage}}</div>
       <mat-form-field appearance="outline">
@@ -14,13 +20,8 @@
       </mat-form-field>
       <button class="sign-up-btn" id="submit" (click)="loginUser()">Login</button>
     </form>
-    <hr/>
     <p>Need an account? <a routerLink="/register"><b>Sign up with email</b></a></p>
-    <p>or</p>
-    <div class="sso">
-      <button class="sign-up-btn" id="google" (click)="loginWithGoogle()">Continue with Google</button>
-      <button class="sign-up-btn" id="X" (click)="loginWithX()">Continue with X</button>
-    </div>
+    <a [routerLink]="['/forgot-password']" style="margin: 16px 16px 0 16px; color: #444">Trouble logging in?</a>
   </div>
 </div>
 
