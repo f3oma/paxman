@@ -44,11 +44,11 @@
           <h5>Join Date</h5>
           <p>{{user.joinDate | date: 'MM-dd-YYYY'}}</p>
         </div>
-        <div class="info-section dropdown" ngbDropdown *ngIf="userProfileData && userProfileData.countOfEHUsers > 0">
+        <div class="info-section dropdown" ngbDropdown *ngIf="userProfileData && userProfileData.ehUsers.length > 0; else plainCountView">
           <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
               <h5 id="eh-count">My EH Count</h5>
           </a>
-          <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown" *ngIf="userProfileData">
+          <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
             <a *ngFor="let user of userProfileData.ehUsers" ngbDropdownItem class="dropdown-item" [routerLink]="['/users/', user.id]">{{user.f3Name}}</a>
           </div>
           <p>{{userProfileData.countOfEHUsers}} people</p>
@@ -96,5 +96,12 @@
 <ng-template #loadingSpinner>
   <div class="fill-container">
     <mat-spinner></mat-spinner>
+  </div>
+</ng-template>
+
+<ng-template #plainCountView>
+  <div class="info-section">
+    <h5 id="eh-count">My EH Count</h5>
+    <p>{{userProfileData?.countOfEHUsers || 0 }} people</p>
   </div>
 </ng-template>
