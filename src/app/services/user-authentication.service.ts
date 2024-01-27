@@ -280,7 +280,8 @@ export class UserAuthenticationService {
     const authQueryResult = await getDocs(authQuery);
 
     if (authQueryResult.empty) {
-      throw new Error("User has not linked their authentication account and data.");
+      // No linked auth account...
+      return Promise.resolve();
     } else {
       const userDoc = authQueryResult.docs[0];
       const userDocRef = userDoc.ref;
@@ -299,7 +300,8 @@ export class UserAuthenticationService {
 
     if (authQueryResult.empty) {
       // This should not happen if the user has a current role assigned
-      throw new Error("User does not have a linked authentication account");
+      // throw new Error("User does not have a linked authentication account");
+      return Promise.resolve();
     } else {
       const userDoc = authQueryResult.docs[0];
       const userDocRef = userDoc.ref;

@@ -49,7 +49,7 @@ import { SiteDataEditComponent } from './components/site-data-edit/site-data-edi
 import { MatChipsModule } from '@angular/material/chips';
 import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
 import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
-// import { LogWorkoutComponent } from './pages/log-workout/log-workout.component';
+import { LogWorkoutComponent } from './pages/log-workout/log-workout.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 @NgModule({
@@ -79,7 +79,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     SiteDataEditComponent,
     UnsubscribeComponent,
     AddNewSiteComponent,
-    // LogWorkoutComponent,
+    LogWorkoutComponent,
     ForgotPasswordComponent
   ],
   imports: [

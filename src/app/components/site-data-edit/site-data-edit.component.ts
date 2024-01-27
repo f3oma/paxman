@@ -64,6 +64,7 @@ export class SiteDataEditComponent implements OnInit {
   originalFoundingSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
 
   addOnBlur = true;
+  saveLoading = false;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   constructor(
@@ -133,7 +134,7 @@ export class SiteDataEditComponent implements OnInit {
 
   public async saveData(site: IAOData) {
     if (this.form.valid && this.validateSiteLeaders()) {
-
+      this.saveLoading = true;
       // These are very topical for now and need additional time to
       // validate that the user is not also a site q elsewhere before removing
       // any access. Time should be spent here...
@@ -146,6 +147,7 @@ export class SiteDataEditComponent implements OnInit {
       } else {
         await this.aoManagerService.updateSiteData(site);
       }
+      this.saveLoading = false;
       this.userSavedEmitter.emit(true);
     }
   }
@@ -231,12 +233,7 @@ export class SiteDataEditComponent implements OnInit {
         activeSiteQUsers.push(paxUser);
         if (this.originalActiveSiteQUsers.filter((o) => o.id === paxUser.id).length === 0) {
           // I'm new!
-          try {
-            await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
-          } catch (e) {
-            // If we land here, the user did not have an authentication account / data claimed.
-            // We are allowing the process to continue anyway.
-          }
+          await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
           await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], paxUser.id);
         }
       }
@@ -283,12 +280,7 @@ export class SiteDataEditComponent implements OnInit {
       const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
-        try {
-          await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
-        } catch (e) {
-          // If we land here, the user did not have an authentication account / data claimed.
-          // We are allowing the process to continue anyway.
-        }
+        await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
         retiredSiteQUsers.push(paxUser);
       }
     }
@@ -310,12 +302,7 @@ export class SiteDataEditComponent implements OnInit {
       const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
-        try {
-          await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id);
-        } catch (e) {
-          // If we land here, the user did not have an authentication account / data claimed.
-          // We are allowing the process to continue anyway.
-        }
+        await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
         await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site Founder')[0], siteq.id);
         foundingSiteQUsers.push(paxUser);
       }

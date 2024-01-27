@@ -161,7 +161,10 @@
     </form>
 
     <div class="actions">
-        <button mat-raised-button class="saveData" (click)="saveData(site)">Save</button>
+        <button mat-raised-button class="saveData" (click)="saveData(site)">
+          <span *ngIf="!saveLoading">Save</span>
+          <span *ngIf="saveLoading" class="spinner-border spinner-border-sm mr-1"></span>
+        </button>
         <button mat-flat-button (click)="cancel()">Cancel</button>
     </div>
 </div>

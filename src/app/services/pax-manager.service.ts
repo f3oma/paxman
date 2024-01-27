@@ -271,12 +271,11 @@ export class PaxManagerService {
     return anniversaryDates;
   }
 
-  public async getNumberOfEHsByUserId(userId: string) {
+  public async getAllEHRefsForUserId(userId: string): Promise<DocumentReference<DocumentData>[]> {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
     const userRef = doc(userCollection, userId);
     const q = (await query(userCollection, where("ehByUserRef", "==", userRef)));
-    const count = (await getCountFromServer(q)).data().count;
-    return count;
+    return (await getDocs(q)).docs.map((d) => d.ref);
   }
 
   private getLocationReference(aoDBPath: string) {

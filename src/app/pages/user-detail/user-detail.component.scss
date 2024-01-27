@@ -18,6 +18,16 @@
   justify-content: center;
 }
 
+#navbarDropdown {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  h5 {
+    margin: 0;
+  }
+}
+
 .container {
   padding: 16px 32px;
 
