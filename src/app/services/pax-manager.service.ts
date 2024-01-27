@@ -131,7 +131,7 @@ export class PaxManagerService {
       return Promise.resolve(weeklyUsersCached);
     } else {
       var oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 3);
       const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
       const q = query(userCollection, where("joinDate", ">", oneWeekAgo));
       const paxUsers: { id: string, f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef }[] = (await getDocs(q)).docs

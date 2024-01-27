@@ -76,6 +76,14 @@ export class UserDataEditComponent {
   }
 
   async ngOnInit() {
+    // Add new links here when added...
+    if (this.userProfileData && this.userProfileData.links['x'] === undefined) {
+      this.userProfileData.links['x'] = { url: '' };
+    }
+    if (this.userProfileData && this.userProfileData.links['strava'] === undefined) {
+      this.userProfileData.links['strava'] = { url: '' };
+    }
+
     if (this.user.ehByUserRef) {
       const refData = await this.paxManagerService.getPaxInfoByRef(this.user.ehByUserRef);
       if (refData !== undefined) {
@@ -94,14 +102,6 @@ export class UserDataEditComponent {
           name: refData.name
         };
       }
-    }
-
-    // Add new links here when added...
-    if (this.userProfileData && this.userProfileData.links['x'] === undefined) {
-      this.userProfileData.links['x'] = { url: '' };
-    }
-    if (this.userProfileData && this.userProfileData.links['strava'] === undefined) {
-      this.userProfileData.links['strava'] = { url: '' };
     }
   }
 
@@ -151,7 +151,7 @@ export class UserDataEditComponent {
     if (!this.userProfileData) {
       return;
     }
-
+    
     // Correct any empty links
     for (let record in this.userProfileData.links) {
       const link = this.userProfileData.links[record];
