@@ -1,5 +1,6 @@
 import { FocusMonitor } from "@angular/cdk/a11y";
 import { BooleanInput, coerceBooleanProperty } from "@angular/cdk/coercion";
+import { BACKSPACE } from "@angular/cdk/keycodes";
 import { Component, ElementRef, Inject, Input, OnDestroy, Optional, Self, ViewChild } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, NgControl, Validators } from "@angular/forms";
 import { MatFormField, MatFormFieldControl, MAT_FORM_FIELD } from "@angular/material/form-field";
@@ -19,6 +20,7 @@ import { PhoneNumber } from "src/app/models/phonenumber.model";
 })
 export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldControl<PhoneNumber>, OnDestroy {
   static nextId = 0;
+
   @ViewChild('area') areaInput!: HTMLInputElement;
   @ViewChild('exchange') exchangeInput!: HTMLInputElement;
   @ViewChild('subscriber') subscriberInput!: HTMLInputElement;
@@ -141,7 +143,10 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
     }
   }
 
-  autoFocusPrev(control: AbstractControl, prevElement: HTMLInputElement): void {
+  autoFocusPrev(event: KeyboardEvent, control: AbstractControl, prevElement: HTMLInputElement): void {
+    if (event.keyCode !== BACKSPACE) {
+      return;
+    }
     if (control.value.length < 1) {
       this._focusMonitor.focusVia(prevElement, 'program');
     }

@@ -18,7 +18,7 @@
          autocomplete="tel-national"
          aria-label="Exchange code"
          (input)="_handleInput(parts.controls.exchange, subscriber)"
-         (keydown.backspace)="autoFocusPrev(parts.controls.exchange, area)"
+         (keydown)="autoFocusPrev($event, parts.controls.exchange, area)"
          #exchange>
   <span class="phone-input-spacer">-</span>
   <input class="phone-input-element"
@@ -28,6 +28,6 @@
          autocomplete="tel-local"
          aria-label="Subscriber number"
          (input)="_handleInput(parts.controls.subscriber)"
-         (keydown.backspace)="autoFocusPrev(parts.controls.subscriber, exchange)"
+         (keydown)="autoFocusPrev($event, parts.controls.subscriber, exchange)"
          #subscriber>
 </div>
