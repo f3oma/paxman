@@ -1,5 +1,6 @@
 import { FocusMonitor } from "@angular/cdk/a11y";
 import { BooleanInput, coerceBooleanProperty } from "@angular/cdk/coercion";
+import { BACKSPACE } from "@angular/cdk/keycodes";
 import { Component, ElementRef, Inject, Input, OnDestroy, Optional, Self, ViewChild } from "@angular/core";
 import { AbstractControl, ControlValueAccessor, FormBuilder, FormControl, NgControl, Validators } from "@angular/forms";
 import { MatFormField, MatFormFieldControl, MAT_FORM_FIELD } from "@angular/material/form-field";
@@ -148,7 +149,11 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
     }
   }
 
-  autoFocusPrev(control: AbstractControl, prevElement: HTMLInputElement): void {
+  autoFocusPrev(event: KeyboardEvent, control: AbstractControl, prevElement: HTMLInputElement): void {
+    console.log(event)
+    if (event.keyCode !== BACKSPACE) {
+      return;
+    }
     console.log("autoFocusPrev");
     console.log(prevElement);
     console.log(control.value.length);
