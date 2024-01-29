@@ -19,6 +19,7 @@ import { PhoneNumber } from "src/app/models/phonenumber.model";
 })
 export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldControl<PhoneNumber>, OnDestroy {
   static nextId = 0;
+
   @ViewChild('area') areaInput!: HTMLInputElement;
   @ViewChild('exchange') exchangeInput!: HTMLInputElement;
   @ViewChild('subscriber') subscriberInput!: HTMLInputElement;
@@ -120,6 +121,9 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   onFocusIn(event: FocusEvent) {
+    console.log("onFocusIn");
+    console.log(event);
+    console.log(this.focused);
     if (!this.focused) {
       this.focused = true;
       this.stateChanges.next();
@@ -127,6 +131,9 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   onFocusOut(event: FocusEvent) {
+    console.log("onFocusOut");
+    console.log(event);
+    console.log(event.relatedTarget);
     if (!this._elementRef.nativeElement.contains(event.relatedTarget as Element)) {
       this.touched = true;
       this.focused = false;
@@ -142,6 +149,9 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   autoFocusPrev(control: AbstractControl, prevElement: HTMLInputElement): void {
+    console.log("autoFocusPrev");
+    console.log(prevElement);
+    console.log(control.value.length);
     if (control.value.length < 1) {
       this._focusMonitor.focusVia(prevElement, 'program');
     }
