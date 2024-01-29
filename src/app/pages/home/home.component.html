@@ -14,7 +14,7 @@
     </div>
   </div>
   <div class="side-container" *ngIf="isLoggedIn">
-    <div class="new-pax" *ngIf="latestPax && latestPax.length > 0">
+    <div class="new-pax" *ngIf="latestPax && latestPax.length > 0" @fadeInOut>
       <h4>New Pax</h4>
       <div class="recent-pax-list">
         <div class="pax-line" *ngFor="let pax of latestPax" [routerLink]="['/users/' + pax.id]">
@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="new-pax" *ngIf="anniversaryPax && anniversaryPax.length > 0">
+    <div class="new-pax" *ngIf="anniversaryPax && anniversaryPax.length > 0" @fadeInOut>
       <h4>Weekly Anniversaries</h4>
       <p>{{anniversaryStartDate | date: "MM/dd"}} - {{anniversaryEndDate | date: "MM/dd"}}</p>
       <div class="recent-pax-list">

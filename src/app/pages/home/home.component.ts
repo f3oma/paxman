@@ -1,3 +1,4 @@
+import { transition, trigger, useAnimation } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
@@ -6,11 +7,18 @@ import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
 import { AnniversaryResponsePax, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
+import { fadeIn, fadeOut } from 'src/app/utils/animations';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  animations: [
+    trigger("fadeInOut", [
+      transition("void => *", [useAnimation(fadeIn)]),
+      transition("* => void", [useAnimation(fadeOut)]),
+    ])
+  ]
 })
 export class HomeComponent {
 
