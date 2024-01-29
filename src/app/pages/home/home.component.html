@@ -36,6 +36,7 @@
         <div class="pax-line" *ngFor="let pax of anniversaryPax" [routerLink]="['/users/' + pax.id]">
           <div class="pax-data">
             <h5>{{pax.f3Name}}</h5>
+            <p>{{pax.fullName}}</p>
             <p>Joined: {{pax.joinDate | date: 'MM-dd-YYYY'}}</p>
           </div>
           <div class="welcome">

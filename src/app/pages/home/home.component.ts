@@ -4,7 +4,7 @@ import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
 import { AoLocationRef, UserRef, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
-import { PaxManagerService } from 'src/app/services/pax-manager.service';
+import { AnniversaryResponsePax, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 
 @Component({
@@ -20,7 +20,7 @@ export class HomeComponent {
 
   public latestPaxNames: string = '';
   public latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
-  public anniversaryPax: { id: string; f3Name: string; anniversaryYear: number; joinDate: Date; }[] = []
+  public anniversaryPax: AnniversaryResponsePax[] = []
   public anniversaryEndDate: Date = new Date();
   public anniversaryStartDate: Date = new Date();
 

@@ -8,7 +8,15 @@ import { AODataConverter } from "../utils/ao-data.converter";
 export interface AnniversaryResponse {
     startDate: Date,
     endDate: Date,
-    paxList: { id: string, f3Name: string, anniversaryYear: number, joinDate: Date }[]
+    paxList: AnniversaryResponsePax[]
+}
+
+export interface AnniversaryResponsePax { 
+  id: string, 
+  f3Name: string, 
+  fullName: string, 
+  anniversaryYear: number, 
+  joinDate: Date 
 }
 
 @Injectable({
@@ -164,41 +172,20 @@ export class PaxManagerService {
     const weekStartDate = new Date(today.setDate(firstDay));
     const weekEndDate = new Date(today.setDate(weekStartDate.getDate()+6));
 
-    const weeklyAnniversaryRefreshDate = localStorage.getItem('weeklyAnniversaryRefreshDate');
-    const weeklyAnniversaryPax = localStorage.getItem('weeklyAnniversaryPax');
-
-    if (weeklyAnniversaryRefreshDate && weeklyAnniversaryPax && new Date(weeklyAnniversaryRefreshDate) < today) {
-      const parsed = JSON.parse(weeklyAnniversaryPax);
-      const dailyAnniversaryPaxCached = [];
-      for (let pax of parsed.paxList) {
-        dailyAnniversaryPaxCached.push({
-          id: pax.id,
-          f3Name: pax.f3Name,
-          anniversaryYear: pax.anniversaryYear,
-          joinDate: pax.joinDate
-        });
-      }
-      return Promise.resolve({
-        startDate: new Date(parsed.startDate),
-        endDate: new Date(parsed.endDate),
-        paxList: dailyAnniversaryPaxCached
-      });
+    const anniversaryString = weekStartDate.toISOString() + "-anniversaries";
+    const weeklyAnniversaryDocRef = doc(this.firestore, 'anniversaries_cache/' + anniversaryString);
+    const weeklyAnniversaryDoc = (await getDoc(weeklyAnniversaryDocRef));
+    if (weeklyAnniversaryDoc.exists()) {
+      const data = weeklyAnniversaryDoc.data();
+      const jsonString = data['jsonString'];
+      return JSON.parse(jsonString);
     } else {
-      const anniversaryString = weekStartDate.toISOString() + "-anniversaries";
-      const weeklyAnniversaryDocRef = doc(this.firestore, 'anniversaries_cache/' + anniversaryString);
-      const weeklyAnniversaryDoc = (await getDoc(weeklyAnniversaryDocRef));
-      if (weeklyAnniversaryDoc.exists()) {
-        const data = weeklyAnniversaryDoc.data();
-        const jsonString = data['jsonString'];
-        return JSON.parse(jsonString);
-      } else {
-        const anniversaries = await this.calculateAnniversaries(weekStartDate, weekEndDate);
-        const anniversariesStringed = JSON.stringify(anniversaries);
-        await setDoc(weeklyAnniversaryDocRef, { jsonString: anniversariesStringed });
-        localStorage.setItem('weeklyAnniversaryPax', anniversariesStringed );
-        localStorage.setItem('weeklyAnniversaryRefreshDate', weekEndDate.toDateString());
-        return anniversaries;
-      }
+      const anniversaries = await this.calculateAnniversaries(weekStartDate, weekEndDate);
+      const anniversariesStringed = JSON.stringify(anniversaries);
+      await setDoc(weeklyAnniversaryDocRef, { jsonString: anniversariesStringed });
+      localStorage.setItem('weeklyAnniversaryPax', anniversariesStringed );
+      localStorage.setItem('weeklyAnniversaryRefreshDate', weekEndDate.toDateString());
+      return anniversaries;
     }
   }
 
@@ -232,6 +219,7 @@ export class PaxManagerService {
         return {
           id: p.id,
           f3Name: p.f3Name,
+          fullName: `${p.firstName} ${p.lastName}`, 
           anniversaryYear,
           joinDate: p.joinDate
         }

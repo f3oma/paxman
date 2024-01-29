@@ -100,8 +100,8 @@
 </ng-template>
 
 <ng-template #plainCountView>
-  <div class="info-section">
+  <div class="info-section" *ngIf="userProfileData?.countOfEHUsers">
     <h5 id="eh-count">My EH Count</h5>
-    <p>{{userProfileData?.countOfEHUsers || 0 }} people</p>
+    <p>{{userProfileData?.countOfEHUsers}} people</p>
   </div>
 </ng-template>
