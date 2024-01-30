@@ -34,15 +34,20 @@ export class UserProfileService {
         }
     }
 
-    public async getProfileByPaxUser(paxUser: PaxUser) {
-        return this.getProfileByUserId(paxUser.id);
-    }
-
-    public async getProfileByUserId(userId: string) {
+    private async getProfileByUserId(userId: string) {
         const docRef = doc(this.userProfileCollection, userId);
-        const getDocResponse = (await getDoc(docRef));
+        let getDocResponse = (await getDoc(docRef));
         if (getDocResponse.exists()) {
-            const entity = getDocResponse.data() as IUserProfileDataEntity;
+            let entity = getDocResponse.data() as IUserProfileDataEntity;
+            
+            // Quickly update the details before returning
+            if (entity.countOfEHUsers > 0 && (!entity.ehUserRefs || entity.ehUserRefs.length === 0)) {
+                console.log("Update time");
+                await this.updateEHRefInfo(userId, entity, docRef);
+                getDocResponse = (await getDoc(docRef))
+                entity = getDocResponse.data() as IUserProfileDataEntity;
+            }
+
             const users = await this.getUsersFromRefs(entity.ehUserRefs);
             let profileData: UserProfileData = {
                 badges: entity.badges,
@@ -69,16 +74,25 @@ export class UserProfileService {
     }
 
     public async createProfileData(userId: string, profileData: UserProfileData) {
+        const createReference = doc(this.userProfileCollection, userId);
         let profileDataEntity: Partial<IUserProfileDataEntity> = {
             badges: profileData.badges,
             links: profileData.links,
         };
-
-        const createReference = doc(this.userProfileCollection, userId);
         const pax = await this.paxManagerService.getAllEHRefsForUserId(userId);
         profileDataEntity.countOfEHUsers = pax.length;
         profileDataEntity.ehUserRefs = pax;
         return await setDoc(createReference, profileDataEntity);
+    }
+
+    private async updateEHRefInfo(
+        userId: string, 
+        profileDataEntity: Partial<IUserProfileDataEntity>,
+        documentReference: DocumentReference) {
+        const pax = await this.paxManagerService.getAllEHRefsForUserId(userId);
+        profileDataEntity.countOfEHUsers = pax.length;
+        profileDataEntity.ehUserRefs = pax;
+        return await updateDoc(documentReference, profileDataEntity);
     }
 
     public async updateUserProfile(userId: string, profileData: Partial<UserProfileData> | null): Promise<void> {
