@@ -1,5 +1,8 @@
 .container {
     padding: 16px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 
     h1 {
         font-size: 24px;
@@ -15,6 +18,7 @@
     }
 } 
 
+.mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
 
 #claim-btn {
     background-color: #000;

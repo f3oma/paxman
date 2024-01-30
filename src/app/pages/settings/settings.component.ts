@@ -15,11 +15,16 @@ import { UserProfileService } from 'src/app/services/user-profile.service';
 })
 export class SettingsComponent {
 
-  public userProfileData: UserProfileData | null = null;
+  public userProfileDataSubject: BehaviorSubject<UserProfileData | null> = new BehaviorSubject<UserProfileData | null>(null);
+  public userProfileData$: Observable<UserProfileData | null> = this.userProfileDataSubject.asObservable();
+
   public authUserData$: Observable<AuthenticatedUser | undefined>;
+
   public userDataSubject: BehaviorSubject<IPaxUser | undefined> = new BehaviorSubject<IPaxUser | undefined>(undefined);
   public paxUserData$: Observable<IPaxUser | undefined> = this.userDataSubject.asObservable();
   private paxDataIdCached: string = "";
+
+  public loading = true;
 
   constructor(
     private userAuthService: UserAuthenticationService,
@@ -32,8 +37,8 @@ export class SettingsComponent {
           const paxDataId = data?.paxDataId;
           if (paxDataId && paxDataId !== undefined) {
             this.paxDataIdCached = paxDataId;
-              await this.getPaxUserData(paxDataId);
-              await this.getUserProfileData(paxDataId);
+            await this.getPaxUserData(paxDataId);
+            await this.getUserProfileData(paxDataId);
           }
       })
     );
@@ -44,14 +49,15 @@ export class SettingsComponent {
   }
 
   async getUserProfileData(userId: string) {
-    this.userProfileService.getOrCreateUserProfileById(userId).then((userProfile) => {
-      this.userProfileData = userProfile;
-    })
+    const userProfileData = await this.userProfileService.getOrCreateUserProfileById(userId);
+    this.userProfileDataSubject.next(userProfileData);
+    setTimeout(() => {
+      this.loading = false;
+    }, 500);
   }
 
   private async getPaxUserData(id: string) {
     const paxData = await (await this.paxManagerService.getDataByAuthId(id)).data();
     this.userDataSubject.next(paxData?.toProperties());
   }
-
 }

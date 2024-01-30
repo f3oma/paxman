@@ -1,11 +1,15 @@
 <div class="container" *ngIf="authUserData$ | async as authUser">
-    <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
-        <h1>User Settings</h1>
-        <p>Modify your personal information & preferences</p>
-        <user-data-edit [user]="user" [userProfileData]="userProfileData" [isEditorAdmin]="false" (userSaved)="navigateToProfile()" (userCanceled)="navigateToProfile()"></user-data-edit>
+    <div class="loading" *ngIf="!loading; else loadingSpinner">
+        <div class="pax-data" *ngIf="paxUserData$ | async as user; else noPaxData">
+            <div class="profiledata" *ngIf="userProfileData$ | async as userProfileData; else noPaxData">
+                <h1>User Profile Settings</h1>
+                <p>Modify your personal information & preferences</p>
+                <user-data-edit [user]="user" [userProfileData]="userProfileData" [isEditorAdmin]="false" (userSaved)="navigateToProfile()" (userCanceled)="navigateToProfile()"></user-data-edit>
+            </div>
+        </div>
     </div>
 </div>
-    
+
 <ng-template #noPaxData>
     <p>Thanks for joining F3 Omaha! The next step is to claim your F3 Data.</p>
     <p><b>What does this mean?</b> We want you to own your personal F3 information and manage the information how you choose.</p>
@@ -16,3 +20,9 @@
         <button id="claim-btn" mat-flat-button routerLink="../claim-info">Claim now</button>
     </div>
 </ng-template>
+
+<ng-template #loadingSpinner>
+    <div class="fill-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>  

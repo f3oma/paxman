@@ -67,26 +67,18 @@ export class UserDetailComponent {
         }
       }
     });
-    this.initializeComponent();
-  }
-
-  determineIfIsUsersProfile(userId: string) {
-    this.isPersonalProfile = this.userAuthService.cachedCurrentAuthData?.paxDataId === userId;
-  }
-
-  async initializeComponent() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id !== null) {
+      this.initializeComponent(id);
+    }
+  }
+
+  async initializeComponent(id: string) {
       await this.getUserData(id);
       await this.getCurrentUserRoles(id);
       await this.getUserProfileData(id);
       this.determineIfIsUsersProfile(id);
       this.totalPaxCount = await this.paxManagerService.getCurrentNumberOfPax();
-    }
-  }
-
-  private async getUserProfileData(userId: string) {
-    this.userProfileData = await this.userProfileService.getOrCreateUserProfileById(userId);
   }
 
   public toggleEditMode() {
@@ -95,17 +87,6 @@ export class UserDetailComponent {
 
   public async viewInAdminCenter(user: IPaxUser) {
     await this.router.navigate(['/admin/user-data-edit/', user.id]);
-  }
-
-  private async getUserData(id: string) {
-    const paxData = await (await this.paxManagerService.getDataByAuthId(id)).data();
-    this.ehUser = paxData?.ehByUserRef ? await this.paxManagerService.getPaxInfoByRef(paxData.ehByUserRef) : undefined;
-    this.userSiteQLocation = paxData?.siteQLocationRef ? await this.aoManagerService.getDataByRef(paxData.siteQLocationRef) : undefined;
-    this.userEhLocation = paxData?.ehLocationRef ? await this.aoManagerService.getDataByRef(paxData.ehLocationRef) : undefined;
-    this.userDataSubject.next(paxData?.toProperties());
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
   }
 
   public async promoteRole(role: string, user: IPaxUser) {
@@ -181,5 +162,24 @@ export class UserDetailComponent {
       alert("User deleted");
       await this.router.navigate(['search']);
     }
+  }
+
+  private determineIfIsUsersProfile(userId: string) {
+    this.isPersonalProfile = this.userAuthService.cachedCurrentAuthData?.paxDataId === userId;
+  }
+
+  private async getUserData(id: string) {
+    const paxData = await (await this.paxManagerService.getDataByAuthId(id)).data();
+    this.ehUser = paxData?.ehByUserRef ? await this.paxManagerService.getPaxInfoByRef(paxData.ehByUserRef) : undefined;
+    this.userSiteQLocation = paxData?.siteQLocationRef ? await this.aoManagerService.getDataByRef(paxData.siteQLocationRef) : undefined;
+    this.userEhLocation = paxData?.ehLocationRef ? await this.aoManagerService.getDataByRef(paxData.ehLocationRef) : undefined;
+    this.userDataSubject.next(paxData?.toProperties());
+    setTimeout(() => {
+      this.loading = false;
+    }, 1000);
+  }
+
+  private async getUserProfileData(userId: string) {
+    this.userProfileData = await this.userProfileService.getOrCreateUserProfileById(userId);
   }
 }
