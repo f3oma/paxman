@@ -41,7 +41,7 @@ export class UserDetailComponent {
   public ehUser: PaxUser | undefined = undefined;
   public userSiteQLocation: AOData | undefined = undefined;
   public userEhLocation: AOData | undefined = undefined;
-  public userProfileData: UserProfileData | undefined = undefined;
+  public userProfileData: UserProfileData | null = null;
   public isPersonalProfile: boolean = false;
 
   constructor(
@@ -85,10 +85,7 @@ export class UserDetailComponent {
   }
 
   private async getUserProfileData(userId: string) {
-    const data = await this.userProfileService.getProfileByUserId(userId);
-    if (data) {
-      this.userProfileData = data;
-    }
+    this.userProfileData = await this.userProfileService.getOrCreateUserProfileById(userId);
   }
 
   public toggleEditMode() {
