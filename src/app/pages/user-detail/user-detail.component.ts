@@ -66,14 +66,15 @@ export class UserDetailComponent {
           this.isAuthorizedUser = true;
         }
       }
-    })
+    });
+    this.initializeComponent();
   }
 
   determineIfIsUsersProfile(userId: string) {
     this.isPersonalProfile = this.userAuthService.cachedCurrentAuthData?.paxDataId === userId;
   }
 
-  async ngOnInit() {
+  async initializeComponent() {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id !== null) {
       await this.getUserData(id);
