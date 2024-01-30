@@ -18,7 +18,7 @@ export class UserDataViewComponent {
   }
 
   async ngOnInit() {
-    this.totalPaxCount = await this.paxManagerService.getCurrentNumberOfPax();
+    this.totalPaxCount = await this.paxManagerService.getCachedCurrentNumberOfPax();
     this.getEhUserInformation();
   }
 

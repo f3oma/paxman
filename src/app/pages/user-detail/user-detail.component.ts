@@ -78,7 +78,7 @@ export class UserDetailComponent {
       await this.getCurrentUserRoles(id);
       await this.getUserProfileData(id);
       this.determineIfIsUsersProfile(id);
-      this.totalPaxCount = await this.paxManagerService.getCurrentNumberOfPax();
+      this.totalPaxCount = await this.paxManagerService.getCachedCurrentNumberOfPax();
   }
 
   public toggleEditMode() {

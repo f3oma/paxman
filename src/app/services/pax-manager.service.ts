@@ -44,7 +44,7 @@ export class PaxManagerService {
 
   // Stores paxCount in localStorage to reduce number of fetches per client.
   // Updates count daily
-  public async getCurrentNumberOfPax(): Promise<number> {
+  public async getCachedCurrentNumberOfPax(): Promise<number> {
     const today = new Date();
     const yesterday = new Date();
     yesterday.setHours(0, 0, 0, 0);
@@ -56,13 +56,18 @@ export class PaxManagerService {
     if (exisingPaxCountRefresh && exisingPaxCount && new Date(exisingPaxCountRefresh) > yesterday) {
       return Number(exisingPaxCount);
     } else {
-      const userCollection: CollectionReference = collection(this.firestore, 'users');
-      const q = query(userCollection);
-      const count = (await getCountFromServer(q)).data().count;
+      const count = this.getPaxCount();
       localStorage.setItem('paxCount', count.toString());
       localStorage.setItem('paxCountRefreshDate', today.toDateString());
       return count;
     }
+  }
+
+  public async getPaxCount() {
+    const userCollection: CollectionReference = collection(this.firestore, 'users');
+    const q = query(userCollection);
+    const count = (await getCountFromServer(q)).data().count;
+    return count;
   }
 
   public async updateUser(user: Partial<PaxUser>) {

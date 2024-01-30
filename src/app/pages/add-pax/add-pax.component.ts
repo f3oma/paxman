@@ -97,7 +97,7 @@ export class AddPaxComponent {
         locationRef = this.aoManagerService.getAoLocationReference(location.aoRef);
       }
 
-      let paxNumber = await this.paxManagerService.getCurrentNumberOfPax();
+      let paxNumber = await this.paxManagerService.getPaxCount();
 
       const pax: Partial<IPaxUser> = {
         id: undefined,
