@@ -37,6 +37,7 @@
                 <td mat-cell *matCellDef="let site">
                     <ng-container *ngFor="let siteQ of site.activeSiteQUsers">
                         <a [href]="'/users/' + siteQ.id">{{siteQ.f3Name}}</a>
+                        <br/>
                     </ng-container>
                 </td>
             </ng-container>

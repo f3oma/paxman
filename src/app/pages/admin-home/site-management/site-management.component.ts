@@ -60,7 +60,8 @@ export class SiteManagementComponent {
     const dayMap = this.getDayMap();
     const sorted = tableData
       .filter((a) => a.weekDay !== null)
-      .sort((a, b) => dayMap.get(a.weekDay) > dayMap.get(b.weekDay) ? 1 : -1);
+      // .sort((a, b) => dayMap.get(a.weekDay) > dayMap.get(b.weekDay) ? 1 : -1);
+      .sort((a, b) => a.name > b.name ? 1 : -1);
 
     this.tableData = sorted;
     this.dataSource = new MatTableDataSource(this.tableData);
