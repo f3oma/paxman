@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { CollectionReference, DocumentData, DocumentReference, Firestore, addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, setDoc, updateDoc } from "@angular/fire/firestore";
-import { IPaxUserEntity, PaxUser, UserRef } from "../models/users.model";
+import { CollectionReference, DocumentData, DocumentReference, Firestore, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, deleteField, setDoc, updateDoc } from "@angular/fire/firestore";
+import { PaxUser } from "../models/users.model";
 import { Badge, IUserProfileDataEntity, UserProfileData } from "../models/user-profile-data.model";
 import { PaxManagerService } from "./pax-manager.service";
 import { PaxModelConverter } from "../utils/pax-model.converter";
@@ -41,14 +41,13 @@ export class UserProfileService {
             let entity = getDocResponse.data() as IUserProfileDataEntity;
             
             // Quickly update the details before returning
-            if (entity.countOfEHUsers > 0 && (!entity.ehUserRefs || entity.ehUserRefs.length === 0)) {
-                console.log("Update time");
-                await this.updateEHRefInfo(userId, entity, docRef);
+            if (entity.countOfEHUsers > 0 && (!entity.ehUserJsonString || entity.ehUserJsonString.length === 0)) {
+                await this.updateEHTreeInfo(userId, entity, docRef);
                 getDocResponse = (await getDoc(docRef))
                 entity = getDocResponse.data() as IUserProfileDataEntity;
             }
 
-            const users = await this.getUsersFromRefs(entity.ehUserRefs);
+            const users = entity.ehUserJsonString ? JSON.parse(entity.ehUserJsonString) : [];
             let profileData: UserProfileData = {
                 badges: entity.badges,
                 countOfEHUsers: entity.countOfEHUsers,
@@ -79,20 +78,27 @@ export class UserProfileService {
             badges: profileData.badges,
             links: profileData.links,
         };
-        const pax = await this.paxManagerService.getAllEHRefsForUserId(userId);
+        const pax = await this.paxManagerService.getAllEHDataForUserId(userId);
+        const paxData: { id: string, f3Name: string }[] = pax.map((p) => { return { id: p.id, f3Name: p.f3Name} });
         profileDataEntity.countOfEHUsers = pax.length;
-        profileDataEntity.ehUserRefs = pax;
+        profileDataEntity.ehUserJsonString = JSON.stringify(paxData);
         return await setDoc(createReference, profileDataEntity);
     }
 
-    private async updateEHRefInfo(
+    private async updateEHTreeInfo(
         userId: string, 
         profileDataEntity: Partial<IUserProfileDataEntity>,
         documentReference: DocumentReference) {
-        const pax = await this.paxManagerService.getAllEHRefsForUserId(userId);
+        const pax = await this.paxManagerService.getAllEHDataForUserId(userId);
+        const paxData: { id: string, f3Name: string }[] = pax.map((p) => { return { id: p.id, f3Name: p.f3Name} });
         profileDataEntity.countOfEHUsers = pax.length;
-        profileDataEntity.ehUserRefs = pax;
-        return await updateDoc(documentReference, profileDataEntity);
+        profileDataEntity.ehUserJsonString = JSON.stringify(paxData);
+        return await updateDoc(documentReference, {
+            countOfEHUsers: profileDataEntity.countOfEHUsers,
+            ehUserJsonString: profileDataEntity.ehUserJsonString,
+            ehUserRefs: deleteField(),
+            ehUsers: deleteField(),
+        });
     }
 
     public async updateUserProfile(userId: string, profileData: Partial<UserProfileData> | null): Promise<void> {
@@ -106,9 +112,10 @@ export class UserProfileService {
         };
 
         // Update this while we're here...
-        const pax = await this.paxManagerService.getAllEHRefsForUserId(userId);
+        const pax = await this.paxManagerService.getAllEHDataForUserId(userId);
+        const paxData: { id: string, f3Name: string }[] = pax.map((p) => { return { id: p.id, f3Name: p.f3Name} });
         profileDataEntity.countOfEHUsers = pax.length;
-        profileDataEntity.ehUserRefs = pax;
+        profileDataEntity.ehUserJsonString = JSON.stringify(paxData);
         
         const docRef = doc(this.userProfileCollection, userId);
         return await updateDoc(docRef, {

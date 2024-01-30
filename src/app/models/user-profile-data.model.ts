@@ -1,18 +1,15 @@
-import { DocumentData, DocumentReference } from "firebase/firestore";
-import { PaxUser } from "./users.model";
-
 export interface IUserProfileDataEntity {
     links: Record<string, ExternalLink>;
     badges: Badge[];
     countOfEHUsers: number;
-    ehUserRefs: DocumentReference<DocumentData>[];
+    ehUserJsonString: string;
 }
 
 export interface UserProfileData {
     links: Record<string, ExternalLink>;
     badges: Badge[];
     countOfEHUsers: number;
-    ehUsers: PaxUser[];
+    ehUsers: { id: string, f3Name: string }[];
 }
 
 interface ExternalLink {

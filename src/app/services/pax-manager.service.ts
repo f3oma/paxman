@@ -259,11 +259,20 @@ export class PaxManagerService {
     return anniversaryDates;
   }
 
+  // Only Refs
   public async getAllEHRefsForUserId(userId: string): Promise<DocumentReference<DocumentData>[]> {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
     const userRef = doc(userCollection, userId);
     const q = (await query(userCollection, where("ehByUserRef", "==", userRef)));
     return (await getDocs(q)).docs.map((d) => d.ref);
+  }
+
+  // Actual Data Reads...
+  public async getAllEHDataForUserId(userId: string): Promise<PaxUser[]> {
+    const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
+    const userRef = doc(userCollection, userId);
+    const q = (await query(userCollection, where("ehByUserRef", "==", userRef)));
+    return (await getDocs(q)).docs.map((d) => d.data() as PaxUser);
   }
 
   private getLocationReference(aoDBPath: string) {
