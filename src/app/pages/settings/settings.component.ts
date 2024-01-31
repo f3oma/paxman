@@ -40,6 +40,9 @@ export class SettingsComponent {
             await this.getPaxUserData(paxDataId);
             await this.getUserProfileData(paxDataId);
           }
+          setTimeout(() => {
+            this.loading = false;
+          }, 500);
       })
     );
   }
@@ -51,9 +54,6 @@ export class SettingsComponent {
   async getUserProfileData(userId: string) {
     const userProfileData = await this.userProfileService.getOrCreateUserProfileById(userId);
     this.userProfileDataSubject.next(userProfileData);
-    setTimeout(() => {
-      this.loading = false;
-    }, 500);
   }
 
   private async getPaxUserData(id: string) {
