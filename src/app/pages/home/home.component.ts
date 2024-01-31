@@ -2,10 +2,9 @@ import { transition, trigger, useAnimation } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
-import { AoLocationRef, UserRef, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
-import { AnniversaryResponsePax, PaxManagerService } from 'src/app/services/pax-manager.service';
+import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
 
@@ -57,7 +56,7 @@ export class HomeComponent {
   }
 
   async getPaxFromToday() {
-    const paxList: { id: string, f3Name: string, ehByUserRef: UserRef, ehLocationRef: AoLocationRef}[] = await this.paxManagerService.getWeeklyPax();
+    const paxList: GetNewPaxResponse[] = await this.paxManagerService.getNewPax();
     const latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
     for (let pax of paxList) {
       let paxEhUser = undefined, paxEhLocation = undefined;
@@ -74,7 +73,6 @@ export class HomeComponent {
         ehLocationName: paxEhLocation !== undefined ? paxEhLocation.name : 'Unknown'
       });
     }
-
     this.latestPax = latestPax;
   }
 
