@@ -1,6 +1,9 @@
 <div class="container">
   <h1>Search</h1>
   <p>Find local PAX by F3 name, hospital name or phone number</p>
+  <div class="warning" *ngIf="!hasClaimedData">
+    <p>Claim your data for the full search experience</p>
+  </div>
   <div class="search-bar">
     <mat-form-field appearance="fill">
       <mat-label>Search</mat-label>
