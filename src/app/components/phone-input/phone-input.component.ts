@@ -144,10 +144,11 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   autoFocusPrev(event: KeyboardEvent, control: AbstractControl, prevElement: HTMLInputElement): void {
+    console.log(event);
     if (event.keyCode !== BACKSPACE) {
       return;
     }
-    if (control.value.length < 1) {
+    if (control.value < 1) {
       this._focusMonitor.focusVia(prevElement, 'program');
     }
   }
@@ -188,7 +189,10 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   _handleInput(control: AbstractControl, nextElement?: HTMLInputElement): void {
-    this.autoFocusNext(control, nextElement);
-    this.onChange(this.value);
+    // Handles moving next when > 3 numbers in field
+    if (control.value > 100) {
+      this.autoFocusNext(control, nextElement);
+      this.onChange(this.value);
+    }
   }
 }

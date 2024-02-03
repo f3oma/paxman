@@ -134,7 +134,6 @@ export class UserAuthenticationService {
     return await this.authLogin(new TwitterAuthProvider());
   }
 
-
   authLogin(provider: AuthProvider): Promise<AuthenticatedUser> {
     return signInWithPopup(this.auth, provider).then(async (res) => {
         const user = res.user;

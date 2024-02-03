@@ -1,6 +1,9 @@
 <div class="container">
   <h1>Search</h1>
-  <p>Find other local PAX by F3 Name, First, or Last name</p>
+  <p>Find local PAX by F3 name, hospital name or phone number</p>
+  <div class="warning" *ngIf="!hasClaimedData">
+    <p>Claim your data for the full search experience</p>
+  </div>
   <div class="search-bar">
     <mat-form-field appearance="fill">
       <mat-label>Search</mat-label>
@@ -14,7 +17,7 @@
     <div class="pax" *ngFor="let pax of resultPaxList$ | async" (click)="routeToPaxPage(pax.objectID)">
       <div class="pax-detail">
         <h5>{{pax.f3Name}}</h5>
-        <p>{{pax.firstName}} {{ hasClaimedData ? pax.lastName : ''}}</p>
+        <p>{{pax.firstName}} {{ pax.lastName }}</p>
       </div>
     </div>
   </div>

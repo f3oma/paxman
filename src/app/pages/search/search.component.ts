@@ -44,7 +44,8 @@ export class SearchComponent {
           this.hasClaimedData = true;
         }
       }
-    })
+    });
+
   }
 
   async searchPax(searchValue: string) {
@@ -54,7 +55,16 @@ export class SearchComponent {
       return;
     }
 
-    this.idx.search(searchValue).then(({ hits }) => {
+    const searchableAttributes = ['f3Name', 'firstName'];
+    if (this.hasClaimedData) {
+      searchableAttributes.push('phoneNumber');
+      searchableAttributes.push('lastName');
+    }
+
+    this.idx.search(searchValue, {
+      restrictSearchableAttributes: searchableAttributes,
+      attributesToRetrieve: searchableAttributes
+    }).then(({ hits }) => {
       this.resultPaxList.next(hits);
     });
   }

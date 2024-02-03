@@ -62,7 +62,7 @@ export class PaxManagerService {
     if (exisingPaxCountRefresh && exisingPaxCount && new Date(exisingPaxCountRefresh) > yesterday) {
       return Number(exisingPaxCount);
     } else {
-      const count = this.getPaxCount();
+      const count = await this.getPaxCount();
       localStorage.setItem('paxCount', count.toString());
       localStorage.setItem('paxCountRefreshDate', today.toDateString());
       return count;
