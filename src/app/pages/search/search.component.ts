@@ -55,9 +55,11 @@ export class SearchComponent {
       return;
     }
 
-    const searchableAttributes = ['f3Name', 'firstName', 'lastName'];
-    if (this.hasClaimedData)
+    const searchableAttributes = ['f3Name', 'firstName'];
+    if (this.hasClaimedData) {
       searchableAttributes.push('phoneNumber');
+      searchableAttributes.push('lastName');
+    }
 
     this.idx.search(searchValue, {
       restrictSearchableAttributes: searchableAttributes,

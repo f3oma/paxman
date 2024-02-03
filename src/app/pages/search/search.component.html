@@ -17,7 +17,7 @@
     <div class="pax" *ngFor="let pax of resultPaxList$ | async" (click)="routeToPaxPage(pax.objectID)">
       <div class="pax-detail">
         <h5>{{pax.f3Name}}</h5>
-        <p>{{pax.firstName}} {{ hasClaimedData ? pax.lastName : ''}}</p>
+        <p>{{pax.firstName}} {{ pax.lastName }}</p>
       </div>
     </div>
   </div>
