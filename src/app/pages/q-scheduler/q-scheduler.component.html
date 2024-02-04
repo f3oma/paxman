@@ -1,7 +1,59 @@
 <!-- 
 
     Q Scheduler can only be opened by active site-q's
-    Q Scheduler is associated with a single AO
+    Q Scheduler can view either single designated AO or all AOs
     Q Scheduler shows row data for each week
 
 -->
+
+<div class="container">
+    <h1>Q-Scheduler</h1>
+    <p>View, edit and add Q's to the rotation</p>
+    <div class="loading">
+        <div class="main-content">
+            <div class="week-selection">
+                <h5>Week of {{weekStartDate | date: 'MM/dd/YYYY'}}</h5>
+                <div class="date-actions">
+                    <button mat-stroked-button id="previous-btn" (click)="previousWeek(weekStartDate)"><mat-icon>chevron_left</mat-icon> Last week</button>
+                    <div class="months-drop" ngbDropdown>
+                        <button class="dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle mat-stroked-button>{{weekStartDate | date: 'MMMM'}}</button>
+                        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a *ngFor="let month of months" ngbDropdownItem class="dropdown-item" (click)="moveToSpecificMonth(month, weekStartDate)">{{month}}</a>
+                        </div>
+                    </div>
+                    <button mat-stroked-button id="next-btn" (click)="nextWeek(weekEndDate)">Next week <mat-icon>chevron_right</mat-icon></button>
+                </div>
+            </div>
+            <div class="view-selector">
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+                    <mat-tab label="All Sites">
+                        <div class="quick-filters">
+                            <mat-form-field appearance="outline" class="dense">
+                                <mat-select placeholder="Filter" multiple (selectionChange)="changedFilter($event)">
+                                    <mat-option value="available">Has Opening</mat-option>
+                                    <mat-option value="VQ">VQ</mat-option>
+                                    <mat-option value="shovelPass">Shovel Pass</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <mat-expansion-panel *ngFor="let day of weekList">
+                            <mat-expansion-panel-header>
+                              <mat-panel-title>
+                                {{day.dayName}} ({{day.date | date: 'MM/dd' }})
+                              </mat-panel-title>
+                            </mat-expansion-panel-header>
+                            <div class="beatdown-container" *ngFor="let beatdown of currentBeatdownList[day.dateString]">
+                                <div class="beatdown">
+                                    {{beatdown.id}}
+                                </div>
+                            </div>
+                        </mat-expansion-panel>
+                    </mat-tab>
+                    <mat-tab label="My Site" *ngIf="!activeSiteQAO">
+                        
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </div>
+</div>

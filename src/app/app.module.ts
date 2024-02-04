@@ -54,6 +54,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { QSchedulerComponent } from './pages/q-scheduler/q-scheduler.component';
 import { CreateBeatdownComponent } from './pages/q-scheduler/create-beatdown/create-beatdown.component';
 import { EditBeatdownComponent } from './pages/q-scheduler/edit-beatdown/edit-beatdown.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @NgModule({
   declarations: [
@@ -113,7 +114,8 @@ import { EditBeatdownComponent } from './pages/q-scheduler/edit-beatdown/edit-be
     MatNativeDateModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

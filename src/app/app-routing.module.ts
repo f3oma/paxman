@@ -19,6 +19,7 @@ import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/a
 import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
 import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { QSchedulerComponent } from './pages/q-scheduler/q-scheduler.component';
 
 const routes: Routes = [
   {
@@ -93,6 +94,11 @@ const routes: Routes = [
             canActivate: [SiteQMinimumRoleAuthGuard]
           },
         ]
+      },
+      {
+        path: 'q-scheduler',
+        component: QSchedulerComponent,
+        canActivate: [SiteQMinimumRoleAuthGuard]
       },
       {
         path: 'add-location',
