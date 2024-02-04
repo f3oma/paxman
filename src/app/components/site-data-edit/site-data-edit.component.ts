@@ -233,6 +233,11 @@ export class SiteDataEditComponent implements OnInit {
         activeSiteQUsers.push(paxUser);
         if (this.originalActiveSiteQUsers.filter((o) => o.id === paxUser.id).length === 0) {
           // I'm new!
+          const aoRef = this.aoManagerService.getAoLocationReference(`ao_data/${this.site.id}`);
+          const authRef = await this.authManagerService.getLinkedAuthDataRef(paxUser.id);
+          if (authRef) {
+            await this.authManagerService.updateSiteQUserLocation(aoRef, authRef);
+          }
           await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
           await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], paxUser.id);
         }
