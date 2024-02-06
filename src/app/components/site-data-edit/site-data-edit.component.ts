@@ -54,6 +54,7 @@ export class SiteDataEditComponent implements OnInit {
     activeSiteQUsers: new FormControl(''),
     retiredSiteQUsers: new FormControl(''),
     foundingSiteQUsers: new FormControl(''),
+    lastFlagPass: new FormControl(''),
   });
 
   temporaryActiveSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];

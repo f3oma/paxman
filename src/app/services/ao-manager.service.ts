@@ -37,23 +37,25 @@ export class AOManagerService {
     }
 
     public get defaultNewAO(): AOData {
-        const ref = this.getNewReference();
         // Create default site
-        return new AOData(
-            ref.id,
-            '',
-            '',
-            '',
-            false,
-            false,
-            new Array<PaxUser>(),
-            new Array<PaxUser>(),
-            new Array<PaxUser>(),
-            '00:00',
-            '',
-            DayOfWeekAbbv.None,
-            Sector['DC - East']
-        );
+        const ref = this.getNewReference();
+        const aoData: IAOData = {
+            id: ref.id,
+            name: '',
+            address: '',
+            location: '',
+            popup: false,
+            rotating: false,
+            activeSiteQUsers: new Array<PaxUser>(),
+            retiredSiteQUsers: new Array<PaxUser>(),
+            foundingSiteQUsers: new Array<PaxUser>(),
+            startTimeCST: '00:00',
+            xAccount: '',
+            weekDay: DayOfWeekAbbv.None,
+            sector: Sector['DC - East'],
+            lastFlagPass: new Date()
+        }
+        return new AOData(aoData);
     }
 
     async getDataById(siteId: string) {
