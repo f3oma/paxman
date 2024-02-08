@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { DocumentData, DocumentReference, Firestore, addDoc, collection, deleteField, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch } from "@angular/fire/firestore";
 import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity, Sector } from "../models/ao.model";
 import { AODataConverter } from "../utils/ao-data.converter";
@@ -9,15 +9,14 @@ import { arrayUnion } from "firebase/firestore";
     providedIn: 'root'
 })
 export class AOManagerService {
+    firestore: Firestore = inject(Firestore);
     private aoConverter = this.aoDataConverter.getConverter();
     private AOCollection = collection(this.firestore, 'ao_data').withConverter(this.aoConverter);
 
-    constructor(
-        private firestore: Firestore,
-        private aoDataConverter: AODataConverter) {}
+    constructor(private aoDataConverter: AODataConverter) {}
 
     public async getAllAOData(): Promise<AOData[]> {
-        const data = Promise.all((await getDocs<Promise<AOData>>(this.AOCollection)).docs.map((d) => d.data()));
+        const data = Promise.all((await getDocs<Promise<AOData>, DocumentData>(this.AOCollection)).docs.map((d) => d.data()));
         return data;
     }
 

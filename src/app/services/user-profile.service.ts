@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { CollectionReference, DocumentData, DocumentReference, Firestore, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, deleteField, setDoc, updateDoc } from "@angular/fire/firestore";
 import { PaxUser } from "../models/users.model";
 import { Badge, IUserProfileDataEntity, UserProfileData } from "../models/user-profile-data.model";
@@ -9,7 +9,7 @@ import { PaxModelConverter } from "../utils/pax-model.converter";
     providedIn: 'root'
 })
 export class UserProfileService {
-
+    firestore: Firestore = inject(Firestore);
     private userProfileCollection: CollectionReference = collection(this.firestore, 'user_profile_data');
     private readonly defaultProfileData: UserProfileData = {
         links: {},
@@ -19,7 +19,6 @@ export class UserProfileService {
     }
 
     constructor(
-        private readonly firestore: Firestore, 
         private paxManagerService: PaxManagerService,
         private paxConverter: PaxModelConverter) {
     }
