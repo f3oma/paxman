@@ -41,9 +41,23 @@ export class PaxManagerService {
 
   public async addNewUser(user: Partial<IPaxUser>): Promise<DocumentReference<DocumentData>> {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
-    return await addDoc(userCollection, user);
+    const newDoc = await addDoc(userCollection, user);
+    await this.refreshNewUsers();
+    return newDoc;    
   }
 
+  public async refreshNewUsers(): Promise<void> {
+    const today = new Date();
+    const dailyNewPaxString = today.toISOString() + "-dailynewpax";
+    const dailyNewPaxDocRef = doc(this.firestore, 'dailynewpax_cache/' + dailyNewPaxString);
+    const dailyNewPaxDoc = (await getDoc(dailyNewPaxDocRef));
+    if (dailyNewPaxDoc.exists())
+      return await deleteDoc(dailyNewPaxDocRef);
+    else
+      await this.getNewPax();
+      return;
+  }
+  
   public async getPaxInfoByRef(ref: DocumentReference<PaxUser>) {
     const documentReference = ref.withConverter(this.paxConverter);
     return (await getDoc(documentReference)).data();
