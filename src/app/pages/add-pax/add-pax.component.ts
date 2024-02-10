@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DocumentData, DocumentReference } from 'firebase/firestore';
-import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, first, map, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, first, fromEvent, map, skipUntil, switchMap } from 'rxjs';
 import { AOData } from 'src/app/models/ao.model';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
 import { AoLocationRef, IPaxUser, NotificationFrequency, PaxUser, UserRef } from 'src/app/models/users.model';
@@ -17,7 +17,7 @@ import { PaxSearchService } from 'src/app/services/pax-search.service';
   templateUrl: './add-pax.component.html',
   styleUrls: ['./add-pax.component.scss']
 })
-export class AddPaxComponent {
+export class AddPaxComponent implements AfterViewInit {
 
   f3NameFormControl = new FormControl('', [Validators.required]);
 
@@ -41,6 +41,9 @@ export class AddPaxComponent {
     ehLocation: new FormControl('')
   });
 
+  @ViewChild('ehdBy') ehByInput: ElementRef | null = null;
+  @ViewChild('ehLocation') ehLocationInput: ElementRef | null = null;
+
   constructor(
     private readonly paxSearchService: PaxSearchService,
     private readonly paxManagerService: PaxManagerService,
@@ -49,20 +52,25 @@ export class AddPaxComponent {
     private readonly paxWelcomeEmailService: PaxWelcomeEmailService,
     private readonly router: Router) {
       this.f3NameFormControl.setAsyncValidators(this.paxF3NameValidator());
-      this.form.controls['ehByF3Name'].valueChanges.pipe(
-        debounceTime(1000),
-        map(async (value: string) => {
-          if (value) {
-            await this.updateEHAutocompleteResults(value);
-          }
-          return [];
-        })).subscribe();
+    }
 
-      this.form.controls['ehLocation'].valueChanges.pipe(
-        debounceTime(1000),
-        map(async (value: string) => {
-          if (value) {
-            await this.updateLocationAutocompleteResults(value);
+  public ngAfterViewInit() {
+    fromEvent<InputEvent>(this.ehByInput?.nativeElement, 'input').pipe(
+      debounceTime(500),
+      map(async (event: InputEvent) => {
+        const target = event.target as HTMLInputElement;
+        if (target.value) {
+          await this.updateEHAutocompleteResults(target.value);
+        }
+        return [];
+      })).subscribe();
+    
+      fromEvent<InputEvent>(this.ehLocationInput?.nativeElement, 'keydown').pipe(
+        debounceTime(500),
+        map(async (event: InputEvent) => {
+          const target = event.target as HTMLInputElement;
+          if (target.value) {
+            await this.updateLocationAutocompleteResults(target.value);
           }
           return [];
         })).subscribe();
@@ -191,6 +199,7 @@ export class AddPaxComponent {
         fullName: res.firstName + ' ' + res.lastName
       };
     })
+    console.log(pax);
     this.filteredEhF3OptionsSubject.next(pax);
   }
 
