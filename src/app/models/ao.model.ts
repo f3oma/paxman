@@ -33,6 +33,7 @@ export interface IAOData {
     xAccount: string;
     weekDay: DayOfWeekAbbv;
     sector: Sector;
+    lastFlagPass?: Date | null;
 }
 
 export interface IAODataEntity {
@@ -48,6 +49,7 @@ export interface IAODataEntity {
     xAccount: string; // stored without @ symbol
     weekDay: string;
     sector: Sector;
+    lastFlagPass: Timestamp;
 }
 
 export class AOData {
@@ -64,34 +66,23 @@ export class AOData {
     private _xAccount: string;
     private _weekDay: DayOfWeekAbbv;
     private _sector: Sector;
+    private _lastFlagPass?: Date | null;
 
-    constructor(
-        id: string,
-        name: string, 
-        address: string,
-        location: string,
-        popup: boolean,
-        rotating: boolean,
-        activeSiteQUsers: PaxUser[] | [],
-        retiredSiteQUsers: PaxUser[] | [],
-        foundingSiteQUsers: PaxUser[] | [],
-        startTimeCST: string,
-        xAccount: string,
-        weekDay: DayOfWeekAbbv,
-        sector: Sector) {
-            this._id = id;
-            this._name = name;
-            this._address = address;
-            this._location = location;
-            this._popup = popup;
-            this._rotating = rotating;
-            this._activeSiteQUsers = activeSiteQUsers;
-            this._retiredSiteQUsers = retiredSiteQUsers;
-            this._foundingSiteQUsers = foundingSiteQUsers;
-            this._startTimeCST = startTimeCST;
-            this._xAccount = xAccount;
-            this._weekDay = weekDay;
-            this._sector = sector;
+    constructor(data: IAOData) {
+        this._id = data.id;
+        this._name = data.name;
+        this._address = data.address;
+        this._location = data.location;
+        this._popup = data.popup;
+        this._rotating = data.rotating;
+        this._activeSiteQUsers = data.activeSiteQUsers;
+        this._retiredSiteQUsers = data.retiredSiteQUsers;
+        this._foundingSiteQUsers = data.foundingSiteQUsers;
+        this._startTimeCST = data.startTimeCST;
+        this._xAccount = data.xAccount;
+        this._weekDay = data.weekDay;
+        this._sector = data.sector;
+        this._lastFlagPass = data.lastFlagPass;
     }
 
     public get id(): string {
@@ -146,6 +137,10 @@ export class AOData {
         return this._sector;
     }
 
+    public get lastFlagPass(): Date | null | undefined {
+        return this._lastFlagPass;
+    }
+
     toProperties(): IAOData {
         return {
             id: this.id,
@@ -160,7 +155,8 @@ export class AOData {
             startTimeCST: this.startTimeCST,
             xAccount: this.xAccount,
             weekDay: this.weekDay,
-            sector: this.sector
+            sector: this.sector,
+            lastFlagPass: this.lastFlagPass,
         }
     }
 

@@ -1,16 +1,16 @@
 import { doc, QueryDocumentSnapshot, collection, DocumentData, Firestore } from "@angular/fire/firestore";
 import { AuthenticatedUser, IAuthenticatedUser, IAuthenticatedUserEntity } from "../models/authenticated-user.model";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationConverter {
-
+  firestore: Firestore = inject(Firestore);
   private authUserCollection = collection(this.firestore, 'authenticated_users');
   private paxUserCollection = collection(this.firestore, 'users');
 
-  constructor(private firestore: Firestore) {}
+  constructor() {}
 
   public getAuthenticationConverter() {
     return {

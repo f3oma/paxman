@@ -149,6 +149,13 @@
                 Additional data
               </mat-panel-title>
             </mat-expansion-panel-header>
+            <mat-form-field appearance="fill" *ngIf="isEditorAdmin">
+              <mat-label>Last flag pass</mat-label>
+              <input formControlName="lastFlagPass" autocomplete="off" matInput [(ngModel)]="site.lastFlagPass" [matDatepicker]="picker">
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
             <div class="checkbox">
                 <p>Is the site a popup?</p>
                 <mat-checkbox formControlName="popup" [(ngModel)]="site.popup" (change)="updatePopupValue($event, site)">Is popup?</mat-checkbox>

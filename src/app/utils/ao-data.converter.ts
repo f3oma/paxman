@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { CollectionReference, DocumentData, DocumentReference, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, arrayUnion, collection, doc, getDoc } from "@angular/fire/firestore";
+import { Injectable, inject } from "@angular/core";
+import { CollectionReference, DocumentData, DocumentReference, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, arrayUnion, collection, doc, getDoc } from "@angular/fire/firestore";
 import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity } from "../models/ao.model";
 import { PaxModelConverter } from "./pax-model.converter";
 import { PaxUser } from "../models/users.model";
@@ -8,10 +8,11 @@ import { PaxUser } from "../models/users.model";
   providedIn: 'root'
 })
 export class AODataConverter {
-
+  
+  firestore: Firestore = inject(Firestore);
   private paxUserCollection = collection(this.firestore, 'users');
 
-  constructor(private readonly firestore: Firestore, private readonly paxModelConverter: PaxModelConverter) {}
+  constructor(private readonly paxModelConverter: PaxModelConverter) {}
 
   public getConverter(): FirestoreDataConverter<any> {
     const toDomain = this.toDomain;
@@ -62,7 +63,8 @@ export class AODataConverter {
       startTimeCST: data.startTimeCST, 
       xAccount: data.xAccount,
       weekDay: data.weekDay.toString(),
-      sector: data.sector
+      sector: data.sector,
+      lastFlagPass: data.lastFlagPass ?? Timestamp.fromDate(new Date())
     }
   }
 
@@ -92,6 +94,23 @@ export class AODataConverter {
     }
 
     const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
-    return new AOData(id, data.name, data.address, data.location, data.popup, data.rotating, activeSiteQUsers, retiredSiteQUsers, foundingSiteQUsers, data.startTimeCST, data.xAccount, weekDay, data.sector);
+    const lastFlagPass = data.lastFlagPass ? data.lastFlagPass.toDate() : new Date();
+    const aoData: IAOData = {
+      id,
+      name: data.name,
+      address: data.address,
+      location: data.location,
+      popup: data.popup,
+      rotating: data.rotating,
+      activeSiteQUsers,
+      retiredSiteQUsers,
+      foundingSiteQUsers,
+      startTimeCST: data.startTimeCST,
+      xAccount: data.xAccount,
+      weekDay,
+      sector: data.sector,
+      lastFlagPass
+    }
+    return new AOData(aoData);
   }
 }

@@ -1,6 +1,6 @@
 import { DocumentData, Firestore, QueryDocumentSnapshot, Timestamp, collection, doc, getDoc } from "@angular/fire/firestore";
 import { IPersonalWorkoutData, IPersonalWorkoutDataEntity, PersonalWorkoutData } from "../models/workout.model";
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { AODataConverter } from "./ao-data.converter";
 import { AOData } from "../models/ao.model";
 
@@ -8,9 +8,10 @@ import { AOData } from "../models/ao.model";
     providedIn: 'root'
 })  
 export class PersonalWorkoutConverter {
-  
+    
+    firestore: Firestore = inject(Firestore);
     private aoLocationCollection = collection(this.firestore, 'ao_data');
-    constructor(private readonly firestore: Firestore, private readonly aoLocationConverter: AODataConverter) {}
+    constructor(private readonly aoLocationConverter: AODataConverter) {}
   
     public getConverter() {
       return {

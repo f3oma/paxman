@@ -27,8 +27,8 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>EH'd by (F3 name)</mat-label>
-        <input formControlName="ehByF3Name" autocorrect="off" [matAutocomplete]="auto" matInput type="text" placeholder="EH'd by">
-        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayF3NameOptions">
+        <input #ehdBy formControlName="ehByF3Name" autocorrect="off" [matAutocomplete]="auto" matInput type="text" placeholder="EH'd by">
+        <mat-autocomplete requireSelection #auto="matAutocomplete" [displayWith]="displayF3NameOptions">
           <mat-option *ngFor="let option of filteredEhF3Options$ | async" [value]="option">
             <div class="option" style="display: flex; flex-direction: column; align-items: flex-start; padding: 8px 4px">
               <h5 style="margin-bottom: 0; font-size: 16px;">{{option.f3Name}}</h5>
@@ -36,16 +36,17 @@
             </div>
           </mat-option>
         </mat-autocomplete>
-        <mat-hint>Leave blank if none</mat-hint>
+        <mat-hint>Select from autocomplete. Leave blank if none</mat-hint>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>EH Location</mat-label>
-        <input formControlName="ehLocation" autocorrect="off" [matAutocomplete]="autoLoc" matInput type="text" placeholder="EH Location">
-        <mat-autocomplete #autoLoc="matAutocomplete" [displayWith]="displayLocationNameOptions">
+        <input #ehLocation formControlName="ehLocation" autocorrect="off" [matAutocomplete]="autoLoc" matInput type="text" placeholder="EH Location">
+        <mat-autocomplete requireSelection #autoLoc="matAutocomplete" [displayWith]="displayLocationNameOptions">
           <mat-option *ngFor="let option of filteredLocationOptions$ | async" [value]="option">
             {{option.name}}
           </mat-option>
         </mat-autocomplete>
+        <mat-hint>Select location from autocomplete</mat-hint>
       </mat-form-field>
       <!-- <mat-form-field appearance="outline">
         <mat-label>F3 Sector</mat-label>

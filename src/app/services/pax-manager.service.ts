@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { addDoc, doc, Firestore, setDoc, getDoc, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs, or, Timestamp, and, orderBy, collection } from "@angular/fire/firestore";
 import { AoLocationRef, UserRef, IPaxUser, PaxUser, NotificationFrequency } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
@@ -32,18 +32,32 @@ export interface AnniversaryResponsePax {
 export class PaxManagerService {
   paxConverter = this.paxModelConverter.getConverter();
   locationConverter = this.locationModelConverter.getConverter();
+  firestore: Firestore = inject(Firestore);
 
   constructor(
-    private readonly firestore: Firestore, 
     private paxModelConverter: PaxModelConverter,
     private locationModelConverter: AODataConverter) { 
   }
 
   public async addNewUser(user: Partial<IPaxUser>): Promise<DocumentReference<DocumentData>> {
     const userCollection: CollectionReference = collection(this.firestore, 'users').withConverter(this.paxConverter);
-    return await addDoc(userCollection, user);
+    const newDoc = await addDoc(userCollection, user);
+    await this.refreshNewUsers();
+    return newDoc;    
   }
 
+  public async refreshNewUsers(): Promise<void> {
+    const today = new Date();
+    const dailyNewPaxString = today.toISOString() + "-dailynewpax";
+    const dailyNewPaxDocRef = doc(this.firestore, 'dailynewpax_cache/' + dailyNewPaxString);
+    const dailyNewPaxDoc = (await getDoc(dailyNewPaxDocRef));
+    if (dailyNewPaxDoc.exists())
+      return await deleteDoc(dailyNewPaxDocRef);
+    else
+      await this.getNewPax();
+      return;
+  }
+  
   public async getPaxInfoByRef(ref: DocumentReference<PaxUser>) {
     const documentReference = ref.withConverter(this.paxConverter);
     return (await getDoc(documentReference)).data();

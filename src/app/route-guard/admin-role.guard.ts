@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from "@angular/router";
 import { UserAuthenticationService } from "../services/user-authentication.service";
 import { Observable } from "rxjs";
 import { AuthenticatedUser, UserRole } from "../models/authenticated-user.model";
@@ -12,7 +12,7 @@ import { AuthenticatedUser, UserRole } from "../models/authenticated-user.model"
 @Injectable({
   providedIn: 'root',
 })
-export class AdminRoleAuthGuard implements CanActivate {
+export class AdminRoleAuthGuard  {
 
   constructor(public authService: UserAuthenticationService, public router: Router) {}
 

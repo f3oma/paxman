@@ -38,11 +38,13 @@ export class PaxSearchService {
    * the same name...
    */
     public async findF3Name(partialF3Name: string): Promise<any[]> {
+      console.log(partialF3Name);
       return this.idx.search(partialF3Name, {
         exactOnSingleWordQuery: "attribute",
         restrictSearchableAttributes: ['f3Name'],
         typoTolerance: false
       }).then(({ hits }) => {
+        console.log(hits);
         return hits;
       });
     }
