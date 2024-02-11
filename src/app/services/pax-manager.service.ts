@@ -46,6 +46,18 @@ export class PaxManagerService {
     return newDoc;    
   }
 
+  public async refreshNewUsers(): Promise<void> {
+    const today = new Date();
+    const dailyNewPaxString = today.toISOString() + "-dailynewpax";
+    const dailyNewPaxDocRef = doc(this.firestore, 'dailynewpax_cache/' + dailyNewPaxString);
+    const dailyNewPaxDoc = (await getDoc(dailyNewPaxDocRef));
+    if (dailyNewPaxDoc.exists())
+      return await deleteDoc(dailyNewPaxDocRef);
+    else
+      await this.getNewPax();
+      return;
+  }
+  
   public async getPaxInfoByRef(ref: DocumentReference<PaxUser>) {
     const documentReference = ref.withConverter(this.paxConverter);
     return (await getDoc(documentReference)).data();
@@ -118,18 +130,6 @@ export class PaxManagerService {
     return await updateDoc(userRef, {
       notificationFrequency: NotificationFrequency.None
     });
-  }
-
-  public async refreshNewUsers(): Promise<void> {
-    const today = new Date();
-    const dailyNewPaxString = today.toISOString() + "-dailynewpax";
-    const dailyNewPaxDocRef = doc(this.firestore, 'dailynewpax_cache/' + dailyNewPaxString);
-    const dailyNewPaxDoc = (await getDoc(dailyNewPaxDocRef));
-    if (dailyNewPaxDoc.exists())
-      return await deleteDoc(dailyNewPaxDocRef);
-    else
-      await this.getNewPax();
-      return;
   }
 
   // Gets all New Pax for last 3 days
