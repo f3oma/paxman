@@ -11,6 +11,7 @@ export enum SpecialEventType {
     SiteLaunch = 'SiteLaunch',
     FlagPass = 'FlagPass',
     Popup = 'Popup',
+    CommunityEvent = 'CommunityEvent',
     None = 'None',
 }
 
@@ -27,6 +28,7 @@ export interface IBeatdown {
     coQUser: PaxUser | null;
     eventName: string | null;
     eventAddress: string | null;
+    additionalQs?: Array<PaxUser>, // community events might have many q's
 }
 
 export interface IBeatdownEntity {
@@ -37,6 +39,7 @@ export interface IBeatdownEntity {
     coQUserRef: UserRef;
     eventName: string | null;
     eventAddress: string | null;
+    additionalQsRefs?: Array<UserRef>, // community events might have many q's
 }
 
 export class Beatdown {
@@ -48,6 +51,7 @@ export class Beatdown {
     private _coQUser: PaxUser | null;
     private _eventName: string | null;
     private _eventAddress: string | null;
+    private _additionalQs?: Array<PaxUser>;
 
     constructor(beatdown: IBeatdown) {
         this._id = beatdown.id;
@@ -58,6 +62,7 @@ export class Beatdown {
         this._coQUser = beatdown.coQUser;
         this._eventName = beatdown.eventName;
         this._eventAddress = beatdown.eventAddress;
+        this._additionalQs = beatdown.additionalQs;
     }
 
     public get id(): string {
@@ -112,6 +117,14 @@ export class Beatdown {
         return this.specialEvent == SpecialEventType.SiteLaunch;
     }
 
+    public get isCommunityEvent(): boolean {
+        return this.specialEvent == SpecialEventType.CommunityEvent;
+    }
+
+    public get additionalQs(): Array<PaxUser> | undefined {
+        return this._additionalQs;
+    }
+
     toProperties(): IBeatdown {
         return {
             id: this.id,
@@ -121,7 +134,8 @@ export class Beatdown {
             eventName: this.eventName,
             coQUser: this.coQUser,
             aoLocation: this.aoLocation,
-            qUser: this.qUser
+            qUser: this.qUser,
+            additionalQs: this.additionalQs
         };
     }
 }

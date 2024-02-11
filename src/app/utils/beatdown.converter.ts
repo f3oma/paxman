@@ -25,6 +25,7 @@ export class BeatdownConverter {
             let aoLocationRef = null;
             let qUserRef = null;
             let coQUserRef = null;
+            let additionalQsRefs = [];
 
             if (data.aoLocation) {
                 aoLocationRef = doc(this.aoLocationCollection, data.aoLocation.id);
@@ -38,6 +39,12 @@ export class BeatdownConverter {
                 coQUserRef = doc(this.userCollection, data.coQUser.id);
             }
 
+            if (data.additionalQs && data.additionalQs.length > 0) {
+                for (let additionalQ of data.additionalQs) {
+                    additionalQsRefs.push(doc(this.userCollection, additionalQ.id));
+                }
+            }
+
             return <IBeatdownEntity> {
                 date: Timestamp.fromDate(data.date),
                 aoLocationRef,
@@ -46,6 +53,7 @@ export class BeatdownConverter {
                 specialEvent: data.specialEvent,
                 eventAddress: data.eventAddress,
                 eventName: data.eventName,
+                additionalQsRefs: additionalQsRefs
             }
         },
         fromFirestore: (snap: QueryDocumentSnapshot): any => {
@@ -53,6 +61,7 @@ export class BeatdownConverter {
             let aoLocation: AOData | null = null;
             let qUser: PaxUser | undefined = undefined;
             let coQUser: PaxUser | null = null;
+            let additionalQs: Array<PaxUser> = [];
 
             if (data.aoLocationRef) {
                 getDoc(data.aoLocationRef.withConverter(this.aoLocationConverter.getConverter())).then((res) => {
@@ -72,6 +81,17 @@ export class BeatdownConverter {
                 });
             }
 
+            if (data.additionalQsRefs && data.additionalQsRefs.length) {
+                for(let additionalQRef of data.additionalQsRefs) {
+                    if (!additionalQRef) {
+                        continue;
+                    }
+                    getDoc(additionalQRef.withConverter(this.userConverter.getConverter())).then((res) => {
+                        additionalQs.push(res.data() as PaxUser);
+                    });
+                }
+            }
+
             return new Beatdown({
                 id: snap.id,
                 aoLocation,
@@ -80,7 +100,8 @@ export class BeatdownConverter {
                 specialEvent: data.specialEvent,
                 eventAddress: data.eventAddress,
                 eventName: data.eventName,
-                coQUser
+                coQUser,
+                additionalQs
             });
         }
       }
