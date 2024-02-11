@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { addDoc, doc, Firestore, setDoc, getDoc, CollectionReference, DocumentData, DocumentReference, DocumentSnapshot, getCountFromServer, query, deleteDoc, updateDoc, where, getDocs, or, Timestamp, and, orderBy, collection } from "@angular/fire/firestore";
 import { AoLocationRef, UserRef, IPaxUser, PaxUser, NotificationFrequency } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
@@ -32,9 +32,9 @@ export interface AnniversaryResponsePax {
 export class PaxManagerService {
   paxConverter = this.paxModelConverter.getConverter();
   locationConverter = this.locationModelConverter.getConverter();
+  firestore: Firestore = inject(Firestore);
 
   constructor(
-    private readonly firestore: Firestore, 
     private paxModelConverter: PaxModelConverter,
     private locationModelConverter: AODataConverter) { 
   }

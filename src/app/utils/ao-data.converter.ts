@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { CollectionReference, DocumentData, DocumentReference, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, arrayUnion, collection, doc, getDoc } from "@angular/fire/firestore";
 import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity } from "../models/ao.model";
 import { PaxModelConverter } from "./pax-model.converter";
@@ -8,10 +8,11 @@ import { PaxUser } from "../models/users.model";
   providedIn: 'root'
 })
 export class AODataConverter {
-
+  
+  firestore: Firestore = inject(Firestore);
   private paxUserCollection = collection(this.firestore, 'users');
 
-  constructor(private readonly firestore: Firestore, private readonly paxModelConverter: PaxModelConverter) {}
+  constructor(private readonly paxModelConverter: PaxModelConverter) {}
 
   public getConverter(): FirestoreDataConverter<any> {
     const toDomain = this.toDomain;

@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Firestore, collection, query, where, doc, getDocs, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc } from "@angular/fire/firestore";
 import { CommunityWorkoutData, ICommunityWorkoutData, ICommunityWorkoutDataEntity, IPersonalWorkoutData, IWorkoutDataBase, PreActivity } from "../models/workout.model";
 import { PersonalWorkoutConverter } from "../utils/personal-workout.converter";
@@ -22,15 +22,13 @@ export class WorkoutManagerService {
      * Second, Site-Q reported workout, or Community Workout. This records data for the entire 'Community Workout' and creates the
      * user statistic records - 'Personal Workout' for all the attending pax.
      */
-
+    firestore: Firestore = inject(Firestore);
     communityWorkoutCollection = collection(this.firestore, 'workouts').withConverter(this.communityWorkoutConverter.getConverter());
     aoLocationCollection = collection(this.firestore, 'ao_data').withConverter(this.aoLocationConverter.getConverter());
     paxCollection = collection(this.firestore, 'users').withConverter(this.paxUserConverter.getConverter());
-
     currentYear = new Date().getFullYear();
 
     constructor(
-        private readonly firestore: Firestore,
         private readonly personalWorkoutConverter: PersonalWorkoutConverter,
         private readonly communityWorkoutConverter: CommunityWorkoutConverter,
         private readonly aoLocationConverter: AODataConverter,
@@ -55,7 +53,7 @@ export class WorkoutManagerService {
 
     public async updateCommunityWorkoutData(workoutData: ICommunityWorkoutData, docRef: DocumentReference<CommunityWorkoutData>) {
         // TODO: Update does not go through the converter...
-        return await updateDoc(docRef, workoutData);
+        return await updateDoc(docRef, { ...workoutData });
     }
 
     // Checks whether a personal record currently exists or creates one

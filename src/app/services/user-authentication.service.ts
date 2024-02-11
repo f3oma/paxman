@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { Auth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, AuthProvider, TwitterAuthProvider, sendPasswordResetEmail, confirmPasswordReset } from "@angular/fire/auth";
 import { collection, CollectionReference, doc, DocumentData, DocumentReference, Firestore, getDoc, getDocs, query, QueryDocumentSnapshot, setDoc, where } from "@angular/fire/firestore";
 import { BehaviorSubject, Subject } from "rxjs";
@@ -14,7 +14,8 @@ import { AOData } from "../models/ao.model";
   providedIn: 'root'
 })
 export class UserAuthenticationService {
-
+  firestore: Firestore = inject(Firestore);
+  auth: Auth = inject(Auth)
   private authUserData: Subject<AuthenticatedUser | undefined> = new BehaviorSubject<AuthenticatedUser | undefined>(undefined);
   public authUserData$ = this.authUserData.asObservable();
 
@@ -23,8 +24,6 @@ export class UserAuthenticationService {
   private paxConverter = this.paxModelConverter.getConverter();
 
   constructor(
-    private auth: Auth, 
-    private firestore: Firestore, 
     private authenticationUserConverter: AuthenticationConverter, 
     private paxModelConverter: PaxModelConverter,
     private paxManagerService: PaxManagerService) {
