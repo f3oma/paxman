@@ -1,0 +1,16 @@
+{
+    "fields": [
+        {
+            "name": "f3Name",
+            "type": "string"
+        },
+        {
+            "name": "firstName",
+            "type": "string"
+        },
+        {
+            "name": "lastName",
+            "type": "string"
+        }
+    ]
+}

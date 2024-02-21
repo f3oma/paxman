@@ -1,0 +1,56 @@
+{
+    "fields": [
+        {
+            "name": "activeSiteQUserRefs",
+            "type": "array"
+        },
+        {
+            "name": "address",
+            "type": "string"
+        },
+        {
+            "name": "foundingSiteQUserRefs",
+            "type": "array"
+        },
+        {
+            "name": "location",
+            "type": "string"
+        },
+        {
+            "name": "name",
+            "type": "string"
+        },
+        {
+            "name": "popup",
+            "type": "boolean"
+        },
+        {
+            "name": "retiredSiteQUserRefs",
+            "type": "array"
+        },
+        {
+            "name": "rotating",
+            "type": "boolean"
+        },
+        {
+            "name": "sector",
+            "type": "string"
+        },
+        {
+            "name": "startTimeCST",
+            "type": "string"
+        },
+        {
+            "name": "weekDay",
+            "type": "string"
+        },
+        {
+            "name": "xAccount",
+            "type": "string"
+        },
+        {
+            "name": "lastFlagPass",
+            "type": "timestamp"
+        }
+    ]
+}

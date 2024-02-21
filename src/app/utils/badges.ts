@@ -55,5 +55,10 @@ export const availableBadges: Array<Badge> = [
         text: 'Nantan Emeritus',
         textColor: '#fff',
         backgroundColor: '#626262'
+    },
+    {
+        text: 'Commz Q',
+        textColor: '#fff',
+        backgroundColor: '#524dbc'
     }
 ];
