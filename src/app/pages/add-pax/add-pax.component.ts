@@ -199,7 +199,6 @@ export class AddPaxComponent implements AfterViewInit {
         fullName: res.firstName + ' ' + res.lastName
       };
     })
-    console.log(pax);
     this.filteredEhF3OptionsSubject.next(pax);
   }
 
