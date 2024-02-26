@@ -5,7 +5,7 @@
      (focusout)="onFocusOut($event)">
   <input class="phone-input-element"
          formControlName="area" 
-         type="number"
+         type="text"
          style="width: 40px"
          maxlength="3"
          aria-label="Area code"
@@ -15,7 +15,7 @@
   <span class="phone-input-spacer">-</span>
   <input class="phone-input-element"
          formControlName="exchange"
-         type="number"
+         type="text"
          style="width: 40px"
          maxlength="3"
          autocomplete="tel-national"
@@ -28,7 +28,7 @@
          formControlName="subscriber"
          style="width: 60px"
          maxLength="4"
-         type="number"
+         type="text"
          autocomplete="tel-local"
          aria-label="Subscriber number"
          (input)="_handleInput(parts.controls.subscriber)"
