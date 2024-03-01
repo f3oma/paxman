@@ -114,6 +114,18 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
+
+    _focusMonitor.monitor(_elementRef, true).subscribe(origin => {
+      if (this.focused && !origin) {
+        this.onTouched();
+      }
+      this.focused = !!origin;
+      this.stateChanges.next();
+    });
+
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
   }
 
   ngOnDestroy() {
@@ -138,17 +150,16 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   autoFocusNext(control: AbstractControl, nextElement?: HTMLInputElement): void {
-    if (!control.errors && nextElement) {
+    if (!control.errors && !!nextElement) {
       this._focusMonitor.focusVia(nextElement, 'program');
     }
   }
 
   autoFocusPrev(event: KeyboardEvent, control: AbstractControl, prevElement: HTMLInputElement): void {
-    console.log(event);
     if (event.keyCode !== BACKSPACE) {
       return;
     }
-    if (control.value < 1) {
+    if (control.value.length < 1) {
       this._focusMonitor.focusVia(prevElement, 'program');
     }
   }
@@ -189,10 +200,7 @@ export class PhoneInputComponent implements ControlValueAccessor, MatFormFieldCo
   }
 
   _handleInput(control: AbstractControl, nextElement?: HTMLInputElement): void {
-    // Handles moving next when > 3 numbers in field
-    if (control.value > 100) {
-      this.autoFocusNext(control, nextElement);
-      this.onChange(this.value);
-    }
+    this.autoFocusNext(control, nextElement);
+    this.onChange(this.value);
   }
 }
