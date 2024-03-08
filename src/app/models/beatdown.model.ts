@@ -24,10 +24,10 @@ export interface IBeatdown {
     date: Date;
     qUser?: PaxUser;
     specialEvent: SpecialEventType;
-    aoLocation: AOData | null; // null in case of popup
+    aoLocation: AOData | null; // null in case of popup, in which we'd use an event name & address
     coQUser: PaxUser | null;
     eventName: string | null;
-    eventAddress: string | null;
+    eventAddress: string | null; // Required by user, nullable by system
     additionalQs?: Array<PaxUser>, // community events might have many q's
 }
 

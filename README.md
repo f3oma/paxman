@@ -45,6 +45,12 @@ As an Admin I can:
 Allow PAX to delete their F3 data  
 
 ### CRUD AO Data
-Add hidden view with Site-Q's and Admin level access to AO Data (temporary)  
+Add hidden view with Site-Q's and Admin level access to AO Data
 Allow Site-Q's and Admins to add new AO's to the database  
 Associate all account "Initial AO" locations to the new database AOs  
+
+### TODO
+- Create a cloud function to add an additional 1 row for every week 3 months ahead
+  - Probably can just run a scheduled action every week on sundays
+  - Need to come up with a flag for weekly AOs
+  
