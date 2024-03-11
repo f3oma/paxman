@@ -94,6 +94,7 @@ export class QSchedulerComponent {
     }
     this.weekList = weekList;
     this.beatdowns = await this.beatdownService.getBeatdownsBetweenDates(this.weekStartDate, this.weekEndDate);
+    this.generateDailyBeatdowns(this.beatdowns);
   }
 
   addDays(date: Date, days: number): Date {
