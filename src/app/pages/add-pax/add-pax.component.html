@@ -2,30 +2,30 @@
   <h1>Add an FNG</h1>
   <p>Add a new FNG to our F3Omaha Database.</p>
     <form class="fng-form" [formGroup]="form">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>First name</mat-label>
         <input formControlName="firstName" autocorrect="off" autocomplete="off" matInput type="text" placeholder="First name" required>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Last name</mat-label>
         <input  formControlName="lastName" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Last name" required>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>F3 name</mat-label>
         <input formControlName="f3Name" autocorrect="off" autocomplete="off" matInput type="text" placeholder="F3 name" required>
         <mat-error *ngIf="form.controls['f3Name'].invalid">{{getF3NameError()}}</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input formControlName="email" autocorrect="off" autocomplete="off" matInput type="email" placeholder="pax@example.com" required>
         <mat-error *ngIf="form.controls['email'].invalid">{{getEmailErrorMessage()}}</mat-error>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Phone number</mat-label>
         <phone-input formControlName="tel" autocorrect="off" autocomplete="off" required="false"></phone-input>
         <mat-hint>Include area code</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>EH'd by (F3 name)</mat-label>
         <input #ehdBy formControlName="ehByF3Name" autocorrect="off" [matAutocomplete]="auto" matInput type="text" placeholder="EH'd by">
         <mat-autocomplete requireSelection #auto="matAutocomplete" [displayWith]="displayF3NameOptions">
@@ -38,7 +38,7 @@
         </mat-autocomplete>
         <mat-hint>Select from autocomplete. Leave blank if none</mat-hint>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>EH Location</mat-label>
         <input #ehLocation formControlName="ehLocation" autocorrect="off" [matAutocomplete]="autoLoc" matInput type="text" placeholder="EH Location">
         <mat-autocomplete requireSelection #autoLoc="matAutocomplete" [displayWith]="displayLocationNameOptions">
@@ -48,7 +48,7 @@
         </mat-autocomplete>
         <mat-hint>Select location from autocomplete</mat-hint>
       </mat-form-field>
-      <!-- <mat-form-field appearance="fill">
+      <!-- <mat-form-field appearance="outline">
         <mat-label>F3 Sector</mat-label>
         <mat-select formControlName="sector">
           <mat-option value="DC - West">DC - West</mat-option>
@@ -57,7 +57,7 @@
           <mat-option value="Sarpy">Sarpy</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Home zip code</mat-label>
         <input formControlName="zipcode" autocorrect="off" autocomplete="off" matInput type="number" placeholder="68100" required>
         <mat-hint>Helps F3 with sector analytics</mat-hint>

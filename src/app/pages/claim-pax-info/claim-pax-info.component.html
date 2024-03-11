@@ -1,7 +1,7 @@
 <div class="container">
   <h1>Claim my data</h1>
   <div class="inner-form search-bar">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="outline">
       <mat-label>Search F3 Name</mat-label>
       <input matInput placeholder="Enter F3 Name, First name, or last name" type="text" [(ngModel)]="currentSearchValue" (ngModelChange)="searchValueBehaviorSubject.next($event)">
       <button *ngIf="currentSearchValue" matSuffix mat-icon-button aria-label="Clear" (click)="currentSearchValue=''">

@@ -1,0 +1,50 @@
+@use '@angular/material' as mat;
+
+.dense {
+    @include mat.option-density(-2);
+    @include mat.select-density(-2);
+    @include mat.form-field-density(-2);
+}
+
+.container {
+    padding: 16px;
+
+    mat-expansion-panel {
+        margin: 12px;
+    }
+
+    h1 {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    h5 {
+        margin-top: 12px;
+        margin-bottom: 4px;
+        font-weight: 700;
+    }
+    p {
+        font-size: 14px;
+    }
+
+    .date-actions {
+        display: flex;
+        flex-direction: row;
+        margin: 12px 0;
+
+        button {
+            margin: 0 4px;
+        }
+    }
+
+    .quick-filters {
+        display: flex;
+        flex-direction: row;
+        border-radius: 8px;
+        margin: 24px 0 0 0;
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+
+} 

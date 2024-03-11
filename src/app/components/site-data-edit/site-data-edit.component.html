@@ -4,21 +4,21 @@
             <mat-expansion-panel-header>
                 <mat-panel-title>Site Details</mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>F3 Site Name</mat-label>
                 <input formControlName="name" [(ngModel)]="site.name" autocomplete="off" matInput type="text" placeholder="Site Name" required>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Location name</mat-label>
                 <input formControlName="location" [(ngModel)]="site.location" autocomplete="off" matInput type="text" placeholder="Location Name" required>
                 <mat-hint>Example High School</mat-hint>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Address</mat-label>
                 <input formControlName="address" [(ngModel)]="site.address" autocomplete="off" matInput type="text" placeholder="Address" required>
                 <mat-hint>1234 S. Example Ave. Omaha, NE. 68114</mat-hint>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Sector</mat-label>
                 <mat-select formControlName="sector" [(ngModel)]="site.sector">
                 <mat-option value="DC - West">DC - West</mat-option>
@@ -33,7 +33,7 @@
                 <mat-panel-title>Site Leaders</mat-panel-title>
             </mat-expansion-panel-header>
             <h5>Active Site-Qs</h5>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Active Site-Qs</mat-label>
                 <mat-chip-grid #chipGrid aria-label="Active Site-Q selection">
                   <mat-chip-row *ngFor="let siteQ of temporaryActiveSiteQUsers" (removed)="removeActive(siteQ)">
@@ -56,7 +56,7 @@
                 </mat-autocomplete>
               </mat-form-field>
             <h5>Retired Site-Qs</h5>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Retired Site-Qs</mat-label>
                 <mat-chip-grid #chipGridRet aria-label="Retired Site-Q selection">
                   <mat-chip-row *ngFor="let siteQ of temporaryRetiredSiteQUsers" (removed)="removeRetired(siteQ)">
@@ -79,7 +79,7 @@
                 </mat-autocomplete>
             </mat-form-field>
             <h5>Founding Site-Q(s)</h5>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Founding Site-Q(s)</mat-label>
                 <mat-chip-grid #chipGridFounding aria-label="Founding Site-Q selection">
                   <mat-chip-row *ngFor="let siteQ of temporaryFoundingSiteQUsers" (removed)="removeFounding(siteQ)">
@@ -108,11 +108,11 @@
                 Workout Data
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Start time</mat-label>
                 <input formControlName="startTimeCST" [(ngModel)]="site.startTimeCST" autocomplete="off" matInput type="text" placeholder="Start time" required>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <mat-form-field appearance="outline">
                 <mat-label>Day of week</mat-label>
                 <mat-select formControlName="weekDay" [(ngModel)]="site.weekDay">
                     <mat-option value="Sun">Sunday</mat-option>
@@ -134,7 +134,7 @@
             </mat-expansion-panel-header>
             <div class="same-line">
                 <img id="icon" src="/assets/x_icon.svg" />
-                <mat-form-field appearance="fill">
+                <mat-form-field appearance="outline">
                     <mat-label>X Handle</mat-label>
                     <span matPrefix style="padding: 2px">@</span>
                     <input formControlName="xAccount" [(ngModel)]="site.xAccount" autocomplete="off" matInput type="text" placeholder="X Handle">

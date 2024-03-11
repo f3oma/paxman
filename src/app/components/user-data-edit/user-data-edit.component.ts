@@ -139,8 +139,8 @@ export class UserDataEditComponent {
       this.user.ehLocationRef = null;
     }
 
-    if (this.user.siteQLocationRef === undefined) {
-      this.user.siteQLocationRef = null;
+    if (this.user.activeSiteQLocationRef === undefined) {
+      this.user.activeSiteQLocationRef = null;
     }
 
     await this.saveUserProfileData(user.id);

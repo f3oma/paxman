@@ -34,7 +34,7 @@ export interface IPaxUser {
   // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
   ehByUserRef: UserRef; 
   ehLocationRef: AoLocationRef;
-  siteQLocationRef: AoLocationRef;
+  activeSiteQLocationRef: AoLocationRef;
 }
 
 export interface IPaxUserEntity {
@@ -52,7 +52,7 @@ export interface IPaxUserEntity {
   ehByUserRef: UserRef;
   ehLocationRef?: AoLocationRef;
   authDataId?: string;
-  siteQLocationRef?: DocumentReference<AOData>;
+  activeSiteQLocationRef?: DocumentReference<AOData>;
 }
 
 export class PaxUser {
@@ -70,7 +70,7 @@ export class PaxUser {
   private _notificationFrequency: NotificationFrequency;
   private _ehLocationRef: AoLocationRef;
   private _authDataId: string | null;
-  private _siteQLocationRef: AoLocationRef;
+  private _activeSiteQLocationRef: AoLocationRef;
 
   constructor(
     id: string, 
@@ -89,7 +89,7 @@ export class PaxUser {
     this._notificationFrequency = paxData.notificationFrequency;
     this._ehLocationRef = paxData.ehLocationRef;
     this._authDataId = paxData.authDataId;
-    this._siteQLocationRef = paxData.siteQLocationRef;
+    this._activeSiteQLocationRef = paxData.activeSiteQLocationRef;
   }
 
   public get id(): string {
@@ -148,8 +148,8 @@ export class PaxUser {
     return this._authDataId;
   }
 
-  public get siteQLocationRef(): AoLocationRef {
-    return this._siteQLocationRef;
+  public get activeSiteQLocationRef(): AoLocationRef {
+    return this._activeSiteQLocationRef;
   }
 
   public getLowercaseF3Name(): string {
@@ -175,7 +175,7 @@ export class PaxUser {
       paxNumber: this.paxNumber,
       notificationFrequency: this.notificationFrequency,
       ehLocationRef: this.ehLocationRef,
-      siteQLocationRef: this.siteQLocationRef,
+      activeSiteQLocationRef: this.activeSiteQLocationRef,
       authDataId: this.authDataId,
     }
   }

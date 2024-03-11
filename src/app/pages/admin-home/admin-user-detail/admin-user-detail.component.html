@@ -7,7 +7,7 @@
     <h1>Admin Pax Search</h1>
     <p>Find and Edit PAX by F3 Name, First, or Last name</p>
     <div class="search-bar">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="outline">
         <mat-label>Search</mat-label>
         <input matInput placeholder="Enter F3 Name, First name, or last name" type="text" [(ngModel)]="currentSearchValue" (ngModelChange)="searchValueBehaviorSubject.next($event)">
         <button *ngIf="currentSearchValue" matSuffix mat-icon-button aria-label="Clear" (click)="currentSearchValue=''">

@@ -46,3 +46,7 @@ Thumbs.db
 *-debug.log
 .runtimeconfig.json
 src/environments/
+
+# Cloud Functions
+paxnet_cloud_functions/*/node_modules
+paxnet_cloud_functions/*/lib
