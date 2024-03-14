@@ -51,6 +51,9 @@ import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscrib
 import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
 import { LogWorkoutComponent } from './pages/log-workout/log-workout.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { AddExerciseComponent } from './pages/exicon/add-exercise/add-exercise.component';
+import { ExiconComponent } from './pages/exicon/exicon.component';
+import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +83,10 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     UnsubscribeComponent,
     AddNewSiteComponent,
     LogWorkoutComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    ExiconComponent,
+    AddExerciseComponent,
+    ExiconApprovalComponent
   ],
   imports: [
     BrowserModule,

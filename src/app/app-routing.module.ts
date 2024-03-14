@@ -19,6 +19,8 @@ import { AdminUserDetailComponent } from './pages/admin-home/admin-user-detail/a
 import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscribe.component';
 import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { ExiconComponent } from './pages/exicon/exicon.component';
+import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
 
 const routes: Routes = [
   {
@@ -54,6 +56,11 @@ const routes: Routes = [
   {
     path: 'claim-info',
     component: ClaimPaxInfoComponent,
+    canActivate: [BasicAuthenticatedAuthGuard]
+  },
+  {
+    path: 'exicon',
+    component: ExiconComponent,
     canActivate: [BasicAuthenticatedAuthGuard]
   },
   {
@@ -93,6 +100,11 @@ const routes: Routes = [
             canActivate: [SiteQMinimumRoleAuthGuard]
           },
         ]
+      },
+      {
+        path: 'exicon-approval',
+        component: ExiconApprovalComponent,
+        canActivate: [SiteQMinimumRoleAuthGuard]
       },
       {
         path: 'add-location',
