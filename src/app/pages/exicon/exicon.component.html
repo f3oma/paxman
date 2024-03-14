@@ -1,0 +1,27 @@
+<div class="container" *ngIf="authUserData$ | async as authUser">
+    <div class="loading" *ngIf="!loading; else loadingSpinner">
+        <h1>F3 Omaha Exicon</h1>
+        <p>Exercise names and their descriptions</p>
+        <div class="exercise-list" *ngIf="paxUserData$ | async as pax">
+            <p class="approvalMessage" *ngIf="showApprovalMessage">{{approvalMessage}}</p>
+
+            <button mat-flat-button style="background-color: orange;" (click)="addNewExercise()" *ngIf="!editMode">Add New</button>
+            <div class="exercises" *ngIf="!editMode">
+                <div class="exercise" *ngFor="let exercise of exercises$ | async">
+                    <h4>{{exercise.name}}</h4>
+                    <p>{{exercise.description}}</p>
+                    <p>Submitted by: {{exercise.submittedByF3Name}}</p>
+                </div>
+            </div>
+            <div class="add-new-exercise" *ngIf="editMode">
+                <app-add-exercise [f3Name]="pax.f3Name" (cancel)="toggleEditMode()" (added)="addedExercise()"></app-add-exercise>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingSpinner>
+    <div class="fill-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>  

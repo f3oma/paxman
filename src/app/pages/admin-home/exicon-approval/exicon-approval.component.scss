@@ -1,0 +1,62 @@
+.container {
+    padding: 16px 0;
+
+    h1 {
+      margin-bottom: 4px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .exercises-list {
+        padding: 16px;
+
+        .exercise {
+            margin: 4px;
+            background-color: #eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 12px;
+
+            .description {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+
+                .oneline {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: flex-start;
+                    padding: 8px 0;
+                    align-items: center;
+                    gap: 12px;
+
+                    h5 {
+                        margin: 0;
+                    }
+                    #approve {
+                        color: #000;
+                        background-color: orange;
+                        padding: 4px 8px;
+                        font-weight: bold;
+                        cursor: pointer;
+                    }
+                    #deny {
+                        color: #fff;
+                        background-color: #dc4444;
+                        padding: 4px 8px;
+                        font-weight: bold;
+                        cursor: pointer;
+                    }
+                }
+            }
+            .action {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}
