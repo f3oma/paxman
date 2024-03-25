@@ -347,6 +347,8 @@ export class UserAuthenticationService {
   public async getUserExportCsv() {
     const storage = new Storage(this.storage);
     const storageRef = ref(storage, 'gs://f3_omaha_daily_user_file/user-export.csv');
-    await getBlob(storageRef);
+    const blob = await getBlob(storageRef);
+    var url= window.URL.createObjectURL(blob);
+    window.open(url);
   }
 }
