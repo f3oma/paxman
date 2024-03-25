@@ -54,6 +54,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { AddExerciseComponent } from './pages/exicon/add-exercise/add-exercise.component';
 import { ExiconComponent } from './pages/exicon/exicon.component';
 import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
+import { getStorage, provideStorage } from '@angular/fire/storage';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exic
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideAnalytics(() => getAnalytics()),
+    provideStorage(() => getStorage()),
     NgbModule,
     MatSelectModule,
     MatAutocompleteModule,

@@ -9,6 +9,7 @@ import { PaxModelConverter } from "../utils/pax-model.converter";
 import { arrayRemove, arrayUnion, updateDoc, writeBatch } from "firebase/firestore";
 import { PaxManagerService } from "./pax-manager.service";
 import { AOData } from "../models/ao.model";
+import { Storage, getBytes, ref } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ import { AOData } from "../models/ao.model";
 export class UserAuthenticationService {
   firestore: Firestore = inject(Firestore);
   auth: Auth = inject(Auth)
+  storage: Storage = inject(Storage);
   private authUserData: Subject<AuthenticatedUser | undefined> = new BehaviorSubject<AuthenticatedUser | undefined>(undefined);
   public authUserData$ = this.authUserData.asObservable();
 
@@ -336,10 +338,15 @@ export class UserAuthenticationService {
     }
   }
 
-
   public async updateSiteQUserLocation(aoRef: DocumentReference<AOData>, authUserRef: DocumentReference<AuthenticatedUser>) {
     return await updateDoc(authUserRef, {
       siteQLocationRef: aoRef
     })
+  }
+
+  public async getUserExportCsv() {
+    const storage = new Storage(this.storage);
+    const storageRef = ref(storage, 'gs://f3_omaha_daily_user_file/user-export.csv');
+    await getBytes(storageRef);
   }
 }

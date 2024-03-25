@@ -23,7 +23,8 @@ export class AdminHomeComponent {
     })
   }
 
-  downloadUserRoster() {
+  async downloadUserRoster() {
     // TODO: Once cloud job runs at 8am daily, download the roster CSV for the day
+    await this.userAuthService.getUserExportCsv();
   }
 }
