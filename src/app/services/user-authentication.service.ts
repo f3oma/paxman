@@ -9,7 +9,7 @@ import { PaxModelConverter } from "../utils/pax-model.converter";
 import { arrayRemove, arrayUnion, updateDoc, writeBatch } from "firebase/firestore";
 import { PaxManagerService } from "./pax-manager.service";
 import { AOData } from "../models/ao.model";
-import { Storage, getBytes, ref } from '@angular/fire/storage';
+import { Storage, getBlob, getBytes, ref } from '@angular/fire/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -347,6 +347,6 @@ export class UserAuthenticationService {
   public async getUserExportCsv() {
     const storage = new Storage(this.storage);
     const storageRef = ref(storage, 'gs://f3_omaha_daily_user_file/user-export.csv');
-    await getBytes(storageRef);
+    await getBlob(storageRef);
   }
 }
