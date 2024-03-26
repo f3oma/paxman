@@ -11,7 +11,7 @@ import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
-import { availableBadges } from 'src/app/utils/badges';
+import { Badges, availableBadges } from 'src/app/utils/badges';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -25,8 +25,8 @@ export class AdminUserDetailComponent {
   public searchValueBehaviorSubject = new Subject<string>();
   public isSearching = true;
   public showPaxNotFoundError = false;
-  public availableBadges: Badge[] = [];
-  public userCurrentBadges: Badge[] = [];
+  public availableBadges: Array<Badge | undefined> = [];
+  public userCurrentBadges: Array<Badge | undefined> | undefined = [];
 
   private resultPaxList = new BehaviorSubject<Array<any>>([]);
   public resultPaxList$ = this.resultPaxList.asObservable();
@@ -84,7 +84,7 @@ export class AdminUserDetailComponent {
   async getUserProfileData(userId: string) {
     this.userProfileService.getOrCreateUserProfileById(userId).then((userProfile) => {
       if (userProfile) {
-        this.availableBadges = availableBadges.filter((b) => !userProfile.badges.map((t => t.text)).includes(b.text));
+        this.availableBadges = availableBadges.filter((b) => !userProfile.badges.map((t => t.text)).includes(b!.text));
         this.userCurrentBadges = userProfile.badges;
       }
       this.userProfileData = userProfile;
@@ -103,7 +103,8 @@ export class AdminUserDetailComponent {
     });
   }
 
-  public toggleEditMode() {
+  public async toggleEditMode() {
+    this.userCurrentBadges = this.userProfileData?.badges;
     this.editMode = !this.editMode
   }
 
@@ -140,8 +141,7 @@ export class AdminUserDetailComponent {
         }
         await this.userAuthService.promoteRole(userRole, user.id);
         if (userRole === UserRole.SiteQ) {
-          const siteqBadge = this.availableBadges.filter((b) => b.text === 'Site-Q')[0];
-          await this.userProfileService.addBadgeToProfile(siteqBadge, user.id);
+          await this.userProfileService.addBadgeToProfile(Badges.SiteQ, user.id);
           await this.getUserProfileData(user.id)
         }
       } else {
@@ -203,16 +203,16 @@ export class AdminUserDetailComponent {
     }
   }
 
-  public async tryAddBadge(badge: Badge, user: IPaxUser) {
+  public async tryAddBadge(badge: Badge | undefined, user: IPaxUser) {
     if (confirm("Are you sure you want to give this badge?")) {
-      await this.userProfileService.addBadgeToProfile(badge, user.id);
+      await this.userProfileService.addBadgeToProfileInternal(badge, user.id);
       await this.getUserProfileData(user.id)
     }
   }
 
-  public async tryRemoveBadge(badge: Badge, user: IPaxUser) {
+  public async tryRemoveBadge(badge: Badge | undefined, user: IPaxUser) {
     if (confirm("Are you sure you want to remove this badge?")) {
-      await this.userProfileService.removeBadgeFromProfile(badge, user.id);
+      await this.userProfileService.removeBadgeFromProfileInternal(badge, user.id);
       await this.getUserProfileData(user.id)
     }
   }
