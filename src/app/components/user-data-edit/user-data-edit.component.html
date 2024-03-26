@@ -23,6 +23,13 @@
                 <mat-label>Phone number</mat-label>
                 <phone-input formControlName="tel" [(ngModel)]="user.phoneNumber" autocomplete="off" required="false"></phone-input>
             </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Birthday</mat-label>
+                <input formControlName="birthday" autocomplete="off" matInput [(ngModel)]="user.birthday" [matDatepicker]="picker">
+                <mat-hint>Not public. Used for RESPECT and HATE badges</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
             <div class="checkbox">
                 <mat-checkbox formControlName="hideContactInformation" [(ngModel)]="user.hideContactInformation" (change)="updateHideContactInfoValue($event, user)">Hide my contact information from other Pax</mat-checkbox>
             </div>

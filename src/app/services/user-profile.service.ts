@@ -4,6 +4,7 @@ import { PaxUser } from "../models/users.model";
 import { Badge, IUserProfileDataEntity, UserProfileData } from "../models/user-profile-data.model";
 import { PaxManagerService } from "./pax-manager.service";
 import { PaxModelConverter } from "../utils/pax-model.converter";
+import { Badges, getBadgeDetail } from "../utils/badges";
 
 @Injectable({
     providedIn: 'root'
@@ -127,7 +128,12 @@ export class UserProfileService {
         return await deleteDoc(docRef);
     }
 
-    public async addBadgeToProfile(badge: Badge, userId: string) {
+    public async addBadgeToProfile(badgeName: Badges, userId: string) {
+        const badge = getBadgeDetail(badgeName);
+        await this.addBadgeToProfileInternal(badge, userId);
+    }
+
+    public async addBadgeToProfileInternal(badge: Badge | undefined, userId: string) {
         await this.getOrCreateUserProfileById(userId);
         const docRef = doc(this.userProfileCollection, userId);
         return await updateDoc(docRef, {
@@ -135,7 +141,12 @@ export class UserProfileService {
         });
     }
 
-    public async removeBadgeFromProfile(badge: Badge, userId: string) {
+    public async removeBadgeFromProfile(badgeName: Badges, userId: string) {
+        const badge = getBadgeDetail(badgeName);
+        await this.removeBadgeFromProfileInternal(badge, userId);
+    }
+
+    public async removeBadgeFromProfileInternal(badge: Badge | undefined, userId: string) {
         await this.getOrCreateUserProfileById(userId);
         const docRef = doc(this.userProfileCollection, userId);
         return await updateDoc(docRef, {

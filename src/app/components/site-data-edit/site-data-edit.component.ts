@@ -1,19 +1,18 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { AOData, IAOData } from 'src/app/models/ao.model';
+import { IAOData } from 'src/app/models/ao.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
-import { MatChipInputEvent } from '@angular/material/chips';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { DocumentReference } from 'firebase/firestore';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserRole } from 'src/app/models/authenticated-user.model';
 import { UserProfileService } from 'src/app/services/user-profile.service';
-import { availableBadges } from 'src/app/utils/badges';
+import { Badges } from 'src/app/utils/badges';
 
 @Component({
   selector: 'site-data-edit',
@@ -240,7 +239,7 @@ export class SiteDataEditComponent implements OnInit {
             await this.authManagerService.updateSiteQUserLocation(aoRef, authRef);
           }
           await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
-          await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], paxUser.id);
+          await this.userProfileService.addBadgeToProfile(Badges.SiteQ, paxUser.id);
         }
       }
     }
@@ -260,18 +259,18 @@ export class SiteDataEditComponent implements OnInit {
             // We need to completely remove all site-q references
             await this.authManagerService.removeRole(UserRole.SiteQ, existingSiteQ.id);
             await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
-            await this.userProfileService.removeBadgeFromProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], existingSiteQ.id);
+            await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
           } else {
             if (confirm(existingSiteQ.f3Name + " will retain role privileges. Move to retired?")) {
               this.temporaryRetiredSiteQUsers.push(existingSiteQ);
-              await this.userProfileService.removeBadgeFromProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], existingSiteQ.id);
-              await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Retired Site-Q')[0], existingSiteQ.id);
+              await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
+              await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, existingSiteQ.id);
               await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
             }
           }
         } else {
-          await this.userProfileService.removeBadgeFromProfile(availableBadges.filter((b) => b.text === 'Site-Q')[0], existingSiteQ.id);
-          await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Retired Site-Q')[0], existingSiteQ.id);
+          await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
+          await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, existingSiteQ.id);
           await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
         }
       }
@@ -294,7 +293,7 @@ export class SiteDataEditComponent implements OnInit {
     // If an original member is no longer in retired, remove their access
     for (let siteq of this.originalRetiredSiteQUsers) {
       if (retiredSiteQUsers.filter((o) => o.id !== siteq.id)) {
-        await this.userProfileService.removeBadgeFromProfile(availableBadges.filter((b) => b.text === 'Retired Site-Q')[0], siteq.id);
+        await this.userProfileService.removeBadgeFromProfile(Badges.RetiredSiteQ, siteq.id);
         await this.authManagerService.removeRole(UserRole.SiteQ, siteq.id);
       }
     }
@@ -309,7 +308,7 @@ export class SiteDataEditComponent implements OnInit {
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
         await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
-        await this.userProfileService.addBadgeToProfile(availableBadges.filter((b) => b.text === 'Site Founder')[0], siteq.id);
+        await this.userProfileService.addBadgeToProfile(Badges.SiteFounder, siteq.id);
         foundingSiteQUsers.push(paxUser);
       }
     }
@@ -317,7 +316,7 @@ export class SiteDataEditComponent implements OnInit {
     // If an original member is no longer in retired, remove their access
     for (let siteq of this.originalFoundingSiteQUsers) {
       if (foundingSiteQUsers.filter((o) => o.id !== siteq.id)) {
-        await this.userProfileService.removeBadgeFromProfile(availableBadges.filter((b) => b.text === 'Site Founder')[0], siteq.id);
+        await this.userProfileService.removeBadgeFromProfile(Badges.SiteFounder, siteq.id);
         await this.authManagerService.removeRole(UserRole.SiteQ, siteq.id);
       }
     }
