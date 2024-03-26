@@ -26,7 +26,7 @@
             <mat-form-field appearance="fill">
                 <mat-label>Birthday</mat-label>
                 <input formControlName="birthday" autocomplete="off" matInput [(ngModel)]="user.birthday" [matDatepicker]="picker">
-                <mat-hint>Not public. Used for RESPECT and HATE badges</mat-hint>
+                <mat-hint>Used for Respect and Hate badges</mat-hint>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
