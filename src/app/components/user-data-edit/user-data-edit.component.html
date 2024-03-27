@@ -23,7 +23,8 @@
                 <mat-label>Phone number</mat-label>
                 <phone-input formControlName="tel" [(ngModel)]="user.phoneNumber" autocomplete="off" required="false"></phone-input>
             </mat-form-field>
-            <mat-form-field appearance="fill">
+            <!-- We do not want to show this info to anyone other than the user -->
+            <mat-form-field appearance="fill" *ngIf="!isEditorAdmin">
                 <mat-label>Birthday</mat-label>
                 <input formControlName="birthday" autocomplete="off" matInput [(ngModel)]="user.birthday" [matDatepicker]="picker">
                 <mat-hint>Used for Respect and Hate badges</mat-hint>
