@@ -141,7 +141,7 @@ export class UserDataEditComponent {
       this.user.ehLocationRef = null;
     }
 
-    if (this.user.birthday) {
+    if (this.user.birthday && this.user.birthday !== undefined) {
       const today = new Date();
       const age: number = Math.floor((today.getTime() - this.user.birthday.getTime()) / (1000 * 60 * 60 * 24 * 365));
       const respectIdx = this.userProfileData?.badges.findIndex(b => b.text === getBadgeDetail(Badges.Respect)!.text);
