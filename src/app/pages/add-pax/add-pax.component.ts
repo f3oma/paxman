@@ -126,7 +126,7 @@ export class AddPaxComponent implements AfterViewInit {
           ehLocationRef: locationRef,
           notificationFrequency: NotificationFrequency.All,
           siteQLocationRef: null,
-          birthday: undefined
+          birthday: null
         };
   
         // Removed:

@@ -35,7 +35,7 @@ export interface IPaxUser {
   ehByUserRef: UserRef; 
   ehLocationRef: AoLocationRef;
   siteQLocationRef: AoLocationRef;
-  birthday: Date;
+  birthday: Date | null;
 }
 
 export interface IPaxUserEntity {
@@ -54,7 +54,7 @@ export interface IPaxUserEntity {
   ehLocationRef?: AoLocationRef;
   authDataId?: string;
   siteQLocationRef?: DocumentReference<AOData>;
-  birthday: Timestamp;
+  birthday: Timestamp | null;
 }
 
 export class PaxUser {
@@ -73,7 +73,7 @@ export class PaxUser {
   private _ehLocationRef: AoLocationRef;
   private _authDataId: string | null;
   private _siteQLocationRef: AoLocationRef;
-  private _birthday: Date;
+  private _birthday: Date | null;
 
   constructor(
     id: string, 
@@ -156,7 +156,7 @@ export class PaxUser {
     return this._siteQLocationRef;
   }
 
-  public get birthday(): Date {
+  public get birthday(): Date | null {
     return this._birthday;
   }
 
