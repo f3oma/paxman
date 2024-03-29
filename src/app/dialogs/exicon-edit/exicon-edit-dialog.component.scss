@@ -1,0 +1,13 @@
+.form {
+    display: flex;
+    padding: 16px;
+    flex-direction: column;
+
+    #description {
+        min-height: 250px;
+    }
+}
+
+#content {
+    min-width: 80vw;
+}

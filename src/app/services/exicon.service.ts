@@ -63,4 +63,12 @@ export class ExiconService {
     const ref = doc(this.exerciseCollection, `${exercise.id}`);
     return await deleteDoc(ref);
   }
+
+  async updateExercise(exercise: Exercise) {
+    const ref = doc(this.exerciseCollection, `${exercise.id}`);
+    return await updateDoc(ref, {
+      name: exercise.name,
+      description: exercise.description
+    });
+  }
 }

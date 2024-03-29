@@ -55,6 +55,7 @@ import { AddExerciseComponent } from './pages/exicon/add-exercise/add-exercise.c
 import { ExiconComponent } from './pages/exicon/exicon.component';
 import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
     ForgotPasswordComponent,
     ExiconComponent,
     AddExerciseComponent,
-    ExiconApprovalComponent
+    ExiconApprovalComponent,
+    ExiconEditDialog
   ],
   imports: [
     BrowserModule,
