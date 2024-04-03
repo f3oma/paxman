@@ -4,12 +4,13 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
 import { PhoneNumber } from 'src/app/models/phonenumber.model';
 import { UserProfileData } from 'src/app/models/user-profile-data.model';
-import { IPaxUser, PaxUser } from 'src/app/models/users.model';
+import { IPaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
+import { Badges, getBadgeDetail } from 'src/app/utils/badges';
 
 @Component({
   selector: 'user-data-edit',
@@ -39,7 +40,8 @@ export class UserDataEditComponent {
     f3Name: new FormControl(''),
     joinDate: new FormControl(''),
     stravaHandle: new FormControl(''),
-    xHandle: new FormControl('')
+    xHandle: new FormControl(''),
+    birthday: new FormControl(''),
   });
 
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
@@ -139,8 +141,30 @@ export class UserDataEditComponent {
       this.user.ehLocationRef = null;
     }
 
-    if (this.user.activeSiteQLocationRef === undefined) {
-      this.user.activeSiteQLocationRef = null;
+    if (this.user.birthday && this.user.birthday !== undefined) {
+      const today = new Date();
+      const age: number = Math.floor((today.getTime() - this.user.birthday.getTime()) / (1000 * 60 * 60 * 24 * 365));
+      const respectIdx = this.userProfileData?.badges.findIndex(b => b.text === getBadgeDetail(Badges.Respect)!.text);
+      const hateIdx = this.userProfileData?.badges.findIndex(b => b.text === getBadgeDetail(Badges.Hate)!.text);
+
+      if (age >= 50 && respectIdx === -1) {
+        this.userProfileData?.badges.push(getBadgeDetail(Badges.Respect)!);
+      } else if (age < 30 && hateIdx === -1) {
+        this.userProfileData?.badges.push(getBadgeDetail(Badges.Hate)!);
+      } else {
+        // Remove badges if age changes and no longer in category
+        // This could be more performant
+        if (age < 50 && respectIdx && respectIdx >= 0) {
+          this.userProfileData?.badges.splice(respectIdx, 1);
+        }
+        if (age > 29 && hateIdx && hateIdx >= 0) {
+          this.userProfileData?.badges.splice(hateIdx, 1);
+        }
+      }
+    }
+
+    if (this.user.siteQLocationRef === undefined) {
+      this.user.siteQLocationRef = null;
     }
 
     await this.saveUserProfileData(user.id);
@@ -155,6 +179,11 @@ export class UserDataEditComponent {
     // Correct any empty links
     for (let record in this.userProfileData.links) {
       const link = this.userProfileData.links[record];
+
+      // Special strava logic for link type: "https://strava.app.link/<id>"
+      // if (link && link.url.includes("https://strava.app.link/")) {
+      //   this.userProfileData.links[record].url = link.url;
+      // }
 
       if (link && link.url.includes('http')) {
         const lastSlashIndex = link.url.lastIndexOf('/');

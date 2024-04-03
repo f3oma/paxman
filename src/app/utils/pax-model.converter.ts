@@ -29,7 +29,8 @@ export class PaxModelConverter {
           paxNumber: data.paxNumber,
           notificationFrequency: data.notificationFrequency,
           ehLocationRef: data.ehLocationRef,
-          activeSiteQLocationRef: data.activeSiteQLocationRef
+          siteQLocationRef: data.siteQLocationRef,
+          birthday: data.birthday ? Timestamp.fromDate(data.birthday) : null,
         }
       },
       fromFirestore: (snap: QueryDocumentSnapshot): PaxUser => {
@@ -70,7 +71,8 @@ export class PaxModelConverter {
             notificationFrequency: data.notificationFrequency,
             ehLocationRef: data.ehLocationRef,
             authDataId: data.authDataId,
-            activeSiteQLocationRef: data.activeSiteQLocationRef
+            siteQLocationRef: data.siteQLocationRef,
+            birthday: !data.birthday ? null : data.birthday.toDate(),
           });
       }
     }

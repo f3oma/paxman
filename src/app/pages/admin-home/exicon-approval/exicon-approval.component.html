@@ -1,0 +1,22 @@
+ <div class="container">
+    <h1>Exicon Entry Approval</h1>
+    <div class="exercises-list">
+        <h5>Needs Approval:</h5>
+        <div class="exercise" *ngFor="let exercise of exercises$ | async">
+            <ng-container *ngIf="!exercise.isApproved">
+                <div class="description">
+                    <div class="oneline">
+                        <h5>{{exercise.name}}</h5>
+                        <a id="approve" (click)="approve(exercise)">Approve</a>
+                        <a id="deny" (click)="deny(exercise)">Delete</a>
+                        <a id="edit" (click)="edit(exercise)">Edit</a>
+                    </div>
+                    <p>{{exercise.description}}</p>
+                </div>
+            </ng-container>
+        </div>
+        <ng-container *ngIf="exercises$ | async as exercises">
+            <p *ngIf="exercises.length === 0">Nothing. All clear!</p>
+        </ng-container>
+    </div>
+ </div>

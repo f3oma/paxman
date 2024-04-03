@@ -34,7 +34,8 @@ export interface IPaxUser {
   // These references are slightly abnormal as we don't want to recursively get each pax's full data, I'm electing to just use their references here instead...
   ehByUserRef: UserRef; 
   ehLocationRef: AoLocationRef;
-  activeSiteQLocationRef: AoLocationRef;
+  siteQLocationRef: AoLocationRef;
+  birthday: Date | null;
 }
 
 export interface IPaxUserEntity {
@@ -52,7 +53,8 @@ export interface IPaxUserEntity {
   ehByUserRef: UserRef;
   ehLocationRef?: AoLocationRef;
   authDataId?: string;
-  activeSiteQLocationRef?: DocumentReference<AOData>;
+  siteQLocationRef?: DocumentReference<AOData>;
+  birthday: Timestamp | null;
 }
 
 export class PaxUser {
@@ -70,7 +72,8 @@ export class PaxUser {
   private _notificationFrequency: NotificationFrequency;
   private _ehLocationRef: AoLocationRef;
   private _authDataId: string | null;
-  private _activeSiteQLocationRef: AoLocationRef;
+  private _siteQLocationRef: AoLocationRef;
+  private _birthday: Date | null;
 
   constructor(
     id: string, 
@@ -89,7 +92,8 @@ export class PaxUser {
     this._notificationFrequency = paxData.notificationFrequency;
     this._ehLocationRef = paxData.ehLocationRef;
     this._authDataId = paxData.authDataId;
-    this._activeSiteQLocationRef = paxData.activeSiteQLocationRef;
+    this._siteQLocationRef = paxData.siteQLocationRef;
+    this._birthday = paxData.birthday;
   }
 
   public get id(): string {
@@ -148,8 +152,12 @@ export class PaxUser {
     return this._authDataId;
   }
 
-  public get activeSiteQLocationRef(): AoLocationRef {
-    return this._activeSiteQLocationRef;
+  public get siteQLocationRef(): AoLocationRef {
+    return this._siteQLocationRef;
+  }
+
+  public get birthday(): Date | null {
+    return this._birthday;
   }
 
   public getLowercaseF3Name(): string {
@@ -175,8 +183,9 @@ export class PaxUser {
       paxNumber: this.paxNumber,
       notificationFrequency: this.notificationFrequency,
       ehLocationRef: this.ehLocationRef,
-      activeSiteQLocationRef: this.activeSiteQLocationRef,
+      siteQLocationRef: this.siteQLocationRef,
       authDataId: this.authDataId,
+      birthday: this.birthday,
     }
   }
 

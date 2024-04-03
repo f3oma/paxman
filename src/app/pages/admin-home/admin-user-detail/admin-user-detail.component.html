@@ -56,8 +56,8 @@
           <div class="badge"
           (click)="tryRemoveBadge(badge, user)"
           *ngFor="let badge of userCurrentBadges"
-          [style.background]="badge.backgroundColor"
-          [style.color]="badge.textColor">{{badge.text}}</div>
+          [style.background]="badge?.backgroundColor"
+          [style.color]="badge?.textColor">{{badge?.text}}</div>
         </div>
         <div class="badge-list">
           <div class="section-head">
@@ -67,8 +67,8 @@
           <div class="badge"
           (click)="tryAddBadge(badge, user)"
           *ngFor="let badge of availableBadges"
-          [style.background]="badge.backgroundColor"
-          [style.color]="badge.textColor">{{badge.text}}</div>
+          [style.background]="badge?.backgroundColor"
+          [style.color]="badge?.textColor">{{badge?.text}}</div>
         </div>
       </div>
     </div>

@@ -29,6 +29,8 @@ export class AddPaxComponent implements AfterViewInit {
   filteredLocationOptions$: Observable<any[]> = this.filteredLocationOptionsSubject.asObservable();
   selectedLocation: any = '';
 
+  addLock = false;
+
   form: FormGroup = new FormGroup({
     firstName: new FormControl('', [Validators.required]),
     lastName: new FormControl('', [Validators.required]),
@@ -85,60 +87,65 @@ export class AddPaxComponent implements AfterViewInit {
   }
 
   public async addPax(): Promise<void> {
-    if(this.isValidForm()) {
-      const phoneValid = () => {
-        const value = this.form.controls['tel'].value;
-        if (value?.area !== '') {
-          return true;
+    if (!this.addLock) {
+      this.addLock = true;
+      if(this.isValidForm()) {
+        const phoneValid = () => {
+          const value = this.form.controls['tel'].value;
+          if (value?.area !== '') {
+            return true;
+          }
+          return false;
         }
-        return false;
-      }
-      const ehedBy = this.form.controls['ehByF3Name'].value;
-      let ehRef: UserRef = null;
-      if (ehedBy) {
-        ehRef = this.paxManagerService.getUserReference(ehedBy.userRef);
-      }
-
-      const location = this.form.controls['ehLocation'].value;
-      let locationRef: AoLocationRef = null;
-      if (location && location !== '') {
-        locationRef = this.aoManagerService.getAoLocationReference(location.aoRef);
-      }
-
-      let paxNumber = await this.paxManagerService.getPaxCount();
-
-      const pax: Partial<IPaxUser> = {
-        id: undefined,
-        f3Name: this.form.controls['f3Name'].value,
-        firstName: this.form.controls['firstName'].value,
-        lastName: this.form.controls['lastName'].value,
-        email: this.form.controls['email'].value,
-        phoneNumber: phoneValid() ? this.form.controls['tel'].value : null,
-        joinDate: new Date(),
-        ehByUserRef: ehRef,
-        activeUser: true,
-        hideContactInformation: false,
-        paxNumber: paxNumber + 1,
-        ehLocationRef: locationRef,
-        notificationFrequency: NotificationFrequency.All,
-        activeSiteQLocationRef: null
-      };
-
-      // Removed:
-      // sector: this.form.controls['sector'].value,
-      // zipcode: this.form.controls['zipcode'].value,
-    
-      const newUserAdded = await this.paxManagerService.addNewUser(pax);
-      await this.paxWelcomeEmailService.sendWelcomeEmailToPax(newUserAdded.id, pax.f3Name!);
-      if (newUserAdded && newUserAdded.id) {
-        window.alert(`Welcome to F3 Omaha, ${this.form.controls['f3Name'].value}!`);
-        this.router.navigate(['home']);
+        const ehedBy = this.form.controls['ehByF3Name'].value;
+        let ehRef: UserRef = null;
+        if (ehedBy) {
+          ehRef = this.paxManagerService.getUserReference(ehedBy.userRef);
+        }
+  
+        const location = this.form.controls['ehLocation'].value;
+        let locationRef: AoLocationRef = null;
+        if (location && location !== '') {
+          locationRef = this.aoManagerService.getAoLocationReference(location.aoRef);
+        }
+  
+        let paxNumber = await this.paxManagerService.getPaxCount();
+  
+        const pax: Partial<IPaxUser> = {
+          id: undefined,
+          f3Name: this.form.controls['f3Name'].value,
+          firstName: this.form.controls['firstName'].value,
+          lastName: this.form.controls['lastName'].value,
+          email: this.form.controls['email'].value,
+          phoneNumber: phoneValid() ? this.form.controls['tel'].value : null,
+          joinDate: new Date(),
+          ehByUserRef: ehRef,
+          activeUser: true,
+          hideContactInformation: false,
+          paxNumber: paxNumber + 1,
+          ehLocationRef: locationRef,
+          notificationFrequency: NotificationFrequency.All,
+          siteQLocationRef: null,
+          birthday: null
+        };
+  
+        // Removed:
+        // sector: this.form.controls['sector'].value,
+        // zipcode: this.form.controls['zipcode'].value,
+      
+        const newUserAdded = await this.paxManagerService.addNewUser(pax);
+        await this.paxWelcomeEmailService.sendWelcomeEmailToPax(newUserAdded.id, pax.f3Name!);
+        if (newUserAdded && newUserAdded.id) {
+          window.alert(`Welcome to F3 Omaha, ${this.form.controls['f3Name'].value}!`);
+          this.router.navigate(['home']);
+        } else {
+          console.error("Error in adding user", newUserAdded);
+        }
+  
       } else {
-        console.error("Error in adding user", newUserAdded);
+        console.error("Error, form is not valid");
       }
-
-    } else {
-      console.error("Error, form is not valid");
+      this.addLock = false;
     }
   }
 

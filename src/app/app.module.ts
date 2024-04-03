@@ -56,6 +56,11 @@ import { CreateBeatdownComponent } from './pages/q-scheduler/create-beatdown/cre
 import { EditBeatdownComponent } from './pages/q-scheduler/edit-beatdown/edit-beatdown.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BeatdownDataEditorComponent } from './components/beatdown-data-editor/beatdown-data-editor.component';
+import { AddExerciseComponent } from './pages/exicon/add-exercise/add-exercise.component';
+import { ExiconComponent } from './pages/exicon/exicon.component';
+import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
+import { getStorage, provideStorage } from '@angular/fire/storage';
+import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +94,11 @@ import { BeatdownDataEditorComponent } from './components/beatdown-data-editor/b
     QSchedulerComponent,
     CreateBeatdownComponent,
     EditBeatdownComponent,
-    BeatdownDataEditorComponent
+    BeatdownDataEditorComponent,
+    ExiconComponent,
+    AddExerciseComponent,
+    ExiconApprovalComponent,
+    ExiconEditDialog
   ],
   imports: [
     BrowserModule,
@@ -105,6 +114,7 @@ import { BeatdownDataEditorComponent } from './components/beatdown-data-editor/b
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideAnalytics(() => getAnalytics()),
+    provideStorage(() => getStorage()),
     NgbModule,
     MatSelectModule,
     MatAutocompleteModule,

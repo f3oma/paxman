@@ -15,7 +15,10 @@
         <a class="nav-link" routerLink="/search">Search</a>
       </li>
       <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/add-pax">Add PAX</a>
+        <a class="nav-link" routerLink="/add-pax">Add FNG</a>
+      </li>
+      <li class="nav-item" *ngIf="authenticatedUser">
+        <a class="nav-link" routerLink="/exicon">Exicon</a>
       </li>
       <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>

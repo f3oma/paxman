@@ -114,14 +114,14 @@ export class PaxManagerService {
 
   public async updateSiteQUserLocation(aoRef: DocumentReference<AOData>, userRef: DocumentReference<PaxUser>) {
     return await updateDoc(userRef, {
-      activeSiteQLocationRef: aoRef
+      siteQLocationRef: aoRef
     })
   }
 
   public async removeSiteQUserLocation(userId: string) {
     const userRef = this.getUserReference('users/' + userId) as DocumentReference<DocumentData>;
     return await updateDoc(userRef, {
-      activeSiteQLocationRef: null
+      siteQLocationRef: null
     })
   }
 

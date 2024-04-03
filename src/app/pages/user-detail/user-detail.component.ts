@@ -99,7 +99,7 @@ export class UserDetailComponent {
   private async getUserData(id: string) {
     const paxData = await (await this.paxManagerService.getDataByAuthId(id)).data();
     this.ehUser = paxData?.ehByUserRef ? await this.paxManagerService.getPaxInfoByRef(paxData.ehByUserRef) : undefined;
-    this.userSiteQLocation = paxData?.activeSiteQLocationRef ? await this.aoManagerService.getDataByRef(paxData.activeSiteQLocationRef) : undefined;
+    this.userSiteQLocation = paxData?.siteQLocationRef ? await this.aoManagerService.getDataByRef(paxData.siteQLocationRef) : undefined;
     this.userEhLocation = paxData?.ehLocationRef ? await this.aoManagerService.getDataByRef(paxData.ehLocationRef) : undefined;
     this.userDataSubject.next(paxData?.toProperties());
     setTimeout(() => {
