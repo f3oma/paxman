@@ -14,7 +14,7 @@
     }
 
     h1 {
-        font-size: 24px;
+        font-size: 28px;
         font-weight: bold;
     }
     h5 {
@@ -47,4 +47,58 @@
         }
     }
 
+    .beatdown-container {
+        .beatdown {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            .ao-data {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .metadata {
+                display: flex;
+                flex-direction: row;
+                gap: 12px;
+                align-items: center;
+                
+                .community-event {
+                    font-weight: bold;
+                    background-color: black;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    justify-content: center;
+                    align-items: center;
+                    display: flex;
+                    font-family: serif;
+                }
+
+                .no-q-warning {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+
+                    mat-icon {
+                        font-size: 14px;
+                        color: orange;
+                    }
+                }
+            }
+        }
+    }
 } 
+
+.mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
+
+.fill-container {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

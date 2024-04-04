@@ -25,10 +25,10 @@ export interface IBeatdown {
     qUser?: PaxUser;
     specialEvent: SpecialEventType;
     aoLocation: AOData | null; // null in case of popup, in which we'd use an event name & address
-    coQUser: PaxUser | null;
+    coQUser: PaxUser | undefined;
     eventName: string | null;
     eventAddress: string | null; // Required by user, nullable by system
-    additionalQs?: Array<PaxUser>, // community events might have many q's
+    additionalQs?: Array<PaxUser | undefined>, // community events might have many q's
 }
 
 export interface IBeatdownEntity {
@@ -48,10 +48,10 @@ export class Beatdown {
     private _qUser: PaxUser | undefined;
     private _specialEvent: SpecialEventType;
     private _aoLocation: AOData | null; // null in case of popup
-    private _coQUser: PaxUser | null;
+    private _coQUser: PaxUser | undefined;
     private _eventName: string | null;
     private _eventAddress: string | null;
-    private _additionalQs?: Array<PaxUser>;
+    private _additionalQs?: Array<PaxUser | undefined>;
 
     constructor(beatdown: IBeatdown) {
         this._id = beatdown.id;
@@ -85,7 +85,7 @@ export class Beatdown {
         return this._specialEvent;
     }
 
-    public get coQUser(): PaxUser | null {
+    public get coQUser(): PaxUser | undefined {
         return this._coQUser;
     }
 
@@ -121,7 +121,7 @@ export class Beatdown {
         return this.specialEvent == SpecialEventType.CommunityEvent;
     }
 
-    public get additionalQs(): Array<PaxUser> | undefined {
+    public get additionalQs(): Array<PaxUser | undefined> | undefined {
         return this._additionalQs;
     }
 

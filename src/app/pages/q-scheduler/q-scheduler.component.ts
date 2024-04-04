@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { DocumentReference } from '@angular/fire/firestore';
-import { AOData, DayOfWeekAbbv } from 'src/app/models/ao.model';
+import { DocumentReference, QueryFieldFilterConstraint, where } from '@angular/fire/firestore';
+import { debounce } from 'lodash';
+import { AOData } from 'src/app/models/ao.model';
 import { UserRole } from 'src/app/models/authenticated-user.model';
 import { Beatdown } from 'src/app/models/beatdown.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
@@ -38,6 +39,9 @@ export class QSchedulerComponent {
   selected = -1;
   beatdowns: Beatdown[] = [];
   currentBeatdownList: Record<string, Beatdown[]> = {};
+  beatdownCache: Record<string, Beatdown[]> = {};
+  
+  loadingBeatdownData: boolean = false;
 
   constructor(
     private beatdownService: BeatdownService,
@@ -46,6 +50,7 @@ export class QSchedulerComponent {
       this.months = this.createMonthsList();
       this.createDayMap();
       this.initializeWeekDates(this.startDate);
+      this.getBeatdowns();
 
       // Look for the linked active site-q connection
       this.userAuthService.authUserData$.subscribe((res) => {
@@ -57,21 +62,29 @@ export class QSchedulerComponent {
       })
   }
 
-  previousWeek(startDate: Date) {
+  async previousWeek(startDate: Date) {
     const previousWeek = new Date(startDate.setDate(startDate.getDate() - 7));
     this.initializeWeekDates(previousWeek);
+    await this.getBeatdowns();
   }
 
-  nextWeek(startDate: Date) {
+  async nextWeek(startDate: Date) {
     const nextWeek = new Date(startDate.setDate(startDate.getDate() + 7));
-    this.initializeWeekDates(nextWeek)
+    this.initializeWeekDates(nextWeek);
+    await this.getBeatdowns();
   }
 
-  moveToSpecificMonth(month: string, weekStartDate: Date) {
+  async moveToSpecificMonth(month: string, weekStartDate: Date) {
     const monthIdx = this.months.findIndex((m) => m === month);
-    weekStartDate.setMonth(monthIdx);
-    weekStartDate.setDate(7); // Target first week of that month
+    weekStartDate.setMonth(monthIdx, 5);
     this.initializeWeekDates(weekStartDate);
+    await this.getBeatdowns();
+  }
+
+  async moveToToday() {
+    const today = new Date();
+    this.initializeWeekDates(today);
+    await this.getBeatdowns();
   }
 
   async initializeWeekDates(startDate: Date) {
@@ -79,7 +92,7 @@ export class QSchedulerComponent {
     const firstDay = startDate.getDate() - startDate.getDay();
     this.startDate = startDate;
     this.weekStartDate = new Date(startDate.setDate(firstDay));
-    this.weekEndDate = new Date(startDate.setDate(this.weekStartDate.getDate()+6));
+    this.weekEndDate = new Date(startDate.setDate(this.weekStartDate.getDate()+7));
 
     const weekList = [];
     let date = new Date(this.weekStartDate);
@@ -93,9 +106,20 @@ export class QSchedulerComponent {
       date = this.addDays(date, 1);
     }
     this.weekList = weekList;
-    this.beatdowns = await this.beatdownService.getBeatdownsBetweenDates(this.weekStartDate, this.weekEndDate);
-    this.generateDailyBeatdowns(this.beatdowns);
   }
+
+  getBeatdowns = debounce(async (filter: QueryFieldFilterConstraint[] = []) => {
+      if (this.beatdownCache[this.weekStartDate.toDateString()]) {
+        this.beatdowns = this.beatdownCache[this.weekStartDate.toDateString()];
+      } else {
+        this.loadingBeatdownData = true;
+        const beatdowns = await this.beatdownService.getBeatdownsBetweenDates(this.weekStartDate, this.weekEndDate, filter);
+        this.beatdownCache[this.weekStartDate.toDateString()] = beatdowns;
+        this.beatdowns = beatdowns;
+      }
+      this.generateDailyBeatdowns(this.beatdowns);
+      this.loadingBeatdownData = false;
+    }, 1000);
 
   addDays(date: Date, days: number): Date {
     date.setDate(date.getDate() + days);
@@ -111,24 +135,30 @@ export class QSchedulerComponent {
   }
 
     /*checkbox change event*/
-  changedFilter(event: any) {
+  async changedFilter(event: any) {
+    // Value is an array of selected values such as ['available', 'VQ']
     const { value } = event;
-    let filteredBeatdowns = this.beatdowns.filter((b) => {
-      if (value.includes('available')) {
-        return b.qUser === null;
-      }
+    const activeFilters = [];
 
-      if (value.includes('VQ')) {
-        return b.isVQ === true;
-      }
+    // This should probably be updated to do this locally, and not hit the database...
+    if (value.includes('available')) {
+      activeFilters.push(
+        where("qUserRef", "==", null)
+      );
+    }
 
-      if (value.includes('shovelPass')) {
-        return b.isFlagPass === true;
-      }
-      return;
-    });
+    if (value.includes('VQ')) {
+      activeFilters.push(
+        where("specialEvent", "==", "VQ")
+      );
+    }
 
-    this.generateDailyBeatdowns(filteredBeatdowns);
+    if (value.includes('shovelPass')) {
+      activeFilters.push(
+        where("specialEvent", "==", "FlagPass")
+      );
+    }
+    await this.getBeatdowns(activeFilters);
   }
 
   private generateDailyBeatdowns(beatdowns: Beatdown[]) {

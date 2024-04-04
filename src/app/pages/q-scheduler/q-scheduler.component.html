@@ -21,7 +21,8 @@
                             <a *ngFor="let month of months" ngbDropdownItem class="dropdown-item" (click)="moveToSpecificMonth(month, weekStartDate)">{{month}}</a>
                         </div>
                     </div>
-                    <button mat-stroked-button id="next-btn" (click)="nextWeek(weekEndDate)">Next week <mat-icon>chevron_right</mat-icon></button>
+                    <button mat-stroked-button id="next-btn" (click)="moveToToday()">Today</button>
+                    <button mat-stroked-button id="next-btn" (click)="nextWeek(weekStartDate)">Next week <mat-icon>chevron_right</mat-icon></button>
                 </div>
             </div>
             <div class="view-selector">
@@ -36,18 +37,56 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-                        <mat-expansion-panel *ngFor="let day of weekList">
-                            <mat-expansion-panel-header>
-                              <mat-panel-title>
-                                {{day.dayName}} ({{day.date | date: 'MM/dd' }})
-                              </mat-panel-title>
-                            </mat-expansion-panel-header>
-                            <div class="beatdown-container" *ngFor="let beatdown of currentBeatdownList[day.dateString]">
-                                <div class="beatdown">
-                                    {{beatdown.id}}
+                        <ng-container *ngIf="!loadingBeatdownData; else loadingSpinner">
+                            <mat-expansion-panel *ngFor="let day of weekList">
+                                <mat-expansion-panel-header>
+                                  <mat-panel-title>
+                                    {{day.dayName}} ({{day.date | date: 'MM/dd' }})
+                                  </mat-panel-title>
+                                </mat-expansion-panel-header>
+                                <div class="beatdown-container" *ngFor="let beatdown of currentBeatdownList[day.dateString]">
+                                    <div class="beatdown">
+                                        <div class="ao-data">
+                                            <!-- Can be an AO or Event -->
+                                            <div class="event" *ngIf="beatdown.eventName">
+                                                <h4>{{beatdown.eventName}}</h4>
+                                                <h5 *ngIf="beatdown.eventAddress">{{beatdown.eventAddress}}</h5>
+                                            </div>
+                                            <h5>{{beatdown.aoLocation?.name}}</h5>
+                                        </div>
+                                        <div class="metadata">
+                                            <div class="no-q-warning" *ngIf="!beatdown.qUser">
+                                                <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
+                                            </div>
+                                            <mat-chip-listbox>
+                                                <mat-chip *ngIf="beatdown.isFlagPass">
+                                                    <span matChipAvatar>🇺🇸</span> Flag Pass
+                                                </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isPopup">
+                                                    <span matChipAvatar>⬆️</span> Popup
+                                                </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isSiteLaunch">
+                                                    <span matChipAvatar>🚀</span> Site Launch
+                                                </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isVQ">
+                                                    <span style="font-weight: bold;">VQ</span>
+                                                </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isCommunityEvent">
+                                                    <span class="community-event" matChipAvatar>F3</span> Community Event
+                                                </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isAnniversary">
+                                                    <span matChipAvatar>🎉</span> Anniversary
+                                                </mat-chip>
+                                            </mat-chip-listbox>
+                                            <div class="q-data">
+                                                <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}</p>
+                                            </div>
+                                            <a mat-stroked-button>Edit</a>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </mat-expansion-panel>
+                            </mat-expansion-panel>
+                        </ng-container>
                     </mat-tab>
                     <mat-tab label="My Site" *ngIf="!activeSiteQAO">
                         
@@ -57,3 +96,10 @@
         </div>
     </div>
 </div>
+
+<ng-template #loadingSpinner>
+    <div class="fill-container">
+      <mat-spinner [diameter]="40"></mat-spinner>
+      <p style="margin-top: 6px">Getting week data...</p>
+    </div>
+  </ng-template>  

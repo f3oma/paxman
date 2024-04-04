@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { DocumentData, Firestore, QueryDocumentSnapshot, Timestamp, collection, doc, getDoc } from "@angular/fire/firestore";
+import { CollectionReference, DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, collection, doc, getDoc } from "@angular/fire/firestore";
 import { AODataConverter } from "./ao-data.converter";
 import { PaxModelConverter } from "./pax-model.converter";
 import { Beatdown, IBeatdown, IBeatdownEntity } from "../models/beatdown.model";
-import { AOData } from "../models/ao.model";
+import { AOData, IAODataEntity } from "../models/ao.model";
 import { PaxUser } from "../models/users.model";
 
 @Injectable({
@@ -18,92 +18,98 @@ export class BeatdownConverter {
         private readonly firestore: Firestore, 
         private readonly aoLocationConverter: AODataConverter,
         private readonly userConverter: PaxModelConverter) {}
-  
-    public getConverter() {
-      return {
-        toFirestore: (data: IBeatdown): DocumentData => {
-            let aoLocationRef = null;
-            let qUserRef = null;
-            let coQUserRef = null;
-            let additionalQsRefs = [];
 
-            if (data.aoLocation) {
-                aoLocationRef = doc(this.aoLocationCollection, data.aoLocation.id);
+    public getConverter(): FirestoreDataConverter<any> {
+        const toDomain = this.toDomain;
+        const toEntity = this.toEntity;
+        const userConverter = this.userConverter;
+        const aoConverter = this.aoLocationConverter;
+        const aoCollection = this.aoLocationCollection;
+        const userCollection = this.userCollection;
+        return {
+            toFirestore: (data: IBeatdown): DocumentData => {
+            return toEntity(data, aoCollection, userCollection);
+            },
+            fromFirestore(snap: QueryDocumentSnapshot) {
+            return toDomain(snap.data() as IBeatdownEntity, snap.id, userConverter, aoConverter);
             }
-
-            if (data.qUser) {
-                qUserRef = doc(this.userCollection, data.qUser.id);
-            }
-
-            if (data.coQUser) {
-                coQUserRef = doc(this.userCollection, data.coQUser.id);
-            }
-
-            if (data.additionalQs && data.additionalQs.length > 0) {
-                for (let additionalQ of data.additionalQs) {
-                    additionalQsRefs.push(doc(this.userCollection, additionalQ.id));
-                }
-            }
-
-            return <IBeatdownEntity> {
-                date: Timestamp.fromDate(data.date),
-                aoLocationRef,
-                qUserRef,
-                coQUserRef,
-                specialEvent: data.specialEvent,
-                eventAddress: data.eventAddress,
-                eventName: data.eventName,
-                additionalQsRefs: additionalQsRefs
-            }
-        },
-        fromFirestore: (snap: QueryDocumentSnapshot): any => {
-            const data: IBeatdownEntity = snap.data() as IBeatdownEntity;
-            let aoLocation: AOData | null = null;
-            let qUser: PaxUser | undefined = undefined;
-            let coQUser: PaxUser | null = null;
-            let additionalQs: Array<PaxUser> = [];
-
-            if (data.aoLocationRef) {
-                getDoc(data.aoLocationRef.withConverter(this.aoLocationConverter.getConverter())).then((res) => {
-                    aoLocation = res.data() as AOData;
-                });
-            }
-
-            if (data.qUserRef) {
-                getDoc(data.qUserRef.withConverter(this.userConverter.getConverter())).then((res) => {
-                    qUser = res.data() as PaxUser;
-                });
-            }
-
-            if (data.coQUserRef) {
-                getDoc(data.coQUserRef.withConverter(this.userConverter.getConverter())).then((res) => {
-                    coQUser = res.data() as PaxUser;
-                });
-            }
-
-            if (data.additionalQsRefs && data.additionalQsRefs.length) {
-                for(let additionalQRef of data.additionalQsRefs) {
-                    if (!additionalQRef) {
-                        continue;
-                    }
-                    getDoc(additionalQRef.withConverter(this.userConverter.getConverter())).then((res) => {
-                        additionalQs.push(res.data() as PaxUser);
-                    });
-                }
-            }
-
-            return new Beatdown({
-                id: snap.id,
-                aoLocation,
-                qUser,
-                date: data.date.toDate(),
-                specialEvent: data.specialEvent,
-                eventAddress: data.eventAddress,
-                eventName: data.eventName,
-                coQUser,
-                additionalQs
-            });
         }
-      }
+    }
+
+    public async toDomain(data: IBeatdownEntity, id: string, userConverter: PaxModelConverter, aoLocationConverter: AODataConverter) {
+        let aoLocation: AOData | null = null;
+        let qUser: PaxUser | undefined = undefined;
+        let coQUser: PaxUser | undefined = undefined;
+        let additionalQs: Array<PaxUser | undefined> = [];
+
+        if (data.aoLocationRef) {
+            aoLocation = await (await getDoc(data.aoLocationRef.withConverter(aoLocationConverter.getConverter()))).data();
+        }
+
+        if (data.qUserRef) {
+             qUser = await (await getDoc(data.qUserRef.withConverter(userConverter.getConverter()))).data();
+        }
+
+        if (data.coQUserRef) {
+            coQUser = await (await getDoc(data.coQUserRef.withConverter(userConverter.getConverter()))).data();
+        }
+
+        if (data.additionalQsRefs && data.additionalQsRefs.length) {
+            for(let additionalQRef of data.additionalQsRefs) {
+                if (!additionalQRef) {
+                    continue;
+                }
+                additionalQs.push(await (await getDoc(additionalQRef.withConverter(userConverter.getConverter()))).data());
+            }
+        }
+        return new Beatdown({
+            id,
+            aoLocation,
+            qUser,
+            date: data.date.toDate(),
+            specialEvent: data.specialEvent,
+            eventAddress: data.eventAddress,
+            eventName: data.eventName,
+            coQUser,
+            additionalQs
+        });
+    }
+
+    public toEntity(data: IBeatdown, aoLocationCollection: CollectionReference, userCollection: CollectionReference) {
+        let aoLocationRef = null;
+        let qUserRef = null;
+        let coQUserRef = null;
+        let additionalQsRefs = [];
+
+        if (data.aoLocation) {
+            aoLocationRef = doc(aoLocationCollection, data.aoLocation.id);
+        }
+
+        if (data.qUser) {
+            qUserRef = doc(userCollection, data.qUser.id);
+        }
+
+        if (data.coQUser) {
+            coQUserRef = doc(userCollection, data.coQUser.id);
+        }
+
+        if (data.additionalQs && data.additionalQs.length > 0) {
+            for (let additionalQ of data.additionalQs) {
+                if (additionalQ) {
+                    additionalQsRefs.push(doc(userCollection, additionalQ.id));
+                }
+            }
+        }
+
+        return <IBeatdownEntity> {
+            date: Timestamp.fromDate(data.date),
+            aoLocationRef,
+            qUserRef,
+            coQUserRef,
+            specialEvent: data.specialEvent,
+            eventAddress: data.eventAddress,
+            eventName: data.eventName,
+            additionalQsRefs: additionalQsRefs
+        }
     }
 }
