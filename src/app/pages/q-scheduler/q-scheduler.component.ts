@@ -1,12 +1,16 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { DocumentReference, QueryFieldFilterConstraint, where } from '@angular/fire/firestore';
+import { MatDialog } from '@angular/material/dialog';
 import { debounce } from 'lodash';
 import { AOData } from 'src/app/models/ao.model';
 import { UserRole } from 'src/app/models/authenticated-user.model';
-import { Beatdown } from 'src/app/models/beatdown.model';
+import { Beatdown, IBeatdown } from 'src/app/models/beatdown.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
+import { EditBeatdownComponent } from './edit-beatdown-modal/edit-beatdown.component';
+import { CreateBeatdownComponent } from './create-beatdown-modal/create-beatdown.component';
+import { first, map } from 'rxjs';
 
 // Models
 
@@ -35,22 +39,26 @@ export class QSchedulerComponent {
   dayMap: Map<number, string> = new Map();
   weekList: { dayName: string | undefined; date: Date; dateString: string }[] = [];
 
-  toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage'];
-  selected = -1;
+  mySiteBeatdowns: Beatdown[] = [];
+  openBeatdownQCount: number = 0;
+
   beatdowns: Beatdown[] = [];
   currentBeatdownList: Record<string, Beatdown[]> = {};
   beatdownCache: Record<string, Beatdown[]> = {};
-  
-  loadingBeatdownData: boolean = false;
+
+  loadingBeatdownData: boolean = true;
+  activeFilters: QueryFieldFilterConstraint[] = [];
 
   constructor(
     private beatdownService: BeatdownService,
     private userAuthService: UserAuthenticationService,
-    private aoManagerService: AOManagerService) {
+    private aoManagerService: AOManagerService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private matDialog: MatDialog) {
       this.months = this.createMonthsList();
       this.createDayMap();
       this.initializeWeekDates(this.startDate);
-      this.getBeatdowns();
+      this.getBeatdowns(this.activeFilters);
 
       // Look for the linked active site-q connection
       this.userAuthService.authUserData$.subscribe((res) => {
@@ -62,29 +70,65 @@ export class QSchedulerComponent {
       })
   }
 
+  public editBeatdown(beatdown: Beatdown, beatdownList: Beatdown[], day: string) {
+    this.matDialog.open(EditBeatdownComponent, {
+      data: beatdown,
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    }).afterClosed().subscribe((res) => {
+      const idx = beatdownList.findIndex((b) => b.id === beatdown.id);
+      beatdownList[idx] = new Beatdown(res);
+
+      if (day !== '') {
+        this.currentBeatdownList[day] = beatdownList;
+      } else {
+        this.mySiteBeatdowns = beatdownList;
+      }
+    });
+  }
+
+  trackByFn(index: number, item: Beatdown): any {
+    return item.id;
+  }
+
+  public createBeatdown() {
+    this.matDialog.open(CreateBeatdownComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    }).afterClosed().subscribe(async (res) => {
+      delete this.beatdownCache[this.weekStartDate.toDateString()];
+      await this.getBeatdowns(this.activeFilters);
+    })
+  }
+
+
   async previousWeek(startDate: Date) {
     const previousWeek = new Date(startDate.setDate(startDate.getDate() - 7));
     this.initializeWeekDates(previousWeek);
-    await this.getBeatdowns();
+    await this.getBeatdowns(this.activeFilters);
   }
 
   async nextWeek(startDate: Date) {
     const nextWeek = new Date(startDate.setDate(startDate.getDate() + 7));
     this.initializeWeekDates(nextWeek);
-    await this.getBeatdowns();
+    await this.getBeatdowns(this.activeFilters);
   }
 
   async moveToSpecificMonth(month: string, weekStartDate: Date) {
     const monthIdx = this.months.findIndex((m) => m === month);
     weekStartDate.setMonth(monthIdx, 5);
     this.initializeWeekDates(weekStartDate);
-    await this.getBeatdowns();
+    await this.getBeatdowns(this.activeFilters);
   }
 
   async moveToToday() {
     const today = new Date();
     this.initializeWeekDates(today);
-    await this.getBeatdowns();
+    await this.getBeatdowns(this.activeFilters);
   }
 
   async initializeWeekDates(startDate: Date) {
@@ -108,7 +152,7 @@ export class QSchedulerComponent {
     this.weekList = weekList;
   }
 
-  getBeatdowns = debounce(async (filter: QueryFieldFilterConstraint[] = []) => {
+  getBeatdowns = debounce(async (filter: QueryFieldFilterConstraint[]) => {
       if (this.beatdownCache[this.weekStartDate.toDateString()]) {
         this.beatdowns = this.beatdownCache[this.weekStartDate.toDateString()];
       } else {
@@ -132,6 +176,12 @@ export class QSchedulerComponent {
 
   async getLinkedActiveSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
     this.activeSiteQAO = await this.aoManagerService.getDataByRef(siteQLocationRef);
+    await this.getMySiteBeatdowns(siteQLocationRef, this.activeFilters);
+  }
+
+  async getMySiteBeatdowns(aoDataRef: DocumentReference<AOData>, filters: QueryFieldFilterConstraint[]) {
+    this.mySiteBeatdowns = await this.beatdownService.getBeatdownsByAO(aoDataRef, filters);
+    this.openBeatdownQCount = this.mySiteBeatdowns.filter((b) => !b.qUser).length;
   }
 
     /*checkbox change event*/
@@ -158,7 +208,14 @@ export class QSchedulerComponent {
         where("specialEvent", "==", "FlagPass")
       );
     }
+
+    this.activeFilters = activeFilters;
+
     await this.getBeatdowns(activeFilters);
+    if (this.activeSiteQAO) {
+      const ref = this.aoManagerService.getAoLocationReference(`${this.activeSiteQAO.id}`);
+      await this.getMySiteBeatdowns(ref, activeFilters);
+    }
   }
 
   private generateDailyBeatdowns(beatdowns: Beatdown[]) {
@@ -172,6 +229,10 @@ export class QSchedulerComponent {
       }
     }
     this.currentBeatdownList = currentBeatdowns;
+  }
+
+  async deleteObject(beatdown: Beatdown) {
+    await this.beatdownService.deleteBeatdown(beatdown);
   }
 
   private createDayMap() {

@@ -62,16 +62,20 @@ export class BeatdownConverter {
                 additionalQs.push(await (await getDoc(additionalQRef.withConverter(userConverter.getConverter()))).data());
             }
         }
+        const dateTz = new Date(data.date.toMillis());
+        dateTz.setHours(dateTz.getHours() + 5); // cst conversion, hacky
+
         return new Beatdown({
             id,
             aoLocation,
             qUser,
-            date: data.date.toDate(),
+            date: dateTz,
             specialEvent: data.specialEvent,
             eventAddress: data.eventAddress,
             eventName: data.eventName,
             coQUser,
-            additionalQs
+            additionalQs,
+            canceled: data.canceled,
         });
     }
 
@@ -101,6 +105,11 @@ export class BeatdownConverter {
             }
         }
 
+        // For undefined canceled in current records
+        if (!data.canceled) {
+            data.canceled = false;
+        }
+
         return <IBeatdownEntity> {
             date: Timestamp.fromDate(data.date),
             aoLocationRef,
@@ -109,7 +118,8 @@ export class BeatdownConverter {
             specialEvent: data.specialEvent,
             eventAddress: data.eventAddress,
             eventName: data.eventName,
-            additionalQsRefs: additionalQsRefs
+            additionalQsRefs: additionalQsRefs,
+            canceled: data.canceled,
         }
     }
 }

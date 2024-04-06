@@ -100,7 +100,7 @@ export class UserDataEditComponent {
       const refData = await this.aoManagerService.getDataByRef(this.user.ehLocationRef);
       if (refData !== undefined) {
         this.selectedEhLocation = {
-          aoRef: `ao_data/${this.user.ehLocationRef.id}`, 
+          aoRef: this.user.ehLocationRef.id, 
           name: refData.name
         };
       }

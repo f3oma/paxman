@@ -233,7 +233,7 @@ export class SiteDataEditComponent implements OnInit {
         activeSiteQUsers.push(paxUser);
         if (this.originalActiveSiteQUsers.filter((o) => o.id === paxUser.id).length === 0) {
           // I'm new!
-          const aoRef = this.aoManagerService.getAoLocationReference(`ao_data/${this.site.id}`);
+          const aoRef = this.aoManagerService.getAoLocationReference(this.site.id);
           const authRef = await this.authManagerService.getLinkedAuthDataRef(paxUser.id);
           if (authRef) {
             await this.authManagerService.updateSiteQUserLocation(aoRef, authRef);

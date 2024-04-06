@@ -12,6 +12,7 @@ export enum SpecialEventType {
     FlagPass = 'FlagPass',
     Popup = 'Popup',
     CommunityEvent = 'CommunityEvent',
+    KidFriendly = 'KidFriendly',
     None = 'None',
 }
 
@@ -29,6 +30,7 @@ export interface IBeatdown {
     eventName: string | null;
     eventAddress: string | null; // Required by user, nullable by system
     additionalQs?: Array<PaxUser | undefined>, // community events might have many q's
+    canceled: boolean;
 }
 
 export interface IBeatdownEntity {
@@ -39,7 +41,8 @@ export interface IBeatdownEntity {
     coQUserRef: UserRef;
     eventName: string | null;
     eventAddress: string | null;
-    additionalQsRefs?: Array<UserRef>, // community events might have many q's
+    additionalQsRefs?: Array<UserRef>; // community events might have many q's
+    canceled: boolean;
 }
 
 export class Beatdown {
@@ -52,6 +55,7 @@ export class Beatdown {
     private _eventName: string | null;
     private _eventAddress: string | null;
     private _additionalQs?: Array<PaxUser | undefined>;
+    private _canceled: boolean;
 
     constructor(beatdown: IBeatdown) {
         this._id = beatdown.id;
@@ -63,6 +67,7 @@ export class Beatdown {
         this._eventName = beatdown.eventName;
         this._eventAddress = beatdown.eventAddress;
         this._additionalQs = beatdown.additionalQs;
+        this._canceled = beatdown.canceled;
     }
 
     public get id(): string {
@@ -121,6 +126,14 @@ export class Beatdown {
         return this.specialEvent == SpecialEventType.CommunityEvent;
     }
 
+    public get isKidFriendly(): boolean {
+        return this.specialEvent == SpecialEventType.KidFriendly;
+    }
+
+    public get isCanceled(): boolean {
+        return this._canceled;
+    }
+
     public get additionalQs(): Array<PaxUser | undefined> | undefined {
         return this._additionalQs;
     }
@@ -135,7 +148,8 @@ export class Beatdown {
             coQUser: this.coQUser,
             aoLocation: this.aoLocation,
             qUser: this.qUser,
-            additionalQs: this.additionalQs
+            additionalQs: this.additionalQs,
+            canceled: this.isCanceled,
         };
     }
 }

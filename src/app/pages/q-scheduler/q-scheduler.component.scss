@@ -21,6 +21,7 @@
         margin-top: 12px;
         margin-bottom: 4px;
         font-weight: 700;
+        font-size: 14px;
     }
     p {
         font-size: 14px;
@@ -47,7 +48,21 @@
         }
     }
 
-    .beatdown-container {
+    .beatdown-container:nth-child(even) {
+        background-color: #eee;
+    }
+
+    .my-site-beatdown-container:nth-child(even) {
+        background-color: #eee;
+    }
+
+    .canceled-beatdown {
+        background-color: rgb(255, 130, 130) !important;
+    }
+
+    .beatdown-container, .my-site-beatdown-container {
+        padding: 4px 8px;
+
         .beatdown {
             display: flex;
             flex-direction: row;
@@ -58,6 +73,14 @@
                 display: flex;
                 flex-direction: column;
                 gap: 4px;
+
+                h4, h5 {
+                    margin: 0;
+                }
+
+                h4 {
+                    font-size: 15px;
+                }
             }
 
             .metadata {
@@ -65,7 +88,7 @@
                 flex-direction: row;
                 gap: 12px;
                 align-items: center;
-                
+
                 .community-event {
                     font-weight: bold;
                     background-color: black;
@@ -88,10 +111,27 @@
                         color: orange;
                     }
                 }
+
+                .q-data {
+                    p {
+                        margin: 0;
+                        font-weight: bold;
+                    }
+                }
             }
         }
     }
 } 
+
+.fill-tab {
+    height: 100%;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    a {
+        width: 100%;
+    }
+}
 
 .mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
 
@@ -101,4 +141,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+    .hide-when-mobile {
+        display: none;
+    }
 }

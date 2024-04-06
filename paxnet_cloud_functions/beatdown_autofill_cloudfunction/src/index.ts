@@ -56,7 +56,8 @@ http('beatdown_autofill', (_request: Request, response: Response) => {
         aoLocationRef: doc.ref,
         coQUserRef: null,
         eventName: null,
-        eventAddress: aoData.address
+        eventAddress: aoData.address,
+        canceled: false,
       };
       batch.create(docRef, beatdownEntity);
     });

@@ -52,8 +52,8 @@ import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-
 import { LogWorkoutComponent } from './pages/log-workout/log-workout.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { QSchedulerComponent } from './pages/q-scheduler/q-scheduler.component';
-import { CreateBeatdownComponent } from './pages/q-scheduler/create-beatdown/create-beatdown.component';
-import { EditBeatdownComponent } from './pages/q-scheduler/edit-beatdown/edit-beatdown.component';
+import { CreateBeatdownComponent } from './pages/q-scheduler/create-beatdown-modal/create-beatdown.component';
+import { EditBeatdownComponent } from './pages/q-scheduler/edit-beatdown-modal/edit-beatdown.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BeatdownDataEditorComponent } from './components/beatdown-data-editor/beatdown-data-editor.component';
 import { AddExerciseComponent } from './pages/exicon/add-exercise/add-exercise.component';

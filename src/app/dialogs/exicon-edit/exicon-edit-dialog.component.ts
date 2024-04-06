@@ -25,7 +25,6 @@ export class ExiconEditDialog {
         public dialogRef: MatDialogRef<ExiconEditDialog>,
         @Inject(MAT_DIALOG_DATA) public data: Exercise) {
             this.exercise = data;
-            console.log(this.data);
             this.form.controls['description'].setValue(this.exercise.description);
             this.form.controls['name'].setValue(this.exercise.name);
     }

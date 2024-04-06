@@ -26,5 +26,6 @@ export interface IBeatdownEntity {
     coQUserRef: UserRef;
     eventName: string | null;
     eventAddress: string | null;
-    additionalQsRefs?: Array<UserRef>, // community events might have many q's
+    additionalQsRefs?: Array<UserRef>; // community events might have many q's
+    canceled: boolean;
 }

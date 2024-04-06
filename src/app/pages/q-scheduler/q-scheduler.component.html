@@ -11,23 +11,24 @@
     <p>View, edit and add Q's to the rotation</p>
     <div class="loading">
         <div class="main-content">
-            <div class="week-selection">
-                <h5>Week of {{weekStartDate | date: 'MM/dd/YYYY'}}</h5>
-                <div class="date-actions">
-                    <button mat-stroked-button id="previous-btn" (click)="previousWeek(weekStartDate)"><mat-icon>chevron_left</mat-icon> Last week</button>
-                    <div class="months-drop" ngbDropdown>
-                        <button class="dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle mat-stroked-button>{{weekStartDate | date: 'MMMM'}}</button>
-                        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                            <a *ngFor="let month of months" ngbDropdownItem class="dropdown-item" (click)="moveToSpecificMonth(month, weekStartDate)">{{month}}</a>
-                        </div>
-                    </div>
-                    <button mat-stroked-button id="next-btn" (click)="moveToToday()">Today</button>
-                    <button mat-stroked-button id="next-btn" (click)="nextWeek(weekStartDate)">Next week <mat-icon>chevron_right</mat-icon></button>
-                </div>
-            </div>
+
             <div class="view-selector">
                 <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
                     <mat-tab label="All Sites">
+                        <div class="week-selection">
+                            <h5>Week of {{weekStartDate | date: 'MM/dd/YYYY'}}</h5>
+                            <div class="date-actions">
+                                <button mat-stroked-button id="previous-btn" (click)="previousWeek(weekStartDate)"><mat-icon>chevron_left</mat-icon> Last week</button>
+                                <div class="months-drop" ngbDropdown>
+                                    <button class="dropdown-toggle" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle mat-stroked-button>{{weekStartDate | date: 'MMMM'}}</button>
+                                    <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                        <a *ngFor="let month of months" ngbDropdownItem class="dropdown-item" (click)="moveToSpecificMonth(month, weekStartDate)">{{month}}</a>
+                                    </div>
+                                </div>
+                                <button mat-stroked-button id="next-btn" (click)="moveToToday()">Today</button>
+                                <button mat-stroked-button id="next-btn" (click)="nextWeek(weekStartDate)">Next week <mat-icon>chevron_right</mat-icon></button>
+                            </div>
+                        </div>
                         <div class="quick-filters">
                             <mat-form-field appearance="outline" class="dense">
                                 <mat-select placeholder="Filter" multiple (selectionChange)="changedFilter($event)">
@@ -44,7 +45,7 @@
                                     {{day.dayName}} ({{day.date | date: 'MM/dd' }})
                                   </mat-panel-title>
                                 </mat-expansion-panel-header>
-                                <div class="beatdown-container" *ngFor="let beatdown of currentBeatdownList[day.dateString]">
+                                <div class="beatdown-container" [ngClass]="{'canceled-beatdown' : beatdown.isCanceled }" *ngFor="let beatdown of currentBeatdownList[day.dateString]; trackBy: trackByFn">
                                     <div class="beatdown">
                                         <div class="ao-data">
                                             <!-- Can be an AO or Event -->
@@ -52,44 +53,103 @@
                                                 <h4>{{beatdown.eventName}}</h4>
                                                 <h5 *ngIf="beatdown.eventAddress">{{beatdown.eventAddress}}</h5>
                                             </div>
-                                            <h5>{{beatdown.aoLocation?.name}}</h5>
+                                            <h5 *ngIf="beatdown.aoLocation">{{beatdown.aoLocation.name}}</h5>
                                         </div>
+                                        <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled this week</p>
                                         <div class="metadata">
-                                            <div class="no-q-warning" *ngIf="!beatdown.qUser">
-                                                <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
-                                            </div>
                                             <mat-chip-listbox>
                                                 <mat-chip *ngIf="beatdown.isFlagPass">
-                                                    <span matChipAvatar>🇺🇸</span> Flag Pass
+                                                    <span matChipAvatar>🇺🇸</span><span class="hide-when-mobile">Flag Pass</span>
                                                 </mat-chip>
                                                 <mat-chip *ngIf="beatdown.isPopup">
-                                                    <span matChipAvatar>⬆️</span> Popup
+                                                    <span matChipAvatar>⬆️</span><span class="hide-when-mobile">Popup</span>
                                                 </mat-chip>
                                                 <mat-chip *ngIf="beatdown.isSiteLaunch">
-                                                    <span matChipAvatar>🚀</span> Site Launch
+                                                    <span matChipAvatar>🚀</span> <span class="hide-when-mobile">Site Launch</span>
                                                 </mat-chip>
                                                 <mat-chip *ngIf="beatdown.isVQ">
                                                     <span style="font-weight: bold;">VQ</span>
                                                 </mat-chip>
                                                 <mat-chip *ngIf="beatdown.isCommunityEvent">
-                                                    <span class="community-event" matChipAvatar>F3</span> Community Event
+                                                    <span class="community-event" matChipAvatar>F3</span> <span class="hide-when-mobile">Community Event</span>
                                                 </mat-chip>
                                                 <mat-chip *ngIf="beatdown.isAnniversary">
-                                                    <span matChipAvatar>🎉</span> Anniversary
+                                                    <span matChipAvatar>🎉</span><span class="hide-when-mobile">Anniversary</span>
+                                                </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isKidFriendly">
+                                                    <span matChipAvatar>🧸</span><span class="hide-when-mobile">2.0 Friendly</span>
                                                 </mat-chip>
                                             </mat-chip-listbox>
-                                            <div class="q-data">
+                                            <div class="no-q-warning" *ngIf="!beatdown.qUser">
+                                                <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
+                                            </div>
+                                            <div class="q-data" *ngIf="beatdown.qUser">
                                                 <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}</p>
                                             </div>
-                                            <a mat-stroked-button>Edit</a>
+                                            <a mat-stroked-button (click)="editBeatdown(beatdown, currentBeatdownList[day.dateString], day.dateString)">Edit</a>
                                         </div>
                                     </div>
                                 </div>
                             </mat-expansion-panel>
                         </ng-container>
                     </mat-tab>
-                    <mat-tab label="My Site" *ngIf="!activeSiteQAO">
-                        
+                    <mat-tab label="My Site" *ngIf="activeSiteQAO">
+                        <div class="ao-data">
+                            <h4>{{activeSiteQAO.name}}</h4>
+                            <p>Open Q Slots: {{openBeatdownQCount}}</p>
+                        </div>
+                        <div class="quick-filters">
+                            <mat-form-field appearance="outline" class="dense">
+                                <mat-select placeholder="Filter" multiple (selectionChange)="changedFilter($event)">
+                                    <mat-option value="available">Has Opening</mat-option>
+                                    <mat-option value="VQ">VQ</mat-option>
+                                    <mat-option value="shovelPass">Shovel Pass</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="my-site-beatdown-container" [ngClass]="{'canceled-beatdown' : beatdown.isCanceled }"  *ngFor="let beatdown of mySiteBeatdowns">
+                            <div class="beatdown">
+                                <h5>{{beatdown.date | date: 'MM/dd/yy'}}</h5>
+                                <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled this week</p>
+                                <div class="metadata">
+                                    <div class="no-q-warning" *ngIf="!beatdown.qUser">
+                                        <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
+                                    </div>
+                                    <div class="q-data" *ngIf="beatdown.qUser">
+                                        <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}</p>
+                                    </div>
+                                    <mat-chip-listbox>
+                                        <mat-chip *ngIf="beatdown.isFlagPass">
+                                            <span matChipAvatar>🇺🇸</span><span class="hide-when-mobile">Flag Pass</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isPopup">
+                                            <span matChipAvatar>⬆️</span><span class="hide-when-mobile">Popup</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isSiteLaunch">
+                                            <span matChipAvatar>🚀</span> <span class="hide-when-mobile">Site Launch</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isVQ">
+                                            <span style="font-weight: bold;">VQ</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isCommunityEvent">
+                                            <span class="community-event" matChipAvatar>F3</span> <span class="hide-when-mobile">Community Event</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isAnniversary">
+                                            <span matChipAvatar>🎉</span><span class="hide-when-mobile">Anniversary</span>
+                                        </mat-chip>
+                                    </mat-chip-listbox>
+                                    <a mat-stroked-button (click)="editBeatdown(beatdown, mySiteBeatdowns, '')">Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Create">
+                        <div class="fill-tab">
+                            <h4>Please Read Before Continuing.</h4>
+                            <p><b>Weekly beatdown events are automatically generated for all daily AOs without the need for using the button below.</b> 
+                                The weekly AO beatdowns are scheduled three months in advance and do not extend beyond that timeframe. The button below is intended for creating one-time events, such as Community Events (e.g. CSAUP or F3 Anniversary), or Popups such as the Respect Popup. This button allows you to create a single beatdown event that deviates from the regular weekly schedule.</p>
+                            <a mat-raised-button style="background-color: orange; text-decoration: none;"  (click)="createBeatdown()">Create a new beatdown</a>
+                        </div>
                     </mat-tab>
                 </mat-tab-group>
             </div>

@@ -1,0 +1,9 @@
+<div class="container">
+    <h1>Edit Beatdown</h1>
+    <p>Modify the beatdown to your liking</p>
+    <app-beatdown-data-editor 
+        [createBeatdown]="false"
+        [beatdown]="beatdown"
+        (beatdownSaved)="saveBeatdown($event)"
+        (cancel)="cancel()"></app-beatdown-data-editor>
+</div>
