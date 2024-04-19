@@ -22,6 +22,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { QSchedulerComponent } from './pages/q-scheduler/q-scheduler.component';
 import { ExiconComponent } from './pages/exicon/exicon.component';
 import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
+import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
 
 const routes: Routes = [
   {
@@ -58,6 +59,10 @@ const routes: Routes = [
     path: 'claim-info',
     component: ClaimPaxInfoComponent,
     canActivate: [BasicAuthenticatedAuthGuard]
+  },
+  {
+    path: 'weekly-schedule',
+    component: WeeklyQScheduleComponent,
   },
   {
     path: 'exicon',

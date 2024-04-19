@@ -8,7 +8,7 @@ import { AOData } from "../models/ao.model";
     providedIn: 'root'
 })
 export class BeatdownService {
-
+    
     beatdownCollection = 
         collection(this.firestore, 'beatdowns')
         .withConverter(this.beatdownConverter.getConverter())
@@ -37,7 +37,7 @@ export class BeatdownService {
 
     async getBeatdownsBetweenDates(startDate: Date, endDate: Date, filter: QueryFieldFilterConstraint[]): Promise<Beatdown[]> {
         const beatdowns: Promise<Beatdown>[] = [];
-        const q = query(this.beatdownCollection, and(where("date", ">=", startDate), where("date", "<", endDate), ...filter));
+        const q = query(this.beatdownCollection, and(where("date", ">=", startDate), where("date", "<", endDate), ...filter), orderBy("date", "asc"));
         (await getDocs(q)).docs.forEach(async (d) => {
             beatdowns.push(d.data());
         });

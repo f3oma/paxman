@@ -13,6 +13,7 @@ export enum SpecialEventType {
     Popup = 'Popup',
     CommunityEvent = 'CommunityEvent',
     KidFriendly = 'KidFriendly',
+    BirthdayQ = 'BirthdayQ',
     None = 'None',
 }
 
@@ -128,6 +129,10 @@ export class Beatdown {
 
     public get isKidFriendly(): boolean {
         return this.specialEvent == SpecialEventType.KidFriendly;
+    }
+
+    public get isBirthdayQ(): boolean {
+        return this.specialEvent == SpecialEventType.BirthdayQ;
     }
 
     public get isCanceled(): boolean {

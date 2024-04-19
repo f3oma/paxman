@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/firestore';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { BehaviorSubject, Observable, Subject, debounceTime, fromEvent, map } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, first, fromEvent, map, switchMap } from 'rxjs';
 import { AOData } from 'src/app/models/ao.model';
 import { IBeatdown } from 'src/app/models/beatdown.model';
 import { PaxUser } from 'src/app/models/users.model';

@@ -62,7 +62,7 @@ export class SiteManagementComponent {
     // for (let data of tableData) {
     //   if (data.activeSiteQUsers) {
     //     for (let user of data.activeSiteQUsers) {
-    //       const aoRef = this.aoManagerService.getAoLocationReference(`ao_data/${data.id}`);
+    //       const aoRef = this.aoManagerService.getAoLocationReference(${data.id});
     //       const authRef = await this.userAuthService.getLinkedAuthDataRef(user.id);
     //       if (authRef) {
     //         await this.userAuthService.updateSiteQUserLocation(aoRef, authRef);

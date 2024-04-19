@@ -61,6 +61,7 @@ import { ExiconComponent } from './pages/exicon/exicon.component';
 import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.component';
+import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +99,8 @@ import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.compo
     ExiconComponent,
     AddExerciseComponent,
     ExiconApprovalComponent,
-    ExiconEditDialog
+    ExiconEditDialog,
+    WeeklyQScheduleComponent
   ],
   imports: [
     BrowserModule,

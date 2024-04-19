@@ -63,6 +63,7 @@ export class AOManagerService {
     }
 
     public getAoLocationReference(dbPath: string): DocumentReference<AOData> {
+        dbPath = dbPath.replace('ao_data/', '');
         return doc(this.AOCollection, dbPath);
     }
 

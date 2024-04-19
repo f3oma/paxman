@@ -79,6 +79,9 @@
                                                 <mat-chip *ngIf="beatdown.isKidFriendly">
                                                     <span matChipAvatar>🧸</span><span class="hide-when-mobile">2.0 Friendly</span>
                                                 </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isBirthdayQ">
+                                                    <span matChipAvatar>🎂</span><span class="hide-when-mobile">Birthday Q</span>
+                                                </mat-chip>
                                             </mat-chip-listbox>
                                             <div class="no-q-warning" *ngIf="!beatdown.qUser">
                                                 <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q

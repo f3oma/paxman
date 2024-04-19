@@ -80,7 +80,6 @@ export class QSchedulerComponent {
     }).afterClosed().subscribe((res) => {
       const idx = beatdownList.findIndex((b) => b.id === beatdown.id);
       beatdownList[idx] = new Beatdown(res);
-
       if (day !== '') {
         this.currentBeatdownList[day] = beatdownList;
       } else {
@@ -213,7 +212,7 @@ export class QSchedulerComponent {
 
     await this.getBeatdowns(activeFilters);
     if (this.activeSiteQAO) {
-      const ref = this.aoManagerService.getAoLocationReference(`${this.activeSiteQAO.id}`);
+      const ref = this.aoManagerService.getAoLocationReference(this.activeSiteQAO.id);
       await this.getMySiteBeatdowns(ref, activeFilters);
     }
   }
