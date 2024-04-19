@@ -11,7 +11,7 @@ import { ExiconService } from 'src/app/services/exicon.service';
 export class AddExerciseComponent {
 
   @Input('f3Name') f3Name: string = 'Unknown';
-  @Output('cancel') cancelledEmitter = new EventEmitter<boolean>();
+  @Output('cancel') canceledEmitter = new EventEmitter<boolean>();
   @Output('added') addedEmitter = new EventEmitter<boolean>();
 
   form: FormGroup = new FormGroup({
@@ -35,6 +35,6 @@ export class AddExerciseComponent {
   }
 
   cancel() {
-    this.cancelledEmitter.emit(false);
+    this.canceledEmitter.emit(false);
   }
 }

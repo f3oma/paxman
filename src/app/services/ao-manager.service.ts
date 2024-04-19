@@ -30,7 +30,7 @@ export class AOManagerService {
         if (site.id === '') {
             ref = this.getNewReference();
         } else {
-            ref = this.getAoLocationReference('ao_data/' + site.id);
+            ref = this.getAoLocationReference(site.id);
         }
         return await setDoc(ref, site, { merge: true});
     }
@@ -58,12 +58,13 @@ export class AOManagerService {
     }
 
     async getDataById(siteId: string) {
-        const ref = this.getAoLocationReference(`ao_data/${siteId}`);
+        const ref = this.getAoLocationReference(siteId);
         return await this.getDataByRef(ref);
     }
 
     public getAoLocationReference(dbPath: string): DocumentReference<AOData> {
-        return doc(this.firestore, dbPath).withConverter(this.aoConverter);
+        dbPath = dbPath.replace('ao_data/', '');
+        return doc(this.AOCollection, dbPath);
     }
 
     public async updateActiveSiteQUsers(aoRef: DocumentReference<any>, userRef: DocumentReference<any>) {
@@ -72,12 +73,13 @@ export class AOManagerService {
         });
     }
 
-    public async getDataByRef(aoRef: DocumentReference<AOData>) {
-        return (await getDoc(aoRef)).data() as AOData;
+    public async getDataByRef(aoRef: DocumentReference<AOData, DocumentData>) {
+        const ref = aoRef.withConverter(this.aoConverter);
+        return (await getDoc(ref)).data() as AOData;
     }
 
     public async updateSiteData(site: IAOData) {
-        const ref = this.getAoLocationReference(`ao_data/${site.id}`);
+        const ref = this.getAoLocationReference(site.id);
         return await setDoc(ref, site, { merge: true });
     }
 }

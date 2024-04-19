@@ -57,6 +57,21 @@ export class SiteManagementComponent {
 
   async getAOData() {
     const tableData = await this.aoManagerService.getAllAOData();
+
+    // Uncomment to give rights to all site-qs
+    // for (let data of tableData) {
+    //   if (data.activeSiteQUsers) {
+    //     for (let user of data.activeSiteQUsers) {
+    //       const aoRef = this.aoManagerService.getAoLocationReference(${data.id});
+    //       const authRef = await this.userAuthService.getLinkedAuthDataRef(user.id);
+    //       if (authRef) {
+    //         await this.userAuthService.updateSiteQUserLocation(aoRef, authRef);
+    //         await this.userAuthService.promoteRole(UserRole.SiteQ, user.id);
+    //       }
+    //     }
+    //   }
+    // }
+  
     const dayMap = this.getDayMap();
     const sorted = tableData
       .filter((a) => a.weekDay !== null)

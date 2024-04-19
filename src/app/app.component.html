@@ -20,6 +20,9 @@
       <li class="nav-item" *ngIf="authenticatedUser">
         <a class="nav-link" routerLink="/exicon">Exicon</a>
       </li>
+      <!-- <li class="nav-item" *ngIf="authenticatedUser">
+        <a class="nav-link" routerLink="/weekly-schedule">Weekly Schedule</a>
+      </li> -->
       <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
         <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
           <span *ngIf="paxUserData$ | async as paxUserData; else basicUser">

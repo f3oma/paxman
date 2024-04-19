@@ -1,0 +1,150 @@
+@use '@angular/material' as mat;
+
+.dense {
+    @include mat.option-density(-2);
+    @include mat.select-density(-2);
+    @include mat.form-field-density(-2);
+}
+
+.container {
+    padding: 16px;
+
+    mat-expansion-panel {
+        margin: 12px;
+    }
+
+    h1 {
+        font-size: 28px;
+        font-weight: bold;
+    }
+    h5 {
+        margin-top: 12px;
+        margin-bottom: 4px;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    p {
+        font-size: 14px;
+    }
+
+    .date-actions {
+        display: flex;
+        flex-direction: row;
+        margin: 12px 0;
+
+        button {
+            margin: 0 4px;
+        }
+    }
+
+    .quick-filters {
+        display: flex;
+        flex-direction: row;
+        border-radius: 8px;
+        margin: 24px 0 0 0;
+
+        mat-form-field {
+            width: 100%;
+        }
+    }
+
+    .beatdown-container:nth-child(even) {
+        background-color: #eee;
+    }
+
+    .my-site-beatdown-container:nth-child(even) {
+        background-color: #eee;
+    }
+
+    .canceled-beatdown {
+        background-color: rgb(255, 130, 130) !important;
+    }
+
+    .beatdown-container, .my-site-beatdown-container {
+        padding: 4px 8px;
+
+        .beatdown {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+
+            .ao-data {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                h4, h5 {
+                    margin: 0;
+                }
+
+                h4 {
+                    font-size: 15px;
+                }
+            }
+
+            .metadata {
+                display: flex;
+                flex-direction: row;
+                gap: 12px;
+                align-items: center;
+
+                .community-event {
+                    font-weight: bold;
+                    background-color: black;
+                    color: #fff;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    justify-content: center;
+                    align-items: center;
+                    display: flex;
+                    font-family: serif;
+                }
+
+                .no-q-warning {
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+
+                    mat-icon {
+                        font-size: 14px;
+                        color: orange;
+                    }
+                }
+
+                .q-data {
+                    p {
+                        margin: 0;
+                        font-weight: bold;
+                    }
+                }
+            }
+        }
+    }
+} 
+
+.fill-tab {
+    height: 100%;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    a {
+        width: 100%;
+    }
+}
+
+.mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
+
+.fill-container {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 600px) {
+    .hide-when-mobile {
+        display: none;
+    }
+}

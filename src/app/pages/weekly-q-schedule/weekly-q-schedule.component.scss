@@ -1,0 +1,43 @@
+.container {
+    padding: 16px;
+
+    h1 {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .day-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        gap: 12px;
+        width: 100%;
+        padding: 24px;
+        
+        .date {
+            flex-direction: row;
+            width: 20%;
+        }
+        .beatdowns {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+
+            .beatdown-container {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    }
+}
+
+.mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
+
+.fill-container {
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

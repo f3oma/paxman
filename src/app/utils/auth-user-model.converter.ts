@@ -23,12 +23,13 @@ export class AuthenticationConverter {
           id: data.id,
           email: data.email,
           paxDataId: data.paxDataId ?? null,
-          roles: data.roles
+          roles: data.roles,
+          siteQLocationRef: data.siteQLocationRef ?? null
         }
       },
       fromFirestore: (snap: QueryDocumentSnapshot): any => {
         const data: IAuthenticatedUserEntity = snap.data() as IAuthenticatedUserEntity;
-        return new AuthenticatedUser(data.id, data.email, data.paxDataId, undefined, data.roles);
+        return new AuthenticatedUser(data.id, data.email, data.paxDataId, undefined, data.roles, data.siteQLocationRef);
       }
     }
   }

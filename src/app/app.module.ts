@@ -51,11 +51,17 @@ import { UnsubscribeComponent } from './pages/user-detail/unsubscribe/unsubscrib
 import { AddNewSiteComponent } from './pages/admin-home/site-management/add-new-site/add-new-site.component';
 import { LogWorkoutComponent } from './pages/log-workout/log-workout.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { QSchedulerComponent } from './pages/q-scheduler/q-scheduler.component';
+import { CreateBeatdownComponent } from './pages/q-scheduler/create-beatdown-modal/create-beatdown.component';
+import { EditBeatdownComponent } from './pages/q-scheduler/edit-beatdown-modal/edit-beatdown.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { BeatdownDataEditorComponent } from './components/beatdown-data-editor/beatdown-data-editor.component';
 import { AddExerciseComponent } from './pages/exicon/add-exercise/add-exercise.component';
 import { ExiconComponent } from './pages/exicon/exicon.component';
 import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.component';
+import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
 
 @NgModule({
   declarations: [
@@ -86,10 +92,15 @@ import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.compo
     AddNewSiteComponent,
     LogWorkoutComponent,
     ForgotPasswordComponent,
+    QSchedulerComponent,
+    CreateBeatdownComponent,
+    EditBeatdownComponent,
+    BeatdownDataEditorComponent,
     ExiconComponent,
     AddExerciseComponent,
     ExiconApprovalComponent,
-    ExiconEditDialog
+    ExiconEditDialog,
+    WeeklyQScheduleComponent
   ],
   imports: [
     BrowserModule,
@@ -117,7 +128,8 @@ import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.compo
     MatNativeDateModule,
     MatExpansionModule,
     MatProgressSpinnerModule,
-    MatChipsModule
+    MatChipsModule,
+    MatTabsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

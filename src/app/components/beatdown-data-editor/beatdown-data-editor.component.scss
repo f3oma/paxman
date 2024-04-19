@@ -1,0 +1,15 @@
+.beatdown-form-container {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    
+    .beatdown-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px
+    }
+}
+
+mat-hint {
+    font-size: 12px;
+}

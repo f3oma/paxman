@@ -1,0 +1,234 @@
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { DocumentReference } from '@angular/fire/firestore';
+import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { BehaviorSubject, Observable, Subject, debounceTime, distinctUntilChanged, first, fromEvent, map, switchMap } from 'rxjs';
+import { AOData } from 'src/app/models/ao.model';
+import { IBeatdown } from 'src/app/models/beatdown.model';
+import { PaxUser } from 'src/app/models/users.model';
+import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { LocationSearchService } from 'src/app/services/location-search.service';
+import { PaxManagerService } from 'src/app/services/pax-manager.service';
+import { PaxSearchService } from 'src/app/services/pax-search.service';
+
+interface QUserData {
+  userRef: string, 
+  f3Name: string
+}
+
+interface AOLocationData {
+  aoRef: string, 
+  name: string
+}
+
+
+@Component({
+  selector: 'app-beatdown-data-editor',
+  templateUrl: './beatdown-data-editor.component.html',
+  styleUrls: ['./beatdown-data-editor.component.scss']
+})
+export class BeatdownDataEditorComponent {
+  @Input('createBeatdown') createBeatdown: boolean = false;
+  @Input('beatdown') beatdown!: IBeatdown;
+  @Output('beatdownSaved') beatdownEventSaved: EventEmitter<IBeatdown> = new EventEmitter<IBeatdown>();
+  @Output('cancel') cancel: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @ViewChild('primaryQ') primaryQInput: ElementRef | null = null;
+  @ViewChild('coQ') coQInput: ElementRef | null = null;
+  @ViewChild('aoLocation') locationInput: ElementRef | null = null;
+
+  filteredF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredF3Options$: Observable<any[]> = this.filteredF3OptionsSubject.asObservable();
+  selectedByF3Name: any = '';
+
+  filteredCoQOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredCoQOptions$: Observable<any[]> = this.filteredCoQOptionsSubject.asObservable();
+  selectedCoQByF3Name: any = '';
+
+  filteredLocationOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredLocationOptions$: Observable<any[]> = this.filteredLocationOptionsSubject.asObservable();
+  selectedLocation: any = '';
+
+  public form: FormGroup = new FormGroup({
+    date: new FormControl('', [Validators.required]),
+    qUser: new FormControl(''),
+    specialEvent: new FormControl(''),
+    aoLocation: new FormControl(''),
+    coQUser:  new FormControl(''),
+    eventName:  new FormControl(''),
+    eventAddress:  new FormControl(''),
+    additionalQs:  new FormControl(''),
+    canceled: new FormControl('')
+  });
+
+  additionalQs: QUserData[] = [];
+  selectedAoRef: AOLocationData | null = null;
+
+  constructor(
+    private readonly paxSearchService: PaxSearchService,
+    private readonly paxManagerService: PaxManagerService,
+    private readonly locationSearchService: LocationSearchService,
+    private aoManagerService: AOManagerService) {
+  }
+
+  public ngAfterViewInit() {
+    this.initializeForm();
+    fromEvent<InputEvent>(this.primaryQInput?.nativeElement, 'input').pipe(
+      debounceTime(500),
+      map(async (event: InputEvent) => {
+        const target = event.target as HTMLInputElement;
+        if (target.value) {
+          await this.updateUserAutocompleteResults(target.value, this.filteredF3OptionsSubject);
+        }
+        if (target.value === '') {
+          this.form.controls['qUser'].setValue(null);
+        }
+        return [];
+      })).subscribe();
+
+      fromEvent<InputEvent>(this.coQInput?.nativeElement, 'input').pipe(
+        debounceTime(500),
+        map(async (event: InputEvent) => {
+          const target = event.target as HTMLInputElement;
+          if (target.value) {
+            await this.updateUserAutocompleteResults(target.value, this.filteredCoQOptionsSubject);
+          }
+          if (target.value === '') {
+            this.form.controls['coQUser'].setValue(null);
+          }
+          return [];
+        })).subscribe();
+    
+      fromEvent<InputEvent>(this.locationInput?.nativeElement, 'keydown').pipe(
+        debounceTime(500),
+        map(async (event: InputEvent) => {
+          const target = event.target as HTMLInputElement;
+          if (target.value) {
+            await this.updateLocationAutocompleteResults(target.value);
+          }
+          return [];
+        })).subscribe();
+  }
+
+  async initializeForm() {
+    if (this.beatdown.qUser) {
+      const data = this.beatdown.qUser
+      if (data !== undefined) {
+        const qUser = {
+          userRef: `users/${data.id}`, 
+          f3Name: data.f3Name
+        };
+        this.form.controls['qUser'].setValue(qUser)
+      }
+    }
+
+    if (this.beatdown.coQUser) {
+      const refData = this.beatdown.coQUser
+      if (refData !== undefined) {
+        const coQUser = {
+          userRef: `users/${refData.id}`, 
+          f3Name: refData!.f3Name
+        };
+        this.form.controls['coQUser'].setValue(coQUser)
+      }
+    }
+
+    // Add additional users
+
+    if (this.beatdown.aoLocation) {
+      const refData = this.beatdown.aoLocation;
+      if (refData !== undefined) {
+        this.form.controls['aoLocation'].setValue({
+          aoRef: this.beatdown.aoLocation.id, 
+          name: refData.name
+        })
+      }
+    }
+  }
+
+  async save() {
+    if (this.form.valid) {
+
+      if (this.form.controls['eventName'].value) {
+        this.beatdown.eventName = this.form.controls['eventName'].value;
+      }
+
+      if (this.form.controls['eventAddress'].value) {
+        this.beatdown.eventAddress = this.form.controls['eventAddress'].value;
+      }
+
+      if (this.form.controls['qUser'].value) {
+        const userRef = this.paxManagerService.getUserReference(this.form.controls['qUser'].value.userRef) as DocumentReference<PaxUser>;
+        const userData = await this.paxManagerService.getPaxInfoByRef(userRef);
+        this.beatdown.qUser = userData;
+      } else {
+        this.beatdown.qUser = undefined;
+      }
+
+      if (this.form.controls['coQUser'].value) {
+        const userRef = this.paxManagerService.getUserReference(this.form.controls['coQUser'].value.userRef) as DocumentReference<PaxUser>;
+        const userData = await this.paxManagerService.getPaxInfoByRef(userRef);
+        this.beatdown.coQUser = userData;
+      } else {
+        this.beatdown.coQUser = undefined;
+      }
+
+      if (this.form.controls['aoLocation'].value) {
+        const locationRef = this.aoManagerService.getAoLocationReference(this.form.controls['aoLocation'].value.aoRef) as DocumentReference<AOData>;
+        const aoData = await this.aoManagerService.getDataByRef(locationRef);
+        this.beatdown.aoLocation = aoData;
+      } else {
+          this.beatdown.aoLocation = null;
+      }
+
+      this.beatdownEventSaved.emit(this.beatdown);
+    }
+  }
+
+  public updateCanceledValue($event: MatCheckboxChange, beatdown: IBeatdown) {
+    beatdown.canceled = $event.checked;
+  }
+
+  userCancel() {
+    this.cancel.emit(true);
+  }
+
+  public displayF3NameOptions(option: any) {
+    return option?.f3Name;
+  }
+
+  public displayLocationNameOptions(option: any) {
+    return option?.name;
+  }
+
+  private async updateUserAutocompleteResults(partialF3Name: string, subject: Subject<any[]>): Promise<void> {
+    const result = await this.findEhF3Name(partialF3Name);
+    const pax = result.map((res) => {
+      return { 
+        userRef: res.path, 
+        f3Name: res.f3Name ,
+        fullName: res.firstName + ' ' + res.lastName
+      };
+    })
+    subject.next(pax);
+  }
+
+  private async updateLocationAutocompleteResults(partialLocationName: string): Promise<void> {
+    const result = await this.findLocationByName(partialLocationName);
+    const locations = result.map((res) => {
+      return { 
+        aoRef: res.path, 
+        name: res.name 
+      };
+    })
+    this.filteredLocationOptionsSubject.next(locations);
+  }
+
+  private async findEhF3Name(partialF3Name: string): Promise<any[]> {
+    return await this.paxSearchService.findF3Name(partialF3Name);
+  }
+
+  private async findLocationByName(partialLocationName: string): Promise<any[]> {
+    return await this.locationSearchService.findByName(partialLocationName);
+  }
+}
