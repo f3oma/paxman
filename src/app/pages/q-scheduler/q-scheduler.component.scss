@@ -128,6 +128,18 @@
     width: 100%;
     padding: 12px;
     text-align: center;
+
+    .warning-box {
+        margin: 8px;
+        border-radius: 8px;
+        padding: 12px;
+        background-color: #ffdc91;
+
+        h4 {
+            text-decoration: underline;
+        }
+    }
+
     a {
         width: 100%;
     }
@@ -147,4 +159,7 @@
     .hide-when-mobile {
         display: none;
     }
+    :host ::ng-deep .mat-mdc-standard-chip .mdc-evolution-chip__cell .mdc-evolution-chip__action--primary:has(.mdc-evolution-chip__graphic) {
+        padding-right: 0px !important;
+    }    
 }

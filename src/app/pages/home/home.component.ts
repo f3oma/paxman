@@ -1,7 +1,7 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Observable, tap } from 'rxjs';
-import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
+import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
@@ -24,6 +24,7 @@ export class HomeComponent {
   public authUserData$: Observable<AuthenticatedUser | undefined>;
   public hasClaimedData: boolean = true;
   public isLoggedIn: boolean = false;
+  public isAdminOrSiteQ: boolean = false;
 
   public latestPaxNames: string = '';
   public latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
@@ -47,7 +48,10 @@ export class HomeComponent {
           if (data && data !== undefined) {
             const paxDataId = data?.paxDataId;
             if (!paxDataId) {
-                this.hasClaimedData = false;
+              this.hasClaimedData = false;
+            }
+            if (data.roles.includes(UserRole.Admin) || data.roles.includes(UserRole.SiteQ)) {
+              this.isAdminOrSiteQ = true;
             }
           }
         })

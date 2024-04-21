@@ -1,16 +1,16 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { DocumentReference, QueryFieldFilterConstraint, where } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { debounce } from 'lodash';
 import { AOData } from 'src/app/models/ao.model';
 import { UserRole } from 'src/app/models/authenticated-user.model';
-import { Beatdown, IBeatdown } from 'src/app/models/beatdown.model';
+import { Beatdown } from 'src/app/models/beatdown.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { EditBeatdownComponent } from './edit-beatdown-modal/edit-beatdown.component';
 import { CreateBeatdownComponent } from './create-beatdown-modal/create-beatdown.component';
-import { first, map } from 'rxjs';
+import { PaxManagerService } from 'src/app/services/pax-manager.service';
 
 // Models
 
@@ -28,6 +28,8 @@ import { first, map } from 'rxjs';
   styleUrls: ['./q-scheduler.component.scss']
 })
 export class QSchedulerComponent {
+
+  paxDataId: string | undefined = undefined;
 
   startDate: Date = new Date();
   weekStartDate: Date = new Date();
@@ -53,7 +55,7 @@ export class QSchedulerComponent {
     private beatdownService: BeatdownService,
     private userAuthService: UserAuthenticationService,
     private aoManagerService: AOManagerService,
-    private changeDetectorRef: ChangeDetectorRef,
+    private paxManagerService: PaxManagerService,
     private matDialog: MatDialog) {
       this.months = this.createMonthsList();
       this.createDayMap();
@@ -65,6 +67,9 @@ export class QSchedulerComponent {
         if (res) {
           if (res.roles.includes(UserRole.SiteQ) && res.siteQLocationRef) {
             this.getLinkedActiveSiteQAO(res.siteQLocationRef);
+          }
+          if (res.paxDataId) {
+            this.paxDataId = res.paxDataId;
           }
         }
       })
@@ -157,8 +162,19 @@ export class QSchedulerComponent {
       } else {
         this.loadingBeatdownData = true;
         const beatdowns = await this.beatdownService.getBeatdownsBetweenDates(this.weekStartDate, this.weekEndDate, filter);
-        this.beatdownCache[this.weekStartDate.toDateString()] = beatdowns;
-        this.beatdowns = beatdowns;
+        const sorted = beatdowns.sort((a, b) => {
+          const eventAName = a.aoLocation ? a.aoLocation.name : a.eventName;
+          const eventBName = b.aoLocation ? b.aoLocation.name : b.eventName;
+          if (!eventAName) {
+            return -1;
+          }
+          if (!eventBName) {
+            return -1;
+          }
+          return eventAName > eventBName ? 1 : -1;
+        });
+        this.beatdownCache[this.weekStartDate.toDateString()] = sorted;
+        this.beatdowns = sorted;
       }
       this.generateDailyBeatdowns(this.beatdowns);
       this.loadingBeatdownData = false;
@@ -208,7 +224,17 @@ export class QSchedulerComponent {
       );
     }
 
+    if (value.includes('myQs')) {
+      const ref = this.paxManagerService.getUserReference(`users/${this.paxDataId}`);
+      activeFilters.push(
+        where("qUserRef", "==", ref)
+      );
+    }
+
     this.activeFilters = activeFilters;
+
+    // Delete this week's cache to retrigger the call to DB
+    delete this.beatdownCache[this.weekStartDate.toDateString()];
 
     await this.getBeatdowns(activeFilters);
     if (this.activeSiteQAO) {

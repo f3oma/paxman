@@ -1,5 +1,6 @@
 <div class="container">
-    <h1>Weekly Q Schedule {{weekRange}}</h1>
+    <h1>Weekly Q Schedule</h1>
+    <h4>{{weekRange}}</h4>
     <ng-container *ngIf="!loadingBeatdownData; else loadingSpinner">
             <div class="day-container" *ngFor="let day of weekList">
                 <div class="date">
@@ -8,16 +9,15 @@
                 <div class="beatdowns">
                     <div class="beatdown-container" [ngClass]="{'canceled-beatdown' : beatdown.isCanceled }" *ngFor="let beatdown of currentBeatdownList[day.dateString]; trackBy: trackByFn">
                         <div class="beatdown">
-                            <div class="ao-data">
-                                <!-- Can be an AO or Event -->
-                                <div class="event" *ngIf="beatdown.eventName">
-                                    <h4>{{beatdown.eventName}}</h4>
-                                    <h5 *ngIf="beatdown.eventAddress">{{beatdown.eventAddress}}</h5>
+                            <div class="same-line">
+                                <div class="ao-data">
+                                    <!-- Can be an AO or Event -->
+                                    <div class="event" *ngIf="beatdown.eventName">
+                                        <h4>{{beatdown.eventName}}</h4>
+                                        <h5 *ngIf="beatdown.eventAddress">{{beatdown.eventAddress}}</h5>
+                                    </div>
+                                    <h5 *ngIf="beatdown.aoLocation">{{beatdown.aoLocation.name}}</h5>
                                 </div>
-                                <h5 *ngIf="beatdown.aoLocation">{{beatdown.aoLocation.name}}</h5>
-                            </div>
-                            <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled this week</p>
-                            <div class="metadata">
                                 <mat-chip-listbox>
                                     <mat-chip *ngIf="beatdown.isFlagPass">
                                         <span matChipAvatar>🇺🇸</span><span class="hide-when-mobile">Flag Pass</span>
@@ -44,10 +44,13 @@
                                         <span matChipAvatar>🎂</span><span class="hide-when-mobile">Birthday Q</span>
                                     </mat-chip>
                                 </mat-chip-listbox>
-                                <div class="no-q-warning" *ngIf="!beatdown.qUser">
+                            </div>
+                            <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled this week</p>
+                            <div class="metadata">
+                                <div class="no-q-warning" *ngIf="!beatdown.qUser && !beatdown.isCanceled">
                                     <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
                                 </div>
-                                <div class="q-data" *ngIf="beatdown.qUser">
+                                <div class="q-data" *ngIf="beatdown.qUser && !beatdown.isCanceled">
                                     <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}</p>
                                 </div>
                             </div>

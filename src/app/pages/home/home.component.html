@@ -10,6 +10,8 @@
         <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/settings']">Claim My Data <mat-icon>person</mat-icon></button>
         <button *ngIf="hasClaimedData"mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
         <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']">Search PAX <mat-icon>search</mat-icon></button>
+        <button *ngIf="isAdminOrSiteQ" mat-button class="action-btn" [routerLink]="['/weekly-schedule']"><mat-icon>list</mat-icon> Weekly Schedule</button>
+        <button *ngIf="isAdminOrSiteQ" mat-button class="action-btn" [routerLink]="['/admin/q-scheduler']"><mat-icon>alarm</mat-icon> Q-Scheduler</button>
       </div>
     </div>
   </div>

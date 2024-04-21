@@ -61,7 +61,18 @@ export class WeeklyQScheduleComponent {
 
   async initializeBeatdowns(weekStartDate: Date, weekEndDate: Date) {
     const beatdowns = await this.beatdownService.getBeatdownsBetweenDates(weekStartDate, weekEndDate, []);
-    this.generateDailyBeatdowns(beatdowns);
+    const sorted = beatdowns.sort((a, b) => {
+      const eventAName = a.aoLocation ? a.aoLocation.name : a.eventName;
+      const eventBName = b.aoLocation ? b.aoLocation.name : b.eventName;
+      if (!eventAName) {
+        return -1;
+      }
+      if (!eventBName) {
+        return -1;
+      }
+      return eventAName > eventBName ? 1 : -1;
+    });
+    this.generateDailyBeatdowns(sorted);
     this.loadingBeatdownData = false;
   }
 
