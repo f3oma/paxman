@@ -63,7 +63,6 @@
     .q-data {
         p {
             margin: 0;
-            font-weight: bold;
         }
     }
 }
@@ -76,13 +75,4 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-@media only screen and (max-width: 600px) {
-    .hide-when-mobile {
-        display: none;
-    }
-    :host ::ng-deep .mat-mdc-standard-chip .mdc-evolution-chip__cell .mdc-evolution-chip__action--primary:has(.mdc-evolution-chip__graphic) {
-        padding-right: 0px !important;
-    }    
 }
