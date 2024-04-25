@@ -62,6 +62,16 @@ export class BeatdownConverter {
                 additionalQs.push(await (await getDoc(additionalQRef.withConverter(userConverter.getConverter()))).data());
             }
         }
+
+        if (!data.startTime) {
+            if (aoLocation?.startTimeCST) {
+                data.startTime = aoLocation.startTimeCST;
+            } else {
+                // Needs to be filled in...
+                data.startTime = '';
+            }
+        }
+
         const dateTz = new Date(data.date.toMillis());
         dateTz.setHours(dateTz.getHours() + 5); // cst conversion, hacky
 
@@ -76,6 +86,7 @@ export class BeatdownConverter {
             coQUser,
             additionalQs,
             canceled: data.canceled,
+            startTime: data.startTime
         });
     }
 
@@ -102,6 +113,14 @@ export class BeatdownConverter {
                 if (additionalQ) {
                     additionalQsRefs.push(doc(userCollection, additionalQ.id));
                 }
+            }
+        }
+
+        if (!data.startTime) {
+            if (data.aoLocation) {
+                data.startTime = data.aoLocation.startTimeCST;
+            } else {
+                data.startTime = '';
             }
         }
 

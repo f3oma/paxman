@@ -54,6 +54,7 @@ export class SiteDataEditComponent implements OnInit {
     retiredSiteQUsers: new FormControl(''),
     foundingSiteQUsers: new FormControl(''),
     lastFlagPass: new FormControl(''),
+    qSource: new FormControl(''),
   });
 
   temporaryActiveSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
@@ -152,7 +153,6 @@ export class SiteDataEditComponent implements OnInit {
     }
   }
 
-
   public cancel() {
     this.userCanceledEmitter.emit(true);
   }
@@ -163,6 +163,10 @@ export class SiteDataEditComponent implements OnInit {
 
   public updatePopupValue($event: MatCheckboxChange, site: IAOData) {
       site.popup = $event.checked;
+  }
+
+  public updateQSourceValue($event: MatCheckboxChange, site: IAOData) {
+    site.qSourceAvailable = $event.checked;
   }
 
   public displayF3NameOptions(option: any) {

@@ -50,6 +50,10 @@ export class AODataConverter {
         foundingSiteQDataRefs.push(doc(paxUserCollection, siteQ.id));
       }
     }
+
+    if (!data.qSourceAvailable) {
+      data.qSourceAvailable = false;
+    }
     
     return <IAODataEntity> {
       name: data.name,
@@ -64,7 +68,8 @@ export class AODataConverter {
       xAccount: data.xAccount,
       weekDay: data.weekDay.toString(),
       sector: data.sector,
-      lastFlagPass: data.lastFlagPass ?? Timestamp.fromDate(new Date())
+      lastFlagPass: data.lastFlagPass ?? Timestamp.fromDate(new Date()),
+      qSourceAvailable: data.qSourceAvailable,
     }
   }
 
@@ -93,6 +98,11 @@ export class AODataConverter {
       }
     }
 
+    // Catch undefined and prefill for new property
+    if (!data.qSourceAvailable) {
+      data.qSourceAvailable = false;
+    }
+
     const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
     const lastFlagPass = data.lastFlagPass ? data.lastFlagPass.toDate() : new Date();
     const aoData: IAOData = {
@@ -109,7 +119,8 @@ export class AODataConverter {
       xAccount: data.xAccount,
       weekDay,
       sector: data.sector,
-      lastFlagPass
+      lastFlagPass,
+      qSourceAvailable: data.qSourceAvailable
     }
     return new AOData(aoData);
   }

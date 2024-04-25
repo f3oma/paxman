@@ -6,7 +6,7 @@
                 <input formControlName="eventName" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event name">
                 <mat-hint>Ex: Respect Popup, F3 Anniversary, CSAUP</mat-hint>
               </mat-form-field>
-            <mat-form-field appearance="fill" *ngIf="createBeatdown">
+            <mat-form-field appearance="fill" *ngIf="createBeatdown || showAddressField">
                 <mat-label>Event address</mat-label>
                 <input formControlName="eventAddress" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event address">
                 <mat-hint>Only enter if not at an AO</mat-hint>
@@ -17,6 +17,11 @@
                 <mat-hint>MM/DD/YYYY</mat-hint>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Start time</mat-label>
+              <input formControlName="startTime" [(ngModel)]="beatdown.startTime" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Start time">
+              <mat-hint>HH:MM & HH:MM & ...</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
                 <mat-label>AO Location</mat-label>

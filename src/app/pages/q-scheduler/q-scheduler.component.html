@@ -13,7 +13,7 @@
         <div class="main-content">
 
             <div class="view-selector">
-                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" (selectedTabChange)="onTabChanged($event)">
                     <mat-tab label="All Sites">
                         <div class="week-selection">
                             <h5>Week of {{weekStartDate | date: 'MM/dd/YYYY'}}</h5>

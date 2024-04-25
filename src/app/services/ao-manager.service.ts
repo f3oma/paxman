@@ -52,7 +52,8 @@ export class AOManagerService {
             xAccount: '',
             weekDay: DayOfWeekAbbv.None,
             sector: Sector['DC - East'],
-            lastFlagPass: new Date()
+            lastFlagPass: new Date(),
+            qSourceAvailable: false,
         }
         return new AOData(aoData);
     }

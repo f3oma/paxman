@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/firestore';
 import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
@@ -27,7 +27,7 @@ interface AOLocationData {
   templateUrl: './beatdown-data-editor.component.html',
   styleUrls: ['./beatdown-data-editor.component.scss']
 })
-export class BeatdownDataEditorComponent {
+export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
   @Input('createBeatdown') createBeatdown: boolean = false;
   @Input('beatdown') beatdown!: IBeatdown;
   @Output('beatdownSaved') beatdownEventSaved: EventEmitter<IBeatdown> = new EventEmitter<IBeatdown>();
@@ -36,6 +36,8 @@ export class BeatdownDataEditorComponent {
   @ViewChild('primaryQ') primaryQInput: ElementRef | null = null;
   @ViewChild('coQ') coQInput: ElementRef | null = null;
   @ViewChild('aoLocation') locationInput: ElementRef | null = null;
+
+  showAddressField = false;
 
   filteredF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredF3Options$: Observable<any[]> = this.filteredF3OptionsSubject.asObservable();
@@ -58,7 +60,8 @@ export class BeatdownDataEditorComponent {
     eventName:  new FormControl(''),
     eventAddress:  new FormControl(''),
     additionalQs:  new FormControl(''),
-    canceled: new FormControl('')
+    canceled: new FormControl(''),
+    startTime: new FormControl('')
   });
 
   additionalQs: QUserData[] = [];
@@ -69,6 +72,12 @@ export class BeatdownDataEditorComponent {
     private readonly paxManagerService: PaxManagerService,
     private readonly locationSearchService: LocationSearchService,
     private aoManagerService: AOManagerService) {
+  }
+
+  public ngOnInit(): void {
+    if (this.beatdown.aoLocation?.rotating) {
+      this.showAddressField = true;
+    }
   }
 
   public ngAfterViewInit() {
@@ -136,6 +145,9 @@ export class BeatdownDataEditorComponent {
     // Add additional users
 
     if (this.beatdown.aoLocation) {
+      if (!this.beatdown.startTime && this.beatdown.aoLocation.startTimeCST) {
+        this.form.controls['startTime'].setValue(this.beatdown.aoLocation.startTimeCST);
+      }
       const refData = this.beatdown.aoLocation;
       if (refData !== undefined) {
         this.form.controls['aoLocation'].setValue({

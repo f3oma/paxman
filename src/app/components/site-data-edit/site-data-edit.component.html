@@ -157,13 +157,14 @@
               <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
             <div class="checkbox">
-                <p>Is the site a popup?</p>
-                <mat-checkbox formControlName="popup" [(ngModel)]="site.popup" (change)="updatePopupValue($event, site)">Is popup?</mat-checkbox>
+              <mat-checkbox formControlName="popup" [(ngModel)]="site.popup" (change)="updatePopupValue($event, site)">Is popup site?</mat-checkbox>
             </div>
             <div class="checkbox">
-                <p>Is this a rotating site?</p>
-                <mat-checkbox formControlName="rotating" [(ngModel)]="site.rotating" (change)="updateRotatingValue($event, site)">Is rotating?</mat-checkbox>
+              <mat-checkbox formControlName="rotating" [(ngModel)]="site.rotating" (change)="updateRotatingValue($event, site)">Is rotating site?</mat-checkbox>
             </div>
+            <div class="checkbox">
+              <mat-checkbox formControlName="qSource" [(ngModel)]="site.qSourceAvailable" (change)="updateQSourceValue($event, site)">Is Q-Source Available?</mat-checkbox>
+          </div>
         </mat-expansion-panel>
     </form>
 

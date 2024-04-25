@@ -53,6 +53,10 @@
                                 <div class="q-data" *ngIf="beatdown.qUser && !beatdown.isCanceled">
                                     <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}{{beatdown.coQUser ? ' and ' + beatdown.coQUser.f3Name : ''}}</p>
                                 </div>
+                                <div class="site-data same-line">
+                                    <p><i>{{beatdown.startTime}}</i></p>
+                                    <p *ngIf="beatdown.aoLocation && beatdown.aoLocation.qSourceAvailable"> - <span class="q-source">Q Source Available</span></p>
+                                </div>
                             </div>
                         </div>
                     </div>

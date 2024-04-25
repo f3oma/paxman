@@ -75,6 +75,16 @@ export class QSchedulerComponent {
       })
   }
 
+  public async onTabChanged(event: any) {
+    if (event.tab.textLabel === 'My Site') {
+      if (this.activeSiteQAO) {
+        delete this.beatdownCache[this.weekStartDate.toDateString()];
+        const ref = this.aoManagerService.getAoLocationReference(this.activeSiteQAO.id);
+        await this.getMySiteBeatdowns(ref, this.activeFilters);
+      }
+    }
+  }
+
   public editBeatdown(beatdown: Beatdown, beatdownList: Beatdown[], day: string) {
     this.matDialog.open(EditBeatdownComponent, {
       data: beatdown,
@@ -83,6 +93,9 @@ export class QSchedulerComponent {
       height: '100%',
       width: '100%'
     }).afterClosed().subscribe((res) => {
+      if (!res) {
+        return;
+      }
       const idx = beatdownList.findIndex((b) => b.id === beatdown.id);
       beatdownList[idx] = new Beatdown(res);
       if (day !== '') {

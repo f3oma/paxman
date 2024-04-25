@@ -65,6 +65,16 @@
             margin: 0;
         }
     }
+
+    .site-data {
+        p {
+            margin: 0;
+        }
+        .q-source {
+            font-weight: bold;
+            color: rgb(165, 0, 0);
+        }
+    }
 }
 
 .mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }

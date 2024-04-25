@@ -24,6 +24,7 @@ export class BeatdownService {
         additionalQs: [],
         specialEvent: SpecialEventType.None,
         canceled: false,
+        startTime: '',
     }
 
     constructor(
@@ -47,7 +48,7 @@ export class BeatdownService {
     async getBeatdownsByAO(aoLocationRef: DocumentReference<AOData>, filters: QueryFieldFilterConstraint[]): Promise<Beatdown[]> {
         const beatdowns: Promise<Beatdown>[] = [];
         const aoRef = doc(this.firestore, `ao_data/${aoLocationRef.id}`);
-        const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoRef), ...filters), orderBy("date", "asc"));
+        const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoRef), where("date", ">=", new Date()), ...filters), orderBy("date", "asc"));
         (await getDocs(q)).docs.forEach(async (d) => {
             beatdowns.push(d.data());
         });

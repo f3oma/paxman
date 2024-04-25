@@ -32,6 +32,7 @@ export interface IBeatdown {
     eventAddress: string | null; // Required by user, nullable by system
     additionalQs?: Array<PaxUser | undefined>, // community events might have many q's
     canceled: boolean;
+    startTime: string;
 }
 
 export interface IBeatdownEntity {
@@ -44,6 +45,7 @@ export interface IBeatdownEntity {
     eventAddress: string | null;
     additionalQsRefs?: Array<UserRef>; // community events might have many q's
     canceled: boolean;
+    startTime: string;
 }
 
 export class Beatdown {
@@ -57,6 +59,7 @@ export class Beatdown {
     private _eventAddress: string | null;
     private _additionalQs?: Array<PaxUser | undefined>;
     private _canceled: boolean;
+    private _startTime: string;
 
     constructor(beatdown: IBeatdown) {
         this._id = beatdown.id;
@@ -69,6 +72,7 @@ export class Beatdown {
         this._eventAddress = beatdown.eventAddress;
         this._additionalQs = beatdown.additionalQs;
         this._canceled = beatdown.canceled;
+        this._startTime = beatdown.startTime;
     }
 
     public get id(): string {
@@ -143,6 +147,10 @@ export class Beatdown {
         return this._additionalQs;
     }
 
+    public get startTime(): string {
+        return this._startTime;
+    }
+
     toProperties(): IBeatdown {
         return {
             id: this.id,
@@ -155,6 +163,7 @@ export class Beatdown {
             qUser: this.qUser,
             additionalQs: this.additionalQs,
             canceled: this.isCanceled,
+            startTime: this.startTime,
         };
     }
 }
