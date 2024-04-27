@@ -26,7 +26,6 @@
             .beatdown-container {
                 display: flex;
                 flex-direction: column;
-                padding: 4px 2px;
 
                 .beatdown {
                     .same-line {
@@ -35,6 +34,15 @@
                         gap: 8px;
                         justify-content: flex-start;
                         align-items: flex-end;
+
+                        .ao-data {
+                            #ao-name {
+                                font-size: 16px;
+                                font-weight: bold;
+                                margin: 0;
+                                margin-bottom: 2px;
+                            }
+                        }
                     }
                 }
             }
@@ -62,12 +70,14 @@
 
     .q-data {
         p {
+            font-size: 14px;
             margin: 0;
         }
     }
 
     .site-data {
         p {
+            font-size: 12px;
             margin: 0;
         }
         .q-source {
@@ -85,4 +95,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.mat-mdc-chip.mat-mdc-standard-chip { --mdc-chip-container-height: 20px; }
+.mat-mdc-standard-chip {
+    border-radius: var(--mdc-chip-container-shape-radius);
+    height: var(--mdc-chip-container-height);
+    --mdc-chip-container-shape-family: rounded;
+    --mdc-chip-with-avatar-avatar-shape-family: rounded;
+    --mdc-chip-with-avatar-avatar-shape-radius: 14px 14px 14px 14px;
+    --mdc-chip-with-avatar-avatar-size: 19px;
+    --mdc-chip-with-icon-icon-size: 16px;
+    --mdc-chip-label-text-size: 12px;
 }

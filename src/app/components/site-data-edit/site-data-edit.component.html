@@ -150,6 +150,13 @@
               </mat-panel-title>
             </mat-expansion-panel-header>
             <mat-form-field appearance="fill" *ngIf="isEditorAdmin">
+              <mat-label>Launch Date</mat-label>
+              <input formControlName="launchDate" autocomplete="off" matInput [(ngModel)]="site.launchDate" [matDatepicker]="launchPicker">
+              <mat-hint>MM/DD/YYYY</mat-hint>
+              <mat-datepicker-toggle matIconSuffix [for]="launchPicker"></mat-datepicker-toggle>
+              <mat-datepicker #launchPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="fill" *ngIf="isEditorAdmin">
               <mat-label>Last flag pass</mat-label>
               <input formControlName="lastFlagPass" autocomplete="off" matInput [(ngModel)]="site.lastFlagPass" [matDatepicker]="picker">
               <mat-hint>MM/DD/YYYY</mat-hint>

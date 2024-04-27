@@ -69,6 +69,7 @@ export class AODataConverter {
       weekDay: data.weekDay.toString(),
       sector: data.sector,
       lastFlagPass: data.lastFlagPass ?? Timestamp.fromDate(new Date()),
+      launchDate: data.launchDate ?? Timestamp.fromDate(new Date()),
       qSourceAvailable: data.qSourceAvailable,
     }
   }
@@ -105,6 +106,7 @@ export class AODataConverter {
 
     const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
     const lastFlagPass = data.lastFlagPass ? data.lastFlagPass.toDate() : new Date();
+    const launchDate = data.launchDate ? data.launchDate.toDate() : new Date();
     const aoData: IAOData = {
       id,
       name: data.name,
@@ -120,6 +122,7 @@ export class AODataConverter {
       weekDay,
       sector: data.sector,
       lastFlagPass,
+      launchDate,
       qSourceAvailable: data.qSourceAvailable
     }
     return new AOData(aoData);

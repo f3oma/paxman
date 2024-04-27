@@ -14,9 +14,9 @@
                                     <!-- Can be an AO or Event -->
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
-                                        <h5 *ngIf="beatdown.eventAddress">{{beatdown.eventAddress}}</h5>
                                     </div>
-                                    <h5 *ngIf="beatdown.aoLocation">{{beatdown.aoLocation.name}}</h5>
+                                    <h5 id="ao-name" *ngIf="beatdown.aoLocation">{{beatdown.aoLocation.name}}</h5>
+                                    <p id="ao-address" *ngIf="(beatdown.isCommunityEvent || beatdown.aoLocation?.rotating) && beatdown.eventAddress">{{beatdown.eventAddress}}</p>
                                 </div>
                                 <mat-chip-listbox>
                                     <mat-chip *ngIf="beatdown.isFlagPass">
@@ -42,6 +42,9 @@
                                     </mat-chip>
                                     <mat-chip *ngIf="beatdown.isBirthdayQ">
                                         <span matChipAvatar>🎂</span><span>Birthday Q</span>
+                                    </mat-chip>
+                                    <mat-chip *ngIf="beatdown.isSiteQSwap">
+                                        <span matChipAvatar>🔄</span><span>Site-Q Swap</span>
                                     </mat-chip>
                                 </mat-chip-listbox>
                             </div>

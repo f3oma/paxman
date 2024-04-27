@@ -51,6 +51,14 @@
         {
             "name": "lastFlagPass",
             "type": "timestamp"
+        },
+        {
+            "name": "launchDate",
+            "type": "timestamp"
+        },
+        {
+            "name": "qSourceAvailable",
+            "type": "boolean"
         }
     ]
 }

@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { DocumentReference, Firestore, QueryCompositeFilterConstraint, QueryFieldFilterConstraint, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, setDoc, where } from "@angular/fire/firestore";
+import { DocumentReference, Firestore, QueryFieldFilterConstraint, Timestamp, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, setDoc, where, writeBatch } from "@angular/fire/firestore";
 import { BeatdownConverter } from "../utils/beatdown.converter";
-import { Beatdown, IBeatdown, SpecialEventType } from "../models/beatdown.model";
-import { AOData } from "../models/ao.model";
+import { Beatdown, IBeatdown, IBeatdownEntity, SpecialEventType } from "../models/beatdown.model";
+import { AOData, IAOData } from "../models/ao.model";
+import { AOManagerService } from "./ao-manager.service";
 
 @Injectable({
     providedIn: 'root'
@@ -29,6 +30,7 @@ export class BeatdownService {
 
     constructor(
         private firestore: Firestore,
+        private aoManagerService: AOManagerService,
         private beatdownConverter: BeatdownConverter) {}
 
     async getBeatdownDetail(id: string): Promise<Beatdown | undefined> {
@@ -67,5 +69,73 @@ export class BeatdownService {
     async deleteBeatdown(beatdown: Beatdown) {
         const ref = doc(this.beatdownCollection, `${beatdown.id}`);
         return await deleteDoc(ref);
+    }
+
+    public async generateBeatdownsBetweenDates(aoData: IAOData | null, startWeek: Date, endWeek: Date) {
+        console.log(startWeek, endWeek);
+        // Generate weekly beatdowns for a location from start week to end week
+        // If the endWeek date provided is less than the specified AO's week time, no beatdown will be created...
+        if (!aoData || !aoData.weekDay) {
+            throw new Error("AO Week Day is required to create scheduled beatdowns");
+        }
+
+        if (startWeek > endWeek)
+            return;
+
+        const weekDayMap = this.createDayMap();
+
+        const startDayIdx = weekDayMap.get(aoData.weekDay);
+        const batch = writeBatch(this.firestore);
+
+        const aoRef = this.aoManagerService.getAoLocationReference('ao_data/' + aoData.id);
+        const existingBeatdownDates = (await this.getBeatdownsByAO(aoRef, [])).map((v) => v.date.toDateString());
+
+        const existingBeatdownDatesSet = new Set(existingBeatdownDates);
+
+        console.log(existingBeatdownDatesSet);
+
+        startWeek.setHours(0, 0, 0);
+        let currentAOBeatdownDate = new Date(startWeek.setDate(startWeek.getDate() - startWeek.getDay() + startDayIdx!));
+
+        const nextWeek = 7;
+        const beatdowns = collection(this.firestore, 'beatdowns');
+        while (currentAOBeatdownDate <= endWeek) {
+
+            // If we already have a beatdown this week, go to next week
+            console.log(currentAOBeatdownDate.toDateString());
+            if (existingBeatdownDatesSet.has(currentAOBeatdownDate.toDateString())) {
+                currentAOBeatdownDate = new Date(currentAOBeatdownDate.setDate(currentAOBeatdownDate.getDate() + nextWeek));
+                continue;
+            }
+
+            const docRef = doc(beatdowns);
+            const beatdownEntity: IBeatdownEntity = {
+                date: Timestamp.fromDate(currentAOBeatdownDate),
+                specialEvent: SpecialEventType.None,
+                qUserRef: null,
+                aoLocationRef: aoRef,
+                coQUserRef: null,
+                eventName: null,
+                eventAddress: aoData.address,
+                canceled: false,
+                startTime: aoData.startTimeCST
+            };
+            batch.set(docRef, beatdownEntity);
+
+            currentAOBeatdownDate = new Date(currentAOBeatdownDate.setDate(currentAOBeatdownDate.getDate() + nextWeek));
+        }
+        await batch.commit();
+    }
+
+    private createDayMap(): Map<string, number> {
+        const weekDayMap = new Map();
+        weekDayMap.set('Sun', 0);
+        weekDayMap.set('Mon', 1);
+        weekDayMap.set('Tues', 2);
+        weekDayMap.set('Wed', 3);
+        weekDayMap.set('Thurs', 4);
+        weekDayMap.set('Fri', 5);
+        weekDayMap.set('Sat', 6);
+        return weekDayMap;
     }
 }

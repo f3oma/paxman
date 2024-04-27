@@ -1,10 +1,10 @@
 
-// Beatdown 
-
 import { Timestamp } from "@angular/fire/firestore";
 import { AoLocationRef, PaxUser, UserRef } from "./users.model";
 import { AOData } from "./ao.model";
 
+// If you add to this list, you'll need to update
+// the Q-Scheduler for display
 export enum SpecialEventType {
     Anniversary = 'Anniversary',
     VQ = 'VQ',
@@ -14,6 +14,7 @@ export enum SpecialEventType {
     CommunityEvent = 'CommunityEvent',
     KidFriendly = 'KidFriendly',
     BirthdayQ = 'BirthdayQ',
+    QSwap = 'QSwap',
     None = 'None',
 }
 
@@ -137,6 +138,10 @@ export class Beatdown {
 
     public get isBirthdayQ(): boolean {
         return this.specialEvent == SpecialEventType.BirthdayQ;
+    }
+
+    public get isSiteQSwap(): boolean {
+        return this.specialEvent == SpecialEventType.QSwap;
     }
 
     public get isCanceled(): boolean {

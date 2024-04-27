@@ -34,6 +34,7 @@ export interface IAOData {
     weekDay: DayOfWeekAbbv;
     sector: Sector;
     lastFlagPass?: Date | null;
+    launchDate?: Date | null;
     qSourceAvailable: boolean;
 }
 
@@ -51,6 +52,7 @@ export interface IAODataEntity {
     weekDay: string;
     sector: Sector;
     lastFlagPass: Timestamp;
+    launchDate: Timestamp;
     qSourceAvailable: boolean;
 }
 
@@ -69,6 +71,7 @@ export class AOData {
     private _weekDay: DayOfWeekAbbv;
     private _sector: Sector;
     private _lastFlagPass?: Date | null;
+    private _launchDate?: Date | null;
     private _qSourceAvailable: boolean;
 
     constructor(data: IAOData) {
@@ -86,6 +89,7 @@ export class AOData {
         this._weekDay = data.weekDay;
         this._sector = data.sector;
         this._lastFlagPass = data.lastFlagPass;
+        this._launchDate = data.launchDate;
         this._qSourceAvailable = data.qSourceAvailable;
     }
 
@@ -145,6 +149,10 @@ export class AOData {
         return this._lastFlagPass;
     }
 
+    public get launchDate(): Date | null | undefined {
+        return this._launchDate;
+    }
+
     public get qSourceAvailable(): boolean {
         return this._qSourceAvailable;
     }
@@ -165,6 +173,7 @@ export class AOData {
             weekDay: this.weekDay,
             sector: this.sector,
             lastFlagPass: this.lastFlagPass,
+            launchDate: this.launchDate,
             qSourceAvailable: this.qSourceAvailable,
         }
     }

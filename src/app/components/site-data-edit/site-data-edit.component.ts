@@ -13,6 +13,7 @@ import { UserAuthenticationService } from 'src/app/services/user-authentication.
 import { UserRole } from 'src/app/models/authenticated-user.model';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 import { Badges } from 'src/app/utils/badges';
+import { BeatdownService } from 'src/app/services/beatdown.service';
 
 @Component({
   selector: 'site-data-edit',
@@ -54,6 +55,7 @@ export class SiteDataEditComponent implements OnInit {
     retiredSiteQUsers: new FormControl(''),
     foundingSiteQUsers: new FormControl(''),
     lastFlagPass: new FormControl(''),
+    launchDate: new FormControl(''),
     qSource: new FormControl(''),
   });
 
@@ -73,7 +75,8 @@ export class SiteDataEditComponent implements OnInit {
     private paxSearchService: PaxSearchService,
     private paxManagerService: PaxManagerService,
     private authManagerService: UserAuthenticationService,
-    private userProfileService: UserProfileService) {
+    private userProfileService: UserProfileService,
+    private beatdownService: BeatdownService) {
       this.form.controls['activeSiteQUsers'].valueChanges.pipe(
         debounceTime(200),
         map(async (value: string) => {
@@ -145,8 +148,16 @@ export class SiteDataEditComponent implements OnInit {
   
       if (this.addNewSite) {
         await this.aoManagerService.addNewSite(site);
+        const current = new Date();
+        const sixMonths = new Date();
+        sixMonths.setMonth(current.getMonth() + 6);
+        await this.beatdownService.generateBeatdownsBetweenDates(site, current, sixMonths);
       } else {
         await this.aoManagerService.updateSiteData(site);
+        // const current = new Date();
+        // const sixMonths = new Date();
+        // sixMonths.setMonth(current.getMonth() + 6);
+        // await this.beatdownService.generateBeatdownsBetweenDates(site, current, sixMonths);
       }
       this.saveLoading = false;
       this.userSavedEmitter.emit(true);

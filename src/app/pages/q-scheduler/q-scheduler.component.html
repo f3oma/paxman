@@ -83,6 +83,9 @@
                                                 <mat-chip *ngIf="beatdown.isBirthdayQ">
                                                     <span matChipAvatar>🎂</span><span class="hide-when-mobile">Birthday Q</span>
                                                 </mat-chip>
+                                                <mat-chip *ngIf="beatdown.isSiteQSwap">
+                                                    <span matChipAvatar>🔄</span><span class="hide-when-mobile">Site-Q Swap</span>
+                                                </mat-chip>
                                             </mat-chip-listbox>
                                             <div class="no-q-warning" *ngIf="!beatdown.qUser && !beatdown.isCanceled">
                                                 <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
@@ -131,16 +134,22 @@
                                             <span matChipAvatar>⬆️</span><span class="hide-when-mobile">Popup</span>
                                         </mat-chip>
                                         <mat-chip *ngIf="beatdown.isSiteLaunch">
-                                            <span matChipAvatar>🚀</span> <span class="hide-when-mobile">Site Launch</span>
+                                            <span matChipAvatar>🚀</span><span class="hide-when-mobile">Site Launch</span>
                                         </mat-chip>
                                         <mat-chip *ngIf="beatdown.isVQ">
                                             <span style="font-weight: bold;">VQ</span>
                                         </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isCommunityEvent">
-                                            <span class="community-event" matChipAvatar>F3</span> <span class="hide-when-mobile">Community Event</span>
-                                        </mat-chip>
                                         <mat-chip *ngIf="beatdown.isAnniversary">
                                             <span matChipAvatar>🎉</span><span class="hide-when-mobile">Anniversary</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isKidFriendly">
+                                            <span matChipAvatar>🧸</span><span class="hide-when-mobile">2.0 Friendly</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isBirthdayQ">
+                                            <span matChipAvatar>🎂</span><span class="hide-when-mobile">Birthday Q</span>
+                                        </mat-chip>
+                                        <mat-chip *ngIf="beatdown.isSiteQSwap">
+                                            <span matChipAvatar>🔄</span><span class="hide-when-mobile">Site-Q Swap</span>
                                         </mat-chip>
                                     </mat-chip-listbox>
                                     <a mat-stroked-button (click)="editBeatdown(beatdown, mySiteBeatdowns, '')">Edit</a>
