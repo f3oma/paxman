@@ -120,6 +120,21 @@
                 </mat-select>
             </mat-form-field>
         </mat-expansion-panel>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Emergency Contact
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-form-field appearance="outline">
+                <mat-label>Contact name</mat-label>
+                <input formControlName="emergencyContactName" autocomplete="off" matInput type="text" placeholder="Contact name">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Phone number</mat-label>
+                <phone-input formControlName="emergencyContactPhone" autocomplete="off" required="false"></phone-input>
+            </mat-form-field>
+        </mat-expansion-panel>
     </form>
 
     <div class="actions">

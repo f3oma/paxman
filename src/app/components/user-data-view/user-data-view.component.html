@@ -17,4 +17,9 @@
     <p>{{user.hideContactInformation ? 'Contact info hidden' : 'Other PAX can contact'}}</p>
     <h5>User Status</h5>
     <p>{{user.activeUser ? 'Active F3 Member' : 'Inactive'}}</p>
+    <div class="emergency-contact" *ngIf="user.emergencyContact">
+        <h5>Emergency Contact</h5>
+        <p>{{user.emergencyContact.name}}</p>
+        <a [href]="getPhoneNumber(user.emergencyContact.phoneNumber)">{{user.emergencyContact.phoneNumber?.toDashedForm() ?? ''}}</a>
+    </div>
 </div>

@@ -17,6 +17,16 @@ export interface IClaimUserInfo {
   email: string;
 }
 
+export interface IEmergencyContact {
+  name: string;
+  phoneNumber: PhoneNumber | undefined;
+}
+
+export interface IEmergencyContactEntity {
+  name: string;
+  phoneNumber: string;
+}
+
 export interface IPaxUser {
   id: string;
   firstName: string;
@@ -36,6 +46,7 @@ export interface IPaxUser {
   ehLocationRef: AoLocationRef;
   siteQLocationRef: AoLocationRef;
   birthday: Date | null;
+  emergencyContact: IEmergencyContact | undefined;
 }
 
 export interface IPaxUserEntity {
@@ -55,6 +66,7 @@ export interface IPaxUserEntity {
   authDataId?: string;
   siteQLocationRef?: DocumentReference<AOData>;
   birthday: Timestamp | null;
+  emergencyContact: IEmergencyContactEntity;
 }
 
 export class PaxUser {
@@ -74,6 +86,7 @@ export class PaxUser {
   private _authDataId: string | null;
   private _siteQLocationRef: AoLocationRef;
   private _birthday: Date | null;
+  private _emergencyContact: IEmergencyContact | undefined;
 
   constructor(
     id: string, 
@@ -94,6 +107,7 @@ export class PaxUser {
     this._authDataId = paxData.authDataId;
     this._siteQLocationRef = paxData.siteQLocationRef;
     this._birthday = paxData.birthday;
+    this._emergencyContact = paxData?.emergencyContact;
   }
 
   public get id(): string {
@@ -160,6 +174,10 @@ export class PaxUser {
     return this._birthday;
   }
 
+  public get emergencyContact(): IEmergencyContact | undefined {
+    return this._emergencyContact;
+  }
+
   public getLowercaseF3Name(): string {
     return this._f3Name.toLowerCase();
   }
@@ -186,7 +204,7 @@ export class PaxUser {
       siteQLocationRef: this.siteQLocationRef,
       authDataId: this.authDataId,
       birthday: this.birthday,
+      emergencyContact: this.emergencyContact,
     }
   }
-
 }

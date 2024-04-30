@@ -42,6 +42,8 @@ export class UserDataEditComponent {
     stravaHandle: new FormControl(''),
     xHandle: new FormControl(''),
     birthday: new FormControl(''),
+    emergencyContactName: new FormControl(''),
+    emergencyContactPhone: new FormControl(new PhoneNumber('', '', '')),
   });
 
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
@@ -84,6 +86,12 @@ export class UserDataEditComponent {
     }
     if (this.userProfileData && this.userProfileData.links['strava'] === undefined) {
       this.userProfileData.links['strava'] = { url: '' };
+    }
+
+    if (this.user.emergencyContact) {
+      console.log(this.user.emergencyContact);
+      this.form.controls['emergencyContactName'].setValue(this.user.emergencyContact.name);
+      this.form.controls['emergencyContactPhone'].setValue(this.user.emergencyContact.phoneNumber);
     }
 
     if (this.user.ehByUserRef) {
@@ -140,6 +148,11 @@ export class UserDataEditComponent {
     } else {
       this.user.ehLocationRef = null;
     }
+
+    user.emergencyContact = {
+      name: this.form.controls['emergencyContactName'].value,
+      phoneNumber: this.form.controls['emergencyContactPhone'].value
+    };
 
     if (this.user.birthday && this.user.birthday !== undefined) {
       const today = new Date();

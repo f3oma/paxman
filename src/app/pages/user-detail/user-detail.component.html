@@ -72,6 +72,16 @@
           </ng-container>
         </div>
       </div>
+
+      <mat-expansion-panel *ngIf="user.emergencyContact && !user.hideContactInformation">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Emergency Contact
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>Contact: {{user.emergencyContact.name}}</p>
+        <a type="tel" [href]="'tel:' + user.emergencyContact.phoneNumber?.toDashedForm()">{{user.emergencyContact.phoneNumber?.toDashedForm()}}</a>
+    </mat-expansion-panel>
     
       <div class="action-btns">
         <div class="admin-only bordered-container" *ngIf="isAdmin">

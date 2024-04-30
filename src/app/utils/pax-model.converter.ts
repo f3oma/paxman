@@ -15,6 +15,15 @@ export class PaxModelConverter {
 
     return {
       toFirestore: (data: PaxUser): DocumentData => {
+
+        let emergencyContact = undefined;
+        if (data.emergencyContact) {
+          emergencyContact = {
+            name: data.emergencyContact.name,
+            phoneNumber: data.emergencyContact.phoneNumber ? data.emergencyContact.phoneNumber.toDashedForm() : '',
+          }
+        }
+
         return <IPaxUserEntity> {
           firstName: data.firstName,
           lastName: data.lastName,
@@ -31,6 +40,7 @@ export class PaxModelConverter {
           ehLocationRef: data.ehLocationRef,
           siteQLocationRef: data.siteQLocationRef,
           birthday: data.birthday ? Timestamp.fromDate(data.birthday) : null,
+          emergencyContact: emergencyContact
         }
       },
       fromFirestore: (snap: QueryDocumentSnapshot): PaxUser => {
@@ -54,6 +64,24 @@ export class PaxModelConverter {
           // Assume members allow notifications unless modified
           data.notificationFrequency = NotificationFrequency.All;
         }
+
+        let emergencyContact = undefined;
+        if (!data.emergencyContact) {
+          // Prefill with default values
+          data.emergencyContact = {
+            name: '',
+            phoneNumber: ''
+          }
+        } else {
+          if (data.emergencyContact.phoneNumber !== '') {
+            let textPhoneNumberParts = data.emergencyContact.phoneNumber.split("-");
+            const emergencyContactPhone = new PhoneNumber(textPhoneNumberParts[0], textPhoneNumberParts[1], textPhoneNumberParts[2]);
+            emergencyContact = {
+              name: data.emergencyContact.name,
+              phoneNumber: emergencyContactPhone
+            }
+          }
+        }
     
         return new PaxUser(
           snap.id,
@@ -73,6 +101,7 @@ export class PaxModelConverter {
             authDataId: data.authDataId,
             siteQLocationRef: data.siteQLocationRef,
             birthday: !data.birthday ? null : data.birthday.toDate(),
+            emergencyContact: emergencyContact
           });
       }
     }
