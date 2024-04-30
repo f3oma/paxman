@@ -1,14 +1,14 @@
 <div class="container">
     <div class="beatdown-form-container">
         <form class="beatdown-form" [formGroup]="form">
-            <mat-form-field appearance="fill" *ngIf="createBeatdown">
+            <mat-form-field appearance="outline" *ngIf="createBeatdown">
                 <mat-label>Event name</mat-label>
-                <input formControlName="eventName" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event name">
+                <input formControlName="eventName" [(ngModel)]="beatdown.eventName" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event name">
                 <mat-hint>Ex: Respect Popup, F3 Anniversary, CSAUP</mat-hint>
               </mat-form-field>
-            <mat-form-field appearance="fill" *ngIf="createBeatdown || showAddressField">
+            <mat-form-field appearance="outline" *ngIf="createBeatdown || showAddressField">
                 <mat-label>Event address</mat-label>
-                <input formControlName="eventAddress" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event address">
+                <input formControlName="eventAddress" [(ngModel)]="beatdown.eventAddress" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event address">
                 <mat-hint>Only enter if not at an AO</mat-hint>
             </mat-form-field>
             <mat-form-field appearance="outline">
