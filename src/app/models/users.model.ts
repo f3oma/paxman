@@ -47,6 +47,7 @@ export interface IPaxUser {
   siteQLocationRef: AoLocationRef;
   birthday: Date | null;
   emergencyContact: IEmergencyContact | undefined;
+  profilePhotoUrl: string | undefined;
 }
 
 export interface IPaxUserEntity {
@@ -67,6 +68,7 @@ export interface IPaxUserEntity {
   siteQLocationRef?: DocumentReference<AOData>;
   birthday: Timestamp | null;
   emergencyContact: IEmergencyContactEntity;
+  profilePhotoUrl: string | undefined;
 }
 
 export class PaxUser {
@@ -87,6 +89,7 @@ export class PaxUser {
   private _siteQLocationRef: AoLocationRef;
   private _birthday: Date | null;
   private _emergencyContact: IEmergencyContact | undefined;
+  private _profilePhotoUrl: string | undefined;
 
   constructor(
     id: string, 
@@ -107,7 +110,8 @@ export class PaxUser {
     this._authDataId = paxData.authDataId;
     this._siteQLocationRef = paxData.siteQLocationRef;
     this._birthday = paxData.birthday;
-    this._emergencyContact = paxData?.emergencyContact;
+    this._emergencyContact = paxData.emergencyContact;
+    this._profilePhotoUrl = paxData.profilePhotoUrl;
   }
 
   public get id(): string {
@@ -178,6 +182,10 @@ export class PaxUser {
     return this._emergencyContact;
   }
 
+  public get profilePhotoUrl(): string | undefined {
+    return this._profilePhotoUrl;
+  }
+
   public getLowercaseF3Name(): string {
     return this._f3Name.toLowerCase();
   }
@@ -205,6 +213,7 @@ export class PaxUser {
       authDataId: this.authDataId,
       birthday: this.birthday,
       emergencyContact: this.emergencyContact,
+      profilePhotoUrl: this.profilePhotoUrl,
     }
   }
 }

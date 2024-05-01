@@ -2,10 +2,14 @@
   <div class="loading" *ngIf="!loading; else loadingSpinner">
     <div class="container" *ngIf="user; else noUserFound" @profileAnimation>
       <div class="header">
-        <div class="title">
-          <h1>{{user.f3Name}}</h1>
+        <div class="profile-buttons">
           <button *ngIf="isPersonalProfile" mat-flat-button routerLink="/settings"><mat-icon>edit</mat-icon> Edit Profile</button>
+          <button mat-flat-button (click)="shareProfile(user.id, user.f3Name)"><mat-icon>ios_share</mat-icon> Share</button>
         </div>
+        <div class="profile-image-selector" *ngIf="user.profilePhotoUrl">
+          <div class="current-profile-img" [style.background-image]="'url(' + user.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !user.profilePhotoUrl }"></div>
+        </div>
+        <h1>{{user.f3Name}}</h1>
         <p>F3Omaha PAX <b>#{{user.paxNumber}}</b> of {{totalPaxCount}}</p>
         <div class="badges" *ngIf="userProfileData">
           <ng-container *ngIf="userProfileData.badges.length > 0">

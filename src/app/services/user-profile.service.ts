@@ -5,12 +5,16 @@ import { Badge, IUserProfileDataEntity, UserProfileData } from "../models/user-p
 import { PaxManagerService } from "./pax-manager.service";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { Badges, getBadgeDetail } from "../utils/badges";
+import { Observable, switchMap } from "rxjs";
+import { Storage, getDownloadURL, ref, uploadBytes } from "@angular/fire/storage";
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserProfileService {
     firestore: Firestore = inject(Firestore);
+    storage: Storage = inject(Storage);
+
     private userProfileCollection: CollectionReference = collection(this.firestore, 'user_profile_data');
     private readonly defaultProfileData: UserProfileData = {
         links: {},
@@ -70,6 +74,14 @@ export class UserProfileService {
             users.push(data);
         }
         return users;
+    }
+
+    async uploadProfileImage(image: File, id: string): Promise<string> {
+        const path = `images/profiles/${id}`;
+        const storage = new Storage(this.storage);
+        const storageRef = ref(storage, path);
+        await uploadBytes(storageRef, image);
+        return await getDownloadURL(storageRef);
     }
 
     public async createProfileData(userId: string, profileData: UserProfileData) {

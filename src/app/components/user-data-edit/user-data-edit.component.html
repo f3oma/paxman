@@ -1,5 +1,13 @@
 <div class="main">
     <form class="fng-form" [formGroup]="form">
+        <div class="profile-image-selector">
+            <div class="current-profile-img-edit" (click)="file.click()" [style.background-image]="'url(' + user.profilePhotoUrl + ')'" *ngIf="!imageLoading else loadingTemplate">
+              <div class="edit-icon">
+                <mat-icon>add_a_photo</mat-icon>
+              </div>
+            </div>
+            <input type='file' accept="image/*" (change)="onSelectImage($event)" class="select-profile-picture" #file style="display:none">
+        </div>
         <mat-expansion-panel expanded="true">
             <mat-expansion-panel-header>
                 <mat-panel-title>Personal Information</mat-panel-title>
@@ -142,3 +150,9 @@
         <button mat-flat-button (click)="cancel()">Cancel</button>
     </div>
 </div>
+
+<ng-template #loadingTemplate>
+    <div class="center">
+      <p class="loading-spinner"><span class="spinner-border spinner-border-sm mr-1"></span></p>
+    </div>
+  </ng-template>

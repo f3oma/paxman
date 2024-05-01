@@ -40,7 +40,8 @@ export class PaxModelConverter {
           ehLocationRef: data.ehLocationRef,
           siteQLocationRef: data.siteQLocationRef,
           birthday: data.birthday ? Timestamp.fromDate(data.birthday) : null,
-          emergencyContact: emergencyContact
+          emergencyContact: emergencyContact,
+          profilePhotoUrl: data.profilePhotoUrl,
         }
       },
       fromFirestore: (snap: QueryDocumentSnapshot): PaxUser => {
@@ -101,7 +102,8 @@ export class PaxModelConverter {
             authDataId: data.authDataId,
             siteQLocationRef: data.siteQLocationRef,
             birthday: !data.birthday ? null : data.birthday.toDate(),
-            emergencyContact: emergencyContact
+            emergencyContact: emergencyContact,
+            profilePhotoUrl: data.profilePhotoUrl,
           });
       }
     }

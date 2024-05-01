@@ -73,6 +73,19 @@ export class UserDetailComponent {
       this.totalPaxCount = await this.paxManagerService.getCachedCurrentNumberOfPax();
   }
 
+  public async shareProfile(id: string, f3Name: string) {
+    if (navigator.canShare()) {
+      const shareData = {
+        url: 'https://pax.f3omaha.com/users/' + id,
+        title: `View ${{f3Name}}'s profile on PaxNet`
+      }
+      await navigator.share(shareData);
+    } else {
+      await window.navigator.clipboard.writeText(`https://pax.f3omaha.com/users/${id}`);
+      alert("Profile link copied to clipboard");
+    }
+  }
+
   public toggleEditMode() {
     this.editMode = !this.editMode
   }

@@ -130,7 +130,8 @@ export class AddPaxComponent implements AfterViewInit {
           emergencyContact: {
             name: '',
             phoneNumber: undefined
-          }
+          },
+          profilePhotoUrl: 'https://firebasestorage.googleapis.com/v0/b/f3omaha.appspot.com/o/images%2Fprofiles%2Fbase.jpg?alt=media' // base F3 Photo
         };
   
         // Removed:

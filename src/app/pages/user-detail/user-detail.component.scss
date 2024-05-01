@@ -1,5 +1,23 @@
 .mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
 
+.profile-image-selector {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  .current-profile-img {
+    max-width: 100px;
+    max-height: 100px;
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    display: block;
+  }
+}
+
 .userNotFound {
   padding: 16px 32px;
   display: flex;
@@ -36,16 +54,26 @@
   padding: 16px 32px;
 
   .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px;
+
     .badges {
       margin: 6px 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    .title {
+    h1 {
+      font-weight: bold;
+    }
+    .profile-buttons {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      h1 {
-        font-weight: bold;
-      }
+      margin-bottom: 24px;
     }
     .social-icons {
       display: flex;

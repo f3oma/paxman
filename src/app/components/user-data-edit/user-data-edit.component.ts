@@ -46,6 +46,8 @@ export class UserDataEditComponent {
     emergencyContactPhone: new FormControl(new PhoneNumber('', '', '')),
   });
 
+  imageLoading: boolean = false;
+
   filteredEhF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredEhF3Options$: Observable<any[]> = this.filteredEhF3OptionsSubject.asObservable();
   selectedEhName: { userRef: string, f3Name: string } | undefined = undefined;
@@ -134,6 +136,19 @@ export class UserDataEditComponent {
       return '';
     }
     return option.name;
+  }
+
+  async onSelectImage(event: any) {
+    this.imageLoading = true;
+    const files = event.target.files;
+    if(!files || !files.item(0)) {
+      this.imageLoading = false;
+      // show error;
+      return;
+    }
+    let fileToUpload = files.item(0);
+    this.user.profilePhotoUrl = await this.userProfileService.uploadProfileImage(fileToUpload, this.user.id)
+    this.imageLoading = false;
   }
 
   public async saveData(user: IPaxUser) {

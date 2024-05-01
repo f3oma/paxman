@@ -1,5 +1,35 @@
 .main {
 
+  .profile-image-selector {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    .current-profile-img-edit {
+      max-width: 100px;
+      max-height: 100px;
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      background-position: center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      &::before {
+        content: '';
+        background-color: #00000070;
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        position: absolute;
+      }
+    }
+  }
+
   mat-expansion-panel {
     margin: 12px 0;
   }
