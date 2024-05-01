@@ -80,7 +80,12 @@ export class UserProfileService {
         const path = `images/profiles/${id}`;
         const storage = new Storage(this.storage);
         const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, image);
+
+        const metadata = {
+            contentType: 'image/jpeg'
+        }
+
+        await uploadBytes(storageRef, image, metadata);
         return await getDownloadURL(storageRef);
     }
 
