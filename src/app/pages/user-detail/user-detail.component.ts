@@ -74,11 +74,12 @@ export class UserDetailComponent {
   }
 
   public async shareProfile(id: string, f3Name: string) {
-    if (navigator.canShare()) {
-      const shareData = {
-        url: 'https://f3omaha.web.app/users/' + id,
-        title: `View ${{f3Name}}'s profile on PaxNet`
-      }
+    const shareData = {
+      url: 'https://f3omaha.web.app/users/' + id,
+      text: `View ${{f3Name}}'s profile`,
+      title: `${{f3Name}} on PaxNet`
+    }
+    if (navigator.canShare(shareData)) {
       await navigator.share(shareData);
     } else {
       await window.navigator.clipboard.writeText(`https://f3omaha.web.app/users/${id}`);
