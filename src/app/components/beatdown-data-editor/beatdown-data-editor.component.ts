@@ -38,6 +38,7 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('aoLocation') locationInput: ElementRef | null = null;
 
   showAddressField = false;
+  showEventNameField = false;
 
   filteredF3OptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredF3Options$: Observable<any[]> = this.filteredF3OptionsSubject.asObservable();
@@ -75,7 +76,7 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
   }
 
   public ngOnInit(): void {
-    if (this.beatdown.aoLocation?.rotating) {
+    if (this.beatdown.aoLocation?.rotating || this.beatdown.aoLocation?.popup) {
       this.showAddressField = true;
     }
   }
@@ -156,6 +157,26 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
         })
       }
     }
+  }
+
+  specialEventChanged(event: any) {
+      // Value is an array of selected values such as ['available', 'VQ']
+      const { value } = event;
+  
+      if (value.includes('Popup')) {
+        this.showAddressField = true;
+        this.showEventNameField = true;
+        return;
+      }
+
+      if (value.includes('CommunityEvent')) {
+        this.showAddressField = true;
+        this.showEventNameField = true;
+        return;
+      }
+
+      this.showAddressField = false;
+      this.showEventNameField = false;
   }
 
   async save() {

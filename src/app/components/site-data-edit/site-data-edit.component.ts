@@ -137,7 +137,7 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
   }
 
   public ngAfterViewChecked() {
-    if (this.site.rotating) {
+    if (this.site.rotating || this.site.popup) {
       this.form.removeControl('address');
       this.form.removeControl('location');
     }

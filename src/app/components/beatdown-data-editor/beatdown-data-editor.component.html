@@ -1,7 +1,7 @@
 <div class="container">
     <div class="beatdown-form-container">
         <form class="beatdown-form" [formGroup]="form">
-            <mat-form-field appearance="outline" *ngIf="createBeatdown">
+            <mat-form-field appearance="outline" *ngIf="createBeatdown || showEventNameField">
                 <mat-label>Event name</mat-label>
                 <input formControlName="eventName" [(ngModel)]="beatdown.eventName" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Event name">
                 <mat-hint>Ex: Respect Popup, F3 Anniversary, CSAUP</mat-hint>
@@ -83,7 +83,7 @@
               </mat-form-field> -->
               <mat-form-field appearance="outline">
                 <mat-label>Special Event</mat-label>
-                <mat-select formControlName="specialEvent" [(ngModel)]="beatdown.specialEvent">
+                <mat-select formControlName="specialEvent" [(ngModel)]="beatdown.specialEvent" (selectionChange)="specialEventChanged($event)">
                     <mat-option value="None">None</mat-option>
                     <mat-option value="VQ">VQ</mat-option>
                     <mat-option value="Anniversary">Q Anniversary</mat-option>
