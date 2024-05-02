@@ -72,7 +72,6 @@ export class BeatdownService {
     }
 
     public async generateBeatdownsBetweenDates(aoData: IAOData | null, startWeek: Date, endWeek: Date) {
-        console.log(startWeek, endWeek);
         // Generate weekly beatdowns for a location from start week to end week
         // If the endWeek date provided is less than the specified AO's week time, no beatdown will be created...
         if (!aoData || !aoData.weekDay) {
@@ -92,8 +91,6 @@ export class BeatdownService {
 
         const existingBeatdownDatesSet = new Set(existingBeatdownDates);
 
-        console.log(existingBeatdownDatesSet);
-
         startWeek.setHours(0, 0, 0);
         let currentAOBeatdownDate = new Date(startWeek.setDate(startWeek.getDate() - startWeek.getDay() + startDayIdx!));
 
@@ -102,7 +99,6 @@ export class BeatdownService {
         while (currentAOBeatdownDate <= endWeek) {
 
             // If we already have a beatdown this week, go to next week
-            console.log(currentAOBeatdownDate.toDateString());
             if (existingBeatdownDatesSet.has(currentAOBeatdownDate.toDateString())) {
                 currentAOBeatdownDate = new Date(currentAOBeatdownDate.setDate(currentAOBeatdownDate.getDate() + nextWeek));
                 continue;

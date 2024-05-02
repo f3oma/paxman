@@ -91,7 +91,6 @@ export class UserDataEditComponent {
     }
 
     if (this.user.emergencyContact) {
-      console.log(this.user.emergencyContact);
       this.form.controls['emergencyContactName'].setValue(this.user.emergencyContact.name);
       this.form.controls['emergencyContactPhone'].setValue(this.user.emergencyContact.phoneNumber);
     }
@@ -147,11 +146,15 @@ export class UserDataEditComponent {
       return;
     }
     let fileToUpload = files.item(0);
-    this.user.profilePhotoUrl = await this.userProfileService.uploadProfileImage(fileToUpload, this.user.id)
+    var profilePhotoUrl = await this.userProfileService.uploadProfileImage(fileToUpload, this.user.id);
+    await this.paxManagerService.updateProfileImage(this.user.id, profilePhotoUrl);
     this.imageLoading = false;
   }
 
   public async saveData(user: IPaxUser) {
+    if (this.imageLoading) {
+      alert("Profile image is still uploading. If the problem persists, please refresh");
+    }
     if (this.selectedEhName !== undefined) {
       this.user.ehByUserRef = this.paxManagerService.getUserReference(this.selectedEhName?.userRef);
     } else {

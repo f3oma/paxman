@@ -8,12 +8,12 @@
                 <mat-label>F3 Site Name</mat-label>
                 <input formControlName="name" [(ngModel)]="site.name" autocomplete="off" matInput type="text" placeholder="Site Name" required>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" *ngIf="!site.rotating">
                 <mat-label>Location name</mat-label>
                 <input formControlName="location" [(ngModel)]="site.location" autocomplete="off" matInput type="text" placeholder="Location Name" required>
                 <mat-hint>Example High School</mat-hint>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline" *ngIf="!site.rotating">
                 <mat-label>Address</mat-label>
                 <input formControlName="address" [(ngModel)]="site.address" autocomplete="off" matInput type="text" placeholder="Address" required>
                 <mat-hint>1234 S. Example Ave. Omaha, NE. 68114</mat-hint>

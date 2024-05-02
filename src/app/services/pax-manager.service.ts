@@ -95,6 +95,13 @@ export class PaxManagerService {
     return await setDoc(documentReference, user, { merge: true });
   }
 
+  public async updateProfileImage(id: string, profileUrl: string) {
+    const documentReference = doc(this.firestore, 'users', id).withConverter(this.paxConverter);
+    return await updateDoc(documentReference, {
+      profilePhotoUrl: profileUrl 
+    });
+  }
+
   public async getDataByAuthId(userId: string): Promise<DocumentSnapshot<PaxUser>> {
     const documentReference = doc(this.firestore, 'users', userId).withConverter(this.paxConverter);
     return await getDoc(documentReference);

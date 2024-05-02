@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { IAOData } from 'src/app/models/ao.model';
@@ -20,7 +20,7 @@ import { BeatdownService } from 'src/app/services/beatdown.service';
   templateUrl: './site-data-edit.component.html',
   styleUrls: ['./site-data-edit.component.scss']
 })
-export class SiteDataEditComponent implements OnInit {
+export class SiteDataEditComponent implements OnInit, AfterViewChecked {
 
   @Input('site') site!: IAOData;
   @Input('isEditorAdmin') isEditorAdmin: boolean = false;
@@ -134,6 +134,13 @@ export class SiteDataEditComponent implements OnInit {
     this.originalActiveSiteQUsers = JSON.parse(JSON.stringify(this.temporaryActiveSiteQUsers));
     this.originalRetiredSiteQUsers = JSON.parse(JSON.stringify(this.temporaryRetiredSiteQUsers));
     this.originalFoundingSiteQUsers = JSON.parse(JSON.stringify(this.temporaryFoundingSiteQUsers));
+  }
+
+  public ngAfterViewChecked() {
+    if (this.site.rotating) {
+      this.form.removeControl('address');
+      this.form.removeControl('location');
+    }
   }
 
   public async saveData(site: IAOData) {

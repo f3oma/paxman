@@ -83,7 +83,7 @@ export class UserProfileService {
 
         const metadata = {
             contentType: 'image/jpeg'
-        }
+        };
 
         await uploadBytes(storageRef, image, metadata);
         return await getDownloadURL(storageRef);
