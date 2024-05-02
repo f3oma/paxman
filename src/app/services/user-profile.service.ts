@@ -76,15 +76,14 @@ export class UserProfileService {
         return users;
     }
 
-    async uploadProfileImage(image: File, id: string): Promise<string> {
+    async uploadProfileImage(image: any, id: string): Promise<string> {
         const path = `images/profiles/${id}`;
         const storage = new Storage(this.storage);
         const storageRef = ref(storage, path);
         const metadata = {
             contentType: 'image/jpeg'
         };
-        const buffer = await image.arrayBuffer();
-        await uploadBytes(storageRef, buffer, metadata);
+        await uploadBytes(storageRef, image, metadata);
         return await getDownloadURL(storageRef);
     }
 

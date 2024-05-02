@@ -6,7 +6,7 @@
                 <mat-icon>add_a_photo</mat-icon>
               </div>
             </div>
-            <input type='file' accept="image/jpeg" (change)="onSelectImage($event)" class="select-profile-picture" #file style="display:none">
+            <input type='file' accept="image/*" (change)="onSelectImage($event)" class="select-profile-picture" #file style="display:none">
         </div>
         <mat-expansion-panel expanded="true">
             <mat-expansion-panel-header>
