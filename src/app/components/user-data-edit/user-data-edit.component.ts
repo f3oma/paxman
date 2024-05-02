@@ -11,7 +11,6 @@ import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 import { Badges, getBadgeDetail } from 'src/app/utils/badges';
-import * as convert from 'heic-convert';
 
 @Component({
   selector: 'user-data-edit',
@@ -147,23 +146,9 @@ export class UserDataEditComponent {
       return;
     }
     let fileToUpload = files.item(0);
-
-    const { type } = fileToUpload;
-    let buffer = null;
-    if (type === 'image/heic') {
-      buffer = convert({
-        buffer: await fileToUpload.arrayBuffer(),
-        format: 'JPEG',
-        quality: 1
-      })
-    }
-
-    if (buffer) {
-      fileToUpload = buffer;
-    }
-
     var profilePhotoUrl = await this.userProfileService.uploadProfileImage(fileToUpload, this.user.id);
     await this.paxManagerService.updateProfileImage(this.user.id, profilePhotoUrl);
+    this.user.profilePhotoUrl = profilePhotoUrl;
     this.imageLoading = false;
   }
 
