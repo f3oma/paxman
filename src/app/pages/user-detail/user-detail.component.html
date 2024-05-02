@@ -6,7 +6,7 @@
           <button *ngIf="isPersonalProfile" mat-flat-button routerLink="/settings"><mat-icon>edit</mat-icon> Edit Profile</button>
           <button mat-flat-button (click)="shareProfile(user.id, user.f3Name)"><mat-icon>ios_share</mat-icon> Share</button>
         </div>
-        <div class="profile-image-selector" *ngIf="user.profilePhotoUrl">
+        <div class="profile-image-selector" *ngIf="user.profilePhotoUrl" @profileAnimation>
           <div class="current-profile-img" [style.background-image]="'url(' + user.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !user.profilePhotoUrl }"></div>
         </div>
         <h1>{{user.f3Name}}</h1>
