@@ -15,7 +15,7 @@
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
                                     </div>
-                                    <h5 id="ao-name" *ngIf="beatdown.aoLocation">{{beatdown.aoLocation.name}}</h5>
+                                    <h5 id="ao-name" *ngIf="beatdown.aoLocation"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
                                     <p id="address" *ngIf="(beatdown.isCommunityEvent || beatdown.aoLocation?.rotating) && beatdown.eventAddress">{{beatdown.eventAddress}}</p>
                                 </div>
                                 <mat-chip-listbox>
