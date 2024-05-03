@@ -19,6 +19,33 @@ p {
   margin: 0;
 }
 
+.nav-drop-image {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-data {
+  display: flex;
+  flex-direction: row;
+  .current-profile-img {
+    margin-right: 8px;
+    max-width: 24px;
+    max-height: 24px;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    display: block;
+  }
+  
+  .defaultBackground {
+      background: #aaa;
+  }
+}
+
 .navbar {
   padding: 8px 8px;
   display: flex;
