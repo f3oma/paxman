@@ -68,7 +68,7 @@ export interface IPaxUserEntity {
   siteQLocationRef?: DocumentReference<AOData>;
   birthday: Timestamp | null;
   emergencyContact: IEmergencyContactEntity;
-  profilePhotoUrl: string | undefined;
+  profilePhotoUrl: string | undefined | null;
 }
 
 export class PaxUser {
