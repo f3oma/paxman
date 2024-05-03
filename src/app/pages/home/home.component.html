@@ -21,7 +21,10 @@
       <div class="recent-pax-list">
         <div class="pax-line" *ngFor="let pax of latestPax" [routerLink]="['/users/' + pax.id]">
           <div class="pax-data">
-            <h5>{{pax.f3Name}}</h5>
+            <div class="header">
+              <div *ngIf="pax.profilePhotoUrl" class="current-profile-img" [style.background-image]="'url(' + pax.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !pax.profilePhotoUrl }"></div>
+              <h5>{{pax.f3Name}}</h5>
+            </div>
             <p>EH'd at: <b>{{pax.ehLocationName}}</b></p>
             <p>EH'd by: <b>{{pax.ehUserF3Name}}</b></p>
           </div>
@@ -37,7 +40,10 @@
       <div class="recent-pax-list">
         <div class="pax-line" *ngFor="let pax of anniversaryPax" [routerLink]="['/users/' + pax.id]">
           <div class="pax-data">
-            <h5>{{pax.f3Name}}</h5>
+            <div class="header">
+              <div *ngIf="pax.profilePhotoUrl" class="current-profile-img" [style.background-image]="'url(' + pax.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !pax.profilePhotoUrl }"></div>
+              <h5>{{pax.f3Name}}</h5>
+            </div>
             <p>{{pax.fullName}}</p>
             <p>Joined: {{pax.joinDate | date: 'MM-dd-YYYY'}}</p>
           </div>

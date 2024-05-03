@@ -27,7 +27,7 @@ export class HomeComponent {
   public isAdminOrSiteQ: boolean = false;
 
   public latestPaxNames: string = '';
-  public latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
+  public latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string, profilePhotoUrl: string | undefined }[] = [];
   public anniversaryPax: AnniversaryResponsePax[] = []
   public anniversaryEndDate: Date = new Date();
   public anniversaryStartDate: Date = new Date();
@@ -61,7 +61,7 @@ export class HomeComponent {
 
   async getPaxFromToday() {
     const paxList: GetNewPaxResponse[] = await this.paxManagerService.getNewPax();
-    const latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string}[] = [];
+    const latestPax: { id: string, f3Name: string, ehUserF3Name: string, ehLocationName: string, profilePhotoUrl: string | undefined}[] = [];
     for (let pax of paxList) {
       let paxEhUser = undefined, paxEhLocation = undefined;
       if (pax.ehByUserRef)
@@ -74,7 +74,8 @@ export class HomeComponent {
         id: pax.id,
         f3Name: pax.f3Name,
         ehUserF3Name: paxEhUser !== undefined ? paxEhUser.f3Name : 'None',
-        ehLocationName: paxEhLocation !== undefined ? paxEhLocation.name : 'Unknown'
+        ehLocationName: paxEhLocation !== undefined ? paxEhLocation.name : 'Unknown',
+        profilePhotoUrl: pax.profilePhotoUrl
       });
     }
     this.latestPax = latestPax;

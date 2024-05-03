@@ -60,7 +60,10 @@
         <div class="info-section">
           <ng-container *ngIf="ehUser && ehUser !== undefined">
             <h5>EH'd by</h5>
-            <a [href]="'/users/' + ehUser.id">{{ehUser.f3Name}}</a>  
+            <div class="user-chip" [routerLink]="'/users/' + ehUser.id">
+              <div class="current-profile-img" [style.background-image]="'url(' + ehUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !ehUser.profilePhotoUrl }"></div>
+              <span>{{ehUser.f3Name}}</span>
+            </div>
           </ng-container>
         </div>
         <div class="info-section">

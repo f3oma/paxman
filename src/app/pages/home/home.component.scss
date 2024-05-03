@@ -90,13 +90,37 @@
       }
     }
   }
-
-  
-  
-
-  
 }
 
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 4px;
+
+  h5 {
+    margin: 0;
+  }
+
+  .current-profile-img {
+    margin-right: 8px;
+    max-width: 24px;
+    max-height: 24px;
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    background-position: center;
+    background-size: cover;
+    display: block;
+  }
+  
+  .defaultBackground {
+      background: #aaa;
+  }
+  
+}
 
 #login-btn {
   background-color: #2d364c;

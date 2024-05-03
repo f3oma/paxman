@@ -54,11 +54,11 @@
                                     <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
                                 </div>
                                 <div class="q-data" *ngIf="beatdown.qUser && !beatdown.isCanceled">
-                                    <div class="q-user-chip" *ngIf="beatdown.qUser">
+                                    <div class="q-user-chip" *ngIf="beatdown.qUser" [routerLink]="'/users/' + beatdown.qUser.id">
                                         <div class="current-profile-img" [style.background-image]="'url(' + beatdown.qUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !beatdown.qUser.profilePhotoUrl }"></div>
                                         <span>{{beatdown.qUser.f3Name}}</span>
                                     </div>
-                                    <div class="q-user-chip" *ngIf="beatdown.coQUser">
+                                    <div class="q-user-chip" *ngIf="beatdown.coQUser" [routerLink]="'/users/' + beatdown.coQUser.id">
                                         <div class="current-profile-img" [style.background-image]="'url(' + beatdown.coQUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !beatdown.coQUser.profilePhotoUrl }"></div>
                                         <span>{{beatdown.coQUser.f3Name}}</span>
                                     </div>
