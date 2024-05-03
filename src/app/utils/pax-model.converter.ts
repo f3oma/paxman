@@ -41,7 +41,7 @@ export class PaxModelConverter {
           siteQLocationRef: data.siteQLocationRef,
           birthday: data.birthday ? Timestamp.fromDate(data.birthday) : null,
           emergencyContact: emergencyContact,
-          profilePhotoUrl: data.profilePhotoUrl,
+          profilePhotoUrl: data.profilePhotoUrl !== undefined ? data.profilePhotoUrl : null,
         }
       },
       fromFirestore: (snap: QueryDocumentSnapshot): PaxUser => {
@@ -82,6 +82,10 @@ export class PaxModelConverter {
               phoneNumber: emergencyContactPhone
             }
           }
+        }
+
+        if (!data.profilePhotoUrl) {
+          data.profilePhotoUrl = undefined;
         }
     
         return new PaxUser(
