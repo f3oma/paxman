@@ -102,6 +102,7 @@
         </form>
         <div class="actions">
             <a mat-raised-button style="background-color: orange; text-decoration: none;" (click)="save()">Save</a>
+            <a *ngIf="userIsAdmin" mat-raised-button style="margin-left: 4px; color: #fff; background-color: rgb(173, 29, 29); text-decoration: none;" (click)="deleteBeatdown()">Delete</a>
             <a mat-flat-button style="text-decoration: none;" (click)="userCancel()">Cancel</a>
         </div>
     </div>

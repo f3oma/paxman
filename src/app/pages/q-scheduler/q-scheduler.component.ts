@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DocumentReference, QueryFieldFilterConstraint, where } from '@angular/fire/firestore';
+import { DocumentReference, QueryFieldFilterConstraint,where } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { debounce } from 'lodash';
 import { AOData } from 'src/app/models/ao.model';
@@ -8,8 +8,8 @@ import { Beatdown } from 'src/app/models/beatdown.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
-import { EditBeatdownComponent } from './edit-beatdown-modal/edit-beatdown.component';
-import { CreateBeatdownComponent } from './create-beatdown-modal/create-beatdown.component';
+import { EditBeatdownComponent, EditBeatdownProps } from './edit-beatdown-modal/edit-beatdown.component';
+import { CreateBeatdownComponent, CreateBeatdownProps } from './create-beatdown-modal/create-beatdown.component';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
@@ -55,6 +55,7 @@ export class QSchedulerComponent implements OnInit {
   selectedSiteSubject: Subject<AOData | null> = new BehaviorSubject<AOData | null>(null);
   selectedSite$: Observable<AOData | null> = this.selectedSiteSubject.asObservable();
   allAOs: AOData[] = [];
+  userIsAdmin: boolean = false;
 
   constructor(
     private beatdownService: BeatdownService,
@@ -73,6 +74,9 @@ export class QSchedulerComponent implements OnInit {
           if (res.roles.includes(UserRole.SiteQ) && res.siteQLocationRef) {
             this.getLinkedActiveSiteQAO(res.siteQLocationRef);
           }
+          if (res.roles.includes(UserRole.Admin)) {
+            this.userIsAdmin = true;
+          }
           if (res.paxDataId) {
             this.paxDataId = res.paxDataId;
           }
@@ -86,7 +90,10 @@ export class QSchedulerComponent implements OnInit {
 
   public editBeatdown(beatdown: Beatdown, beatdownList: Beatdown[], day: string) {
     this.matDialog.open(EditBeatdownComponent, {
-      data: beatdown,
+      data: <EditBeatdownProps> {
+        beatdown,
+        userIsAdmin: this.userIsAdmin
+      },
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',
@@ -115,6 +122,9 @@ export class QSchedulerComponent implements OnInit {
 
   public createBeatdown() {
     this.matDialog.open(CreateBeatdownComponent, {
+      data: <CreateBeatdownProps> {
+        userIsAdmin: this.userIsAdmin,
+      },
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',

@@ -4,6 +4,8 @@
     <app-beatdown-data-editor 
         [createBeatdown]="false"
         [beatdown]="beatdown"
+        [userIsAdmin]="userIsAdmin"
+        (beatdownDeleted)="deleteBeatdown($event)"
         (beatdownSaved)="saveBeatdown($event)"
         (cancel)="cancel()"></app-beatdown-data-editor>
 </div>

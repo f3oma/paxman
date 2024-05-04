@@ -30,6 +30,8 @@ interface AOLocationData {
 export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
   @Input('createBeatdown') createBeatdown: boolean = false;
   @Input('beatdown') beatdown!: IBeatdown;
+  @Input('userIsAdmin') userIsAdmin: boolean = false;
+  @Output('beatdownDeleted') beatdownEventDeleted: EventEmitter<IBeatdown> = new EventEmitter<IBeatdown>();
   @Output('beatdownSaved') beatdownEventSaved: EventEmitter<IBeatdown> = new EventEmitter<IBeatdown>();
   @Output('cancel') cancel: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -224,6 +226,10 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
 
   userCancel() {
     this.cancel.emit(true);
+  }
+
+  deleteBeatdown() {
+    this.beatdownEventDeleted.emit(this.beatdown);
   }
 
   public displayF3NameOptions(option: any) {

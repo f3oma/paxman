@@ -67,7 +67,11 @@ export class BeatdownService {
     }
 
     async deleteBeatdown(beatdown: Beatdown) {
-        const ref = doc(this.beatdownCollection, `${beatdown.id}`);
+        return await this.deleteBeatdownById(beatdown.id);
+    }
+
+    async deleteBeatdownById(id: string) {
+        const ref = doc(this.beatdownCollection, id);
         return await deleteDoc(ref);
     }
 
