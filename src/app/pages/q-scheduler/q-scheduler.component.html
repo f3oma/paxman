@@ -13,7 +13,7 @@
         <div class="main-content">
 
             <div class="view-selector">
-                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center" (selectedTabChange)="onTabChanged($event)">
+                <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
                     <mat-tab label="All Sites">
                         <div class="week-selection">
                             <h5>Week of {{weekStartDate | date: 'MM/dd/YYYY'}}</h5>
@@ -100,59 +100,73 @@
                             </mat-expansion-panel>
                         </ng-container>
                     </mat-tab>
-                    <mat-tab label="My Site" *ngIf="activeSiteQAO">
-                        <div class="ao-data">
-                            <h4>{{activeSiteQAO.name}}</h4>
-                            <p>Open Q Slots: {{openBeatdownQCount}}</p>
-                        </div>
-                        <div class="quick-filters">
-                            <mat-form-field appearance="outline" class="dense">
-                                <mat-select placeholder="Filter" multiple (selectionChange)="changedFilter($event)">
-                                    <mat-option value="available">Has Opening</mat-option>
-                                    <mat-option value="VQ">VQ</mat-option>
-                                    <mat-option value="shovelPass">Shovel Pass</mat-option>
-                                    <mat-option value="myQs">My Qs</mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                        </div>
-                        <div class="my-site-beatdown-container" [ngClass]="{'canceled-beatdown' : beatdown.isCanceled }"  *ngFor="let beatdown of mySiteBeatdowns">
-                            <div class="beatdown">
-                                <h5>{{beatdown.date | date: 'MM/dd/yy'}}</h5>
-                                <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled</p>
-                                <div class="metadata">
-                                    <div class="no-q-warning" *ngIf="!beatdown.qUser && !beatdown.isCanceled">
-                                        <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
+                    <mat-tab label="Site View">
+                        <div class="site-container" *ngIf="selectedSite$ | async as selectedSite">
+                            <div class="site-header">
+                                <div class="ao-data">
+                                    <h4>{{selectedSite.name}}</h4>
+                                    <p>Open Q Slots: {{openBeatdownQCount}}</p>
+                                </div>
+                                <div class="change-site">
+                                    <mat-form-field appearance="outline" class="dense">
+                                        <mat-select placeholder="Select site" (selectionChange)="changedSiteView($event)" [value]="selectedSite">
+                                            <mat-option *ngFor="let site of allAOs" [value]="site">{{site.name}}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="info" *ngIf="activeSiteQAO && selectedSite.name !== activeSiteQAO.name">
+                                <button mat-flat-button (click)="backToMySite()">Back to my site</button>
+                            </div>
+                            <div class="quick-filters">
+                                <mat-form-field appearance="outline" class="dense">
+                                    <mat-select placeholder="Filter" multiple (selectionChange)="changedFilter($event)">
+                                        <mat-option value="available">Has Opening</mat-option>
+                                        <mat-option value="VQ">VQ</mat-option>
+                                        <mat-option value="shovelPass">Shovel Pass</mat-option>
+                                        <mat-option value="myQs">My Qs</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <div class="my-site-beatdown-container" [ngClass]="{'canceled-beatdown' : beatdown.isCanceled }"  *ngFor="let beatdown of mySiteBeatdowns">
+                                <div class="beatdown">
+                                    <h5>{{beatdown.date | date: 'MM/dd/yy'}}</h5>
+                                    <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled</p>
+                                    <div class="metadata">
+                                        <div class="no-q-warning" *ngIf="!beatdown.qUser && !beatdown.isCanceled">
+                                            <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
+                                        </div>
+                                        <div class="q-data" *ngIf="beatdown.qUser && !beatdown.isCanceled">
+                                            <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}</p>
+                                        </div>
+                                        <mat-chip-listbox>
+                                            <mat-chip *ngIf="beatdown.isFlagPass">
+                                                <span matChipAvatar>🇺🇸</span><span class="hide-when-mobile">Flag Pass</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isPopup">
+                                                <span matChipAvatar>⬆️</span><span class="hide-when-mobile">Popup</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isSiteLaunch">
+                                                <span matChipAvatar>🚀</span><span class="hide-when-mobile">Site Launch</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isVQ">
+                                                <span style="font-weight: bold;">VQ</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isAnniversary">
+                                                <span matChipAvatar>🎉</span><span class="hide-when-mobile">Anniversary</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isKidFriendly">
+                                                <span matChipAvatar>🧸</span><span class="hide-when-mobile">2.0 Friendly</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isBirthdayQ">
+                                                <span matChipAvatar>🎂</span><span class="hide-when-mobile">Birthday Q</span>
+                                            </mat-chip>
+                                            <mat-chip *ngIf="beatdown.isSiteQSwap">
+                                                <span matChipAvatar>🔄</span><span class="hide-when-mobile">Site-Q Swap</span>
+                                            </mat-chip>
+                                        </mat-chip-listbox>
+                                        <a mat-stroked-button (click)="editBeatdown(beatdown, mySiteBeatdowns, '')">Edit</a>
                                     </div>
-                                    <div class="q-data" *ngIf="beatdown.qUser && !beatdown.isCanceled">
-                                        <p *ngIf="beatdown.qUser">{{beatdown.qUser.f3Name}}</p>
-                                    </div>
-                                    <mat-chip-listbox>
-                                        <mat-chip *ngIf="beatdown.isFlagPass">
-                                            <span matChipAvatar>🇺🇸</span><span class="hide-when-mobile">Flag Pass</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isPopup">
-                                            <span matChipAvatar>⬆️</span><span class="hide-when-mobile">Popup</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isSiteLaunch">
-                                            <span matChipAvatar>🚀</span><span class="hide-when-mobile">Site Launch</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isVQ">
-                                            <span style="font-weight: bold;">VQ</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isAnniversary">
-                                            <span matChipAvatar>🎉</span><span class="hide-when-mobile">Anniversary</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isKidFriendly">
-                                            <span matChipAvatar>🧸</span><span class="hide-when-mobile">2.0 Friendly</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isBirthdayQ">
-                                            <span matChipAvatar>🎂</span><span class="hide-when-mobile">Birthday Q</span>
-                                        </mat-chip>
-                                        <mat-chip *ngIf="beatdown.isSiteQSwap">
-                                            <span matChipAvatar>🔄</span><span class="hide-when-mobile">Site-Q Swap</span>
-                                        </mat-chip>
-                                    </mat-chip-listbox>
-                                    <a mat-stroked-button (click)="editBeatdown(beatdown, mySiteBeatdowns, '')">Edit</a>
                                 </div>
                             </div>
                         </div>
@@ -162,7 +176,7 @@
                             <div class="warning-box">
                                 <h4>Before continuing</h4>
                                 <p><b>Weekly beatdown events are automatically generated for all daily AOs without the need for using the button below.</b> 
-                                    The weekly AO beatdowns are scheduled three months in advance and do not extend beyond that timeframe. The button below is intended for creating one-time events, such as Community Events (e.g. CSAUP or F3 Anniversary), or Popups such as the Respect Popup. This button allows you to create a single beatdown event that deviates from the regular weekly schedule.</p>
+                                    The weekly AO beatdowns are scheduled out to the end of the year for you. The button below is intended for creating one-time events, such as Community Events (e.g. CSAUP or F3 Anniversary), or Popups such as the Respect Popup. This button allows you to create a single beatdown event that deviates from the regular weekly schedule.</p>
                             </div>                            
                             <a mat-raised-button style="background-color: orange; text-decoration: none;"  (click)="createBeatdown()">Create a new beatdown</a>
                         </div>

@@ -121,7 +121,31 @@
             }
         }
     }
-} 
+}
+
+.site-header {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info {
+    display: flex;
+
+    button {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        border: 1px solid #000;
+    }
+}
+
+::ng-deep .mat-mdc-tab-body-content {
+    overflow: hidden !important;
+    padding: 1px;
+  }
 
 .fill-tab {
     height: 100%;

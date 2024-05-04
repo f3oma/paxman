@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DocumentReference, QueryFieldFilterConstraint, where } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { debounce } from 'lodash';
@@ -11,6 +11,7 @@ import { UserAuthenticationService } from 'src/app/services/user-authentication.
 import { EditBeatdownComponent } from './edit-beatdown-modal/edit-beatdown.component';
 import { CreateBeatdownComponent } from './create-beatdown-modal/create-beatdown.component';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 // Models
 
@@ -27,7 +28,7 @@ import { PaxManagerService } from 'src/app/services/pax-manager.service';
   templateUrl: './q-scheduler.component.html',
   styleUrls: ['./q-scheduler.component.scss']
 })
-export class QSchedulerComponent {
+export class QSchedulerComponent implements OnInit {
 
   paxDataId: string | undefined = undefined;
 
@@ -50,6 +51,10 @@ export class QSchedulerComponent {
 
   loadingBeatdownData: boolean = true;
   activeFilters: QueryFieldFilterConstraint[] = [];
+
+  selectedSiteSubject: Subject<AOData | null> = new BehaviorSubject<AOData | null>(null);
+  selectedSite$: Observable<AOData | null> = this.selectedSiteSubject.asObservable();
+  allAOs: AOData[] = [];
 
   constructor(
     private beatdownService: BeatdownService,
@@ -75,14 +80,8 @@ export class QSchedulerComponent {
       })
   }
 
-  public async onTabChanged(event: any) {
-    if (event.tab.textLabel === 'My Site') {
-      if (this.activeSiteQAO) {
-        delete this.beatdownCache[this.weekStartDate.toDateString()];
-        const ref = this.aoManagerService.getAoLocationReference(this.activeSiteQAO.id);
-        await this.getMySiteBeatdowns(ref, this.activeFilters);
-      }
-    }
+  async ngOnInit(): Promise<void> {
+    this.allAOs = await this.getAllAOs();
   }
 
   public editBeatdown(beatdown: Beatdown, beatdownList: Beatdown[], day: string) {
@@ -108,6 +107,10 @@ export class QSchedulerComponent {
 
   trackByFn(index: number, item: Beatdown): any {
     return item.id;
+  }
+
+  public async getAllAOs(): Promise<AOData[]> {
+    return await this.aoManagerService.getAllBeatdownEligibleAOData();
   }
 
   public createBeatdown() {
@@ -204,12 +207,28 @@ export class QSchedulerComponent {
 
   async getLinkedActiveSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
     this.activeSiteQAO = await this.aoManagerService.getDataByRef(siteQLocationRef);
+    this.selectedSiteSubject.next(this.activeSiteQAO);
     await this.getMySiteBeatdowns(siteQLocationRef, this.activeFilters);
+  }
+
+  async backToMySite() {
+    if (this.activeSiteQAO) {
+      this.selectedSiteSubject.next(this.activeSiteQAO);
+      const aoRef = this.aoManagerService.getAoLocationReference(this.activeSiteQAO.id);
+      await this.getMySiteBeatdowns(aoRef, this.activeFilters);
+    }
   }
 
   async getMySiteBeatdowns(aoDataRef: DocumentReference<AOData>, filters: QueryFieldFilterConstraint[]) {
     this.mySiteBeatdowns = await this.beatdownService.getBeatdownsByAO(aoDataRef, filters);
     this.openBeatdownQCount = this.mySiteBeatdowns.filter((b) => !b.qUser).length;
+  }
+
+  async changedSiteView(event: any) {
+      const { value } = event;
+      this.selectedSiteSubject.next(value);
+      const aoRef = this.aoManagerService.getAoLocationReference(value.id);
+      await this.getMySiteBeatdowns(aoRef, this.activeFilters);
   }
 
     /*checkbox change event*/

@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { DocumentData, DocumentReference, Firestore, addDoc, collection, deleteField, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch } from "@angular/fire/firestore";
+import { DocumentData, DocumentReference, Firestore, addDoc, collection, deleteField, doc, getDoc, getDocs, orderBy, query, setDoc, updateDoc, where, writeBatch } from "@angular/fire/firestore";
 import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity, Sector } from "../models/ao.model";
 import { AODataConverter } from "../utils/ao-data.converter";
 import { PaxUser } from "../models/users.model";
@@ -17,6 +17,12 @@ export class AOManagerService {
 
     public async getAllAOData(): Promise<AOData[]> {
         const data = Promise.all((await getDocs<Promise<AOData>, DocumentData>(this.AOCollection)).docs.map((d) => d.data()));
+        return data;
+    }
+
+    public async getAllBeatdownEligibleAOData(): Promise<AOData[]> {
+        const q = query(this.AOCollection, where("popup", "==", false), orderBy("name", "asc"));
+        const data = Promise.all((await getDocs<Promise<AOData>, DocumentData>(q)).docs.map((d) => d.data()));
         return data;
     }
 

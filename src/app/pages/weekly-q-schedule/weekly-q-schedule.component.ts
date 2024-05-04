@@ -59,6 +59,17 @@ export class WeeklyQScheduleComponent {
     return item.id;
   }
 
+  scrollToToday() {
+    const date = new Date();
+    const dayName = this.dayToNameConverter(date.getDay());
+    const element = document.getElementById(dayName!);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth'
+      });
+    }
+  }
+
   async initializeBeatdowns(weekStartDate: Date, weekEndDate: Date) {
     const beatdowns = await this.beatdownService.getBeatdownsBetweenDates(weekStartDate, weekEndDate, []);
     const sorted = beatdowns.sort((a, b) => {

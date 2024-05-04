@@ -1,9 +1,17 @@
 <div class="container">
-    <h1>Weekly Q Schedule</h1>
-    <h4>{{weekRange}}</h4>
+    <div class="header">
+        <div class="title">
+            <h1>Weekly Q Schedule</h1>
+            <h4>{{weekRange}}</h4>
+        </div>
+        <div class="action">
+            <button mat-stroked-button (click)="scrollToToday()">Scroll to Today <mat-icon>arrow_downward</mat-icon></button>
+        </div>
+    </div>
+
     <ng-container *ngIf="!loadingBeatdownData; else loadingSpinner">
             <div class="day-container" *ngFor="let day of weekList">
-                <div class="date">
+                <div class="date" [id]="day.dayName">
                     {{day.dayName}} ({{day.date | date: 'MM/dd' }})
                 </div>
                 <div class="beatdowns">
@@ -15,8 +23,12 @@
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
                                     </div>
-                                    <h5 id="ao-name" *ngIf="beatdown.aoLocation"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
-                                    <p id="address" *ngIf="(beatdown.isCommunityEvent || beatdown.isPopup || beatdown.aoLocation?.rotating) && beatdown.eventAddress">{{beatdown.eventAddress}}</p>
+                                    <a *ngIf="beatdown.aoLocation && beatdown.aoLocation.address" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + beatdown.aoLocation.address">
+                                        <h5 id="ao-name"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
+                                    </a>                                        
+                                    <a *ngIf="(beatdown.isCommunityEvent || beatdown.isPopup || beatdown.aoLocation?.rotating) && beatdown.eventAddress" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + beatdown.eventAddress">
+                                        <p id="address">{{beatdown.eventAddress}}</p>
+                                    </a>
                                 </div>
                                 <mat-chip-listbox>
                                     <mat-chip *ngIf="beatdown.isFlagPass">
