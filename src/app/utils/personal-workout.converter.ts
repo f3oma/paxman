@@ -1,8 +1,6 @@
-import { DocumentData, Firestore, QueryDocumentSnapshot, Timestamp, collection, doc, getDoc } from "@angular/fire/firestore";
-import { IPersonalWorkoutData, IPersonalWorkoutDataEntity, PersonalWorkoutData } from "../models/workout.model";
+import { DocumentData, Firestore, QueryDocumentSnapshot, Timestamp, doc } from "@angular/fire/firestore";
 import { Injectable, inject } from "@angular/core";
-import { AODataConverter } from "./ao-data.converter";
-import { AOData } from "../models/ao.model";
+import { UserReportedWorkout, UserReportedWorkoutEntity } from "../models/beatdown-attendance";
 
 @Injectable({
     providedIn: 'root'
@@ -10,36 +8,24 @@ import { AOData } from "../models/ao.model";
 export class PersonalWorkoutConverter {
     
     firestore: Firestore = inject(Firestore);
-    private aoLocationCollection = collection(this.firestore, 'ao_data');
-    constructor(private readonly aoLocationConverter: AODataConverter) {}
+    constructor() {}
   
     public getConverter() {
       return {
-        toFirestore: (data: IPersonalWorkoutData): DocumentData => {
-            let aoLocationRef = null;
-            if (data.aoLocation) {
-                aoLocationRef = doc(this.aoLocationCollection, data.aoLocation.id);
-            }
-            return <IPersonalWorkoutDataEntity> {
+        toFirestore: (data: UserReportedWorkout): DocumentData => {
+            return <UserReportedWorkoutEntity> {
                 date: Timestamp.fromDate(data.date),
-                aoLocationRef,
                 preActivity: data.preActivity
-            }
+            };
         },
         fromFirestore: (snap: QueryDocumentSnapshot): any => {
-            const data: IPersonalWorkoutDataEntity = snap.data() as IPersonalWorkoutDataEntity;
-            let aoLocation: AOData | undefined = undefined;
-            if (data.aoLocationRef) {
-                getDoc(data.aoLocationRef.withConverter(this.aoLocationConverter.getConverter())).then((res) => {
-                    aoLocation = res.data() as AOData;
-                });
-            }
-
-            return new PersonalWorkoutData(
-                snap.id, 
-                data.date.toDate(), 
-                aoLocation!, 
-                data.preActivity);
+            const data: UserReportedWorkoutEntity = snap.data() as UserReportedWorkoutEntity;
+            const beatdownRef = doc(this.firestore, `beatdowns/${snap.id}`);
+            return <UserReportedWorkout> {
+                beatdown: beatdownRef,
+                date: data.date.toDate(),
+                preActivity: data.preActivity,
+            };
         }
       }
     }

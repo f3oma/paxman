@@ -1,12 +1,10 @@
 import { Injectable, inject } from "@angular/core";
-import { Firestore, collection, query, where, doc, getDocs, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc } from "@angular/fire/firestore";
-import { CommunityWorkoutData, ICommunityWorkoutData, ICommunityWorkoutDataEntity, IPersonalWorkoutData, IWorkoutDataBase, PreActivity } from "../models/workout.model";
+import { Firestore, collection, doc, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc, increment } from "@angular/fire/firestore";
 import { PersonalWorkoutConverter } from "../utils/personal-workout.converter";
 import { CommunityWorkoutConverter } from "../utils/community-workout.converter";
-import { AOData } from "../models/ao.model";
 import { PaxUser } from "../models/users.model";
-import { AODataConverter } from "../utils/ao-data.converter";
 import { PaxModelConverter } from "../utils/pax-model.converter";
+import { IBeatdownAttendance, PreActivity, UserReportedWorkout } from "../models/beatdown-attendance";
 
 @Injectable({
     providedIn: 'root'
@@ -23,101 +21,109 @@ export class WorkoutManagerService {
      * user statistic records - 'Personal Workout' for all the attending pax.
      */
     firestore: Firestore = inject(Firestore);
-    communityWorkoutCollection = collection(this.firestore, 'workouts').withConverter(this.communityWorkoutConverter.getConverter());
-    aoLocationCollection = collection(this.firestore, 'ao_data').withConverter(this.aoLocationConverter.getConverter());
+    communityWorkoutCollection = collection(this.firestore, 'beatdown_attendance').withConverter(this.communityWorkoutConverter.getConverter());
     paxCollection = collection(this.firestore, 'users').withConverter(this.paxUserConverter.getConverter());
     currentYear = new Date().getFullYear();
 
     constructor(
         private readonly personalWorkoutConverter: PersonalWorkoutConverter,
         private readonly communityWorkoutConverter: CommunityWorkoutConverter,
-        private readonly aoLocationConverter: AODataConverter,
         private readonly paxUserConverter: PaxModelConverter) {}
 
-    public async createPersonalReportedWorkout(workoutReport: IPersonalWorkoutData, user: PaxUser) {
+    public async createPersonalReportedWorkout(workoutReport: UserReportedWorkout, user: PaxUser) {
         // A self reported personal workout tries to create the community workout as well as an individual statistic records
         const currentUserRef: DocumentReference<PaxUser> = doc(this.paxCollection, user.id);
-        const communityWorkoutRef = await this.createOrFindCommunityWorkout({ date: workoutReport.date, aoLocation: workoutReport.aoLocation, attendance: [], hadFNGs: false });
-        await this.addUserToCommunityWorkoutAttendanceIfMissing(communityWorkoutRef, currentUserRef);
         await this.tryCreatePersonalWorkoutForUserRef(workoutReport, currentUserRef);
     }
 
-    public async createSiteQReportedWorkout(workoutReport: ICommunityWorkoutData, user: PaxUser) {
-        // Tries to create the community record, or update the data within. Creates individual workouts if they don't exist already
-        const communityWorkoutRef = await this.createOrFindCommunityWorkout(workoutReport);
-        await this.updateCommunityWorkoutData(workoutReport, communityWorkoutRef);
-        for (let paxRef of workoutReport.attendance) {
-            await this.tryCreatePersonalWorkoutForUserRef({ date: workoutReport.date, aoLocation: workoutReport.aoLocation, preActivity: PreActivity.None }, paxRef);
-        }
+    public async createSiteQReportedWorkout(workoutReport: IBeatdownAttendance) {
+        await this.createOrFindCommunityWorkout(workoutReport);
+        await this.updateCommunityWorkoutData(workoutReport);
     }
 
-    public async updateCommunityWorkoutData(workoutData: ICommunityWorkoutData, docRef: DocumentReference<CommunityWorkoutData>) {
-        // TODO: Update does not go through the converter...
-        return await updateDoc(docRef, { ...workoutData });
+    public async updateCommunityWorkoutData(workoutData: IBeatdownAttendance) {
+        const beatdownAttendanceRef = doc(this.communityWorkoutCollection, workoutData.beatdown.id);
+        return await updateDoc(beatdownAttendanceRef, { ...workoutData });
     }
 
-    // Checks whether a personal record currently exists or creates one
-    private async tryCreatePersonalWorkoutForUserRef(workoutReport: IPersonalWorkoutData, userRef: DocumentReference<PaxUser>) {
-        const startOfDate = workoutReport.date.setUTCHours(0,0,0,0);
-        const endOfDate = new Date().setDate(workoutReport.date.getDate() + 1);
-        const aoLocationRef = doc(this.aoLocationCollection, workoutReport.aoLocation.id);
+    private async tryCreatePersonalWorkoutForUserRef(workoutReport: UserReportedWorkout, userRef: DocumentReference<PaxUser>): Promise<void> {
 
-        const userPersonalWorkoutCollection = collection(this.firestore, `users/${userRef.id}/personal_workout_logs_${this.currentYear}`).withConverter(this.personalWorkoutConverter.getConverter());
+        // Three records to add / update
+        // First we need to see if the workout is already reported, create it if not.
+        // If not created, we need to update the yearly attendance count for the user.
+        // Finally, we need to update the community record with the user's attendance
+        const userPersonalWorkoutCollection = collection(this.firestore, `users/${userRef.id}/personal_attendance`).withConverter(this.personalWorkoutConverter.getConverter());
+        const yearlyAttendanceCountCollection = collection(this.firestore, `users/${userRef.id}/yearly_attendance_counts`);
 
-        const q = query(userPersonalWorkoutCollection, where("aoLocationRef", "==", aoLocationRef), where("date", '>', startOfDate), where("date", "<=", endOfDate));
-        const docs = await getDocs(q);
-
-        if (docs.empty) {
-            // Create a new personal workout
-            const newDocumentReference = doc(userPersonalWorkoutCollection);
-            const workoutData: IPersonalWorkoutData = {
+        const ref = doc(userPersonalWorkoutCollection, workoutReport.beatdown.id);
+        const userPersonalWorkout = await (getDoc(ref));
+        if (userPersonalWorkout.exists()) {
+            // We can just update the record, no need to update other records
+            await updateDoc(ref, {
                 date: workoutReport.date,
-                aoLocation: workoutReport.aoLocation,
                 preActivity: workoutReport.preActivity
-            };
-            return await setDoc(newDocumentReference, workoutData);
+            });
+            return;
+        } else {
+            // Otherwise, create the record with the data
+            await setDoc(ref, workoutReport);
         }
+
+        // Now we need to update the user's attendance count
+        const yearlyCountsRef = doc(yearlyAttendanceCountCollection, `${this.currentYear}`);
+        const yearlyCountsDoc = await (getDoc(yearlyCountsRef));
+        if (yearlyCountsDoc.exists()) {
+            const statsToUpdate = {
+                beatdownsAttended: increment(1),
+                preactivitiesCompleted: increment(0)
+            }
+            if (workoutReport.preActivity !== PreActivity.None) {
+                statsToUpdate.preactivitiesCompleted = increment(1);
+            }
+            await updateDoc(yearlyCountsRef, statsToUpdate);
+        } else {
+            const defaultStats = {
+                beatdownsAttended: 1,
+                preactivitiesCompleted: 0
+            }
+            if (workoutReport.preActivity !== PreActivity.None) {
+                defaultStats.preactivitiesCompleted = 1;
+            }
+
+            await setDoc(yearlyCountsRef, defaultStats);
+        }
+
+        // Finally, update the community record with user's attendance for today.
+        // If the community beatdown is not created, this will create it so we must pass default info.
+        const defaultAttendanceData: IBeatdownAttendance = {
+            beatdown: workoutReport.beatdown,
+            fngCount: 0,
+            totalPaxCount: 0,
+            usersAttended: [],
+        };
+        const beatdownAttendanceData = await this.createOrFindCommunityWorkout(defaultAttendanceData);
+        await this.addUserToCommunityWorkoutAttendanceIfMissing(beatdownAttendanceData, userRef);
     }
 
     // Tries to update an existing workout or create a new workout record
-    private async createOrFindCommunityWorkout(workout: ICommunityWorkoutData): Promise<DocumentReference<CommunityWorkoutData>> {
-        const startOfDate = workout.date.setUTCHours(0,0,0,0);
-        const endOfDate = new Date().setDate(workout.date.getDate() + 1);
-
-        const aoLocationRef = doc(this.aoLocationCollection, workout.aoLocation.id);
-        const q = query(this.communityWorkoutCollection, where("aoLocationRef", "==", aoLocationRef), where("date", '>', startOfDate), where("date", "<=", endOfDate));
-        const docs = await getDocs(q);
-
-        if (docs.empty) {
-            // Create a new community workout from the info we have...
-            const newDocumentReference = doc(this.communityWorkoutCollection);
-            const workoutData: ICommunityWorkoutData = {
-                date: workout.date,
-                aoLocation: workout.aoLocation,
-                dailyQUserRef: workout.dailyQUserRef,
-                coQUserRef: workout.coQUserRef,
-                attendance: workout.attendance,
-                hadFNGs: workout.hadFNGs
-            };
-            await setDoc(newDocumentReference, workoutData);
-            return newDocumentReference;
+    private async createOrFindCommunityWorkout(workout: IBeatdownAttendance): Promise<IBeatdownAttendance> {
+        const beatdownAttendanceRef = doc(this.communityWorkoutCollection, workout.beatdown.id);
+        const beatdownAttendanceEntity = (await getDoc(beatdownAttendanceRef));
+        if (beatdownAttendanceEntity.exists()) {
+            return beatdownAttendanceEntity.data();
         } else {
-            // Found one, should only be one...
-            const existingWorkoutReference = docs.docs[0].ref;
-            return existingWorkoutReference;
+            await setDoc(beatdownAttendanceRef, workout);
+            return workout;
         }
     }
 
-    private async addUserToCommunityWorkoutAttendanceIfMissing(documentReference: DocumentReference<CommunityWorkoutData>, userRef: DocumentReference<PaxUser>): Promise<void> {
-        const data = (await getDoc(documentReference)).data() as CommunityWorkoutData;
-        if (!data.attendance.includes(userRef)) {
-            return await updateDoc(documentReference, {
-                attendance: arrayUnion(userRef)
+    private async addUserToCommunityWorkoutAttendanceIfMissing(beatdownAttendance: IBeatdownAttendance, userRef: DocumentReference<PaxUser>): Promise<void> {
+        const beatdownAttendanceData = await this.createOrFindCommunityWorkout(beatdownAttendance);
+        if (!beatdownAttendanceData.usersAttended.includes(userRef)) {
+            const beatdownAttendanceRef = doc(this.communityWorkoutCollection, beatdownAttendance.beatdown.id);
+            return await updateDoc(beatdownAttendanceRef, {
+                usersAttended: arrayUnion(userRef)
             });
         }
-    }
-
-    deleteWorkout() {
-
     }
 }

@@ -1,0 +1,34 @@
+<div class="container">
+    <h1>Report Personal Beatdown</h1>
+    <p>Keep track of your personal beatdown attendance</p>
+    <div class="beatdown-form">
+        <form [formGroup]="form">
+            <mat-form-field appearance="outline">
+              <mat-label>Beatdown</mat-label>
+              <input formControlName="beatdown" autocorrect="off" [matAutocomplete]="autoBeatdown" matInput type="text" placeholder="Beatdown/AO Name" required>
+              <mat-autocomplete #autoBeatdown="matAutocomplete" [displayWith]="displayBeatdownOptions">
+                  <mat-option *ngFor="let option of filteredBeatdownOptions$ | async" [value]="option">
+                    {{option.date | date: 'fullDate'}} - {{option.name}}
+                  </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <!-- Beatdown selector, filtered down to the week? Filterable by text? -->
+            <!-- Preactivity selector -->
+            <mat-form-field appearance="outline">
+                <mat-label>Pre-Activity</mat-label>
+                <mat-select formControlName="preActivity" [value]="'None'">
+                    <mat-option value="None">None</mat-option>
+                    <mat-option value="Run">Pre-run</mat-option>
+                    <mat-option value="Smurph">Smurph</mat-option>
+                    <mat-option value="Murph">Murph</mat-option>
+                    <mat-option value="Ruck">Ruck</mat-option>
+                    <mat-option value="Other">Other</mat-option>
+                </mat-select>
+            </mat-form-field>
+          </form>
+    </div>
+    <div class="actions">
+        <button mat-raised-button style="background-color: orange;" (click)="submit()">Submit</button>
+        <button mat-flat-button (click)="userCancel()">Cancel</button>
+    </div>
+</div>

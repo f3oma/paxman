@@ -86,7 +86,8 @@ export class BeatdownConverter {
             coQUser,
             additionalQs,
             canceled: data.canceled,
-            startTime: data.startTime
+            startTime: data.startTime,
+            aoName: data.aoName,
         });
     }
 
@@ -139,6 +140,7 @@ export class BeatdownConverter {
             eventName: data.eventName,
             additionalQsRefs: additionalQsRefs,
             canceled: data.canceled,
+            aoName: data.aoName === undefined ? null : data.aoName
         }
     }
 }

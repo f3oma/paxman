@@ -1,8 +1,13 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap } from 'rxjs';
+import { PersonalWorkoutReportComponent, UserReportedWorkoutProps } from 'src/app/dialogs/personal-workout-report/personal-workout-report.component';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
+import { Beatdown } from 'src/app/models/beatdown.model';
+import { AoLocationRef, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
+import { BeatdownService } from 'src/app/services/beatdown.service';
 import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
@@ -31,12 +36,16 @@ export class HomeComponent {
   public anniversaryPax: AnniversaryResponsePax[] = []
   public anniversaryEndDate: Date = new Date();
   public anniversaryStartDate: Date = new Date();
+  public user: PaxUser | undefined = undefined;
+  beatdownsRequiringAttendanceData: Beatdown[] = [];
 
   constructor(
     private userAuthService: UserAuthenticationService,
     private paxManagerService: PaxManagerService,
     private aoManagerService: AOManagerService,
-    private mailService: PaxWelcomeEmailService
+    private mailService: PaxWelcomeEmailService,
+    private beatdownService: BeatdownService,
+    private matDialog: MatDialog
   ) {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;
@@ -49,6 +58,8 @@ export class HomeComponent {
             const paxDataId = data?.paxDataId;
             if (!paxDataId) {
               this.hasClaimedData = false;
+            } else {
+              this.getPaxUserData(paxDataId, data.siteQLocationRef);
             }
             if (data.roles.includes(UserRole.Admin) || data.roles.includes(UserRole.SiteQ)) {
               this.isAdminOrSiteQ = true;
@@ -57,6 +68,31 @@ export class HomeComponent {
         })
     );
     this.authUserData$.subscribe();
+  }
+
+  public async getPaxUserData(paxDataId: string, siteQLocationRef: AoLocationRef | undefined) {
+   this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
+  //  this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
+  }
+
+  reportCommunityBeatdownAttendance(beatdown: Beatdown) {
+
+  }    
+
+  reportAttendance() {
+    this.matDialog.open(PersonalWorkoutReportComponent, {
+      data: <UserReportedWorkoutProps> {
+        user: this.user
+      },
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    }).afterClosed().subscribe((res) => {
+      if (!res) {
+        return;
+      }
+    });
   }
 
   async getPaxFromToday() {

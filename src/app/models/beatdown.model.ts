@@ -28,6 +28,7 @@ export interface IBeatdown {
     qUser?: PaxUser;
     specialEvent: SpecialEventType;
     aoLocation: AOData | null; // null in case of popup, in which we'd use an event name & address
+    aoName?: string; // only used for search indexing
     coQUser: PaxUser | undefined;
     eventName: string | null;
     eventAddress: string | null; // Required by user, nullable by system
@@ -41,6 +42,7 @@ export interface IBeatdownEntity {
     qUserRef: UserRef;
     specialEvent: SpecialEventType;
     aoLocationRef: AoLocationRef; // null in case of popup
+    aoName?: string; // only used for search indexing
     coQUserRef: UserRef;
     eventName: string | null;
     eventAddress: string | null;
@@ -61,6 +63,7 @@ export class Beatdown {
     private _additionalQs?: Array<PaxUser | undefined>;
     private _canceled: boolean;
     private _startTime: string;
+    private _aoName?: string | undefined;
 
     constructor(beatdown: IBeatdown) {
         this._id = beatdown.id;
@@ -74,6 +77,7 @@ export class Beatdown {
         this._additionalQs = beatdown.additionalQs;
         this._canceled = beatdown.canceled;
         this._startTime = beatdown.startTime;
+        this._aoName = beatdown.aoName;
     }
 
     public get id(): string {
@@ -156,6 +160,10 @@ export class Beatdown {
         return this._startTime;
     }
 
+    public get aoName(): string | undefined {
+        return this._aoName;
+    }
+
     toProperties(): IBeatdown {
         return {
             id: this.id,
@@ -169,6 +177,7 @@ export class Beatdown {
             additionalQs: this.additionalQs,
             canceled: this.isCanceled,
             startTime: this.startTime,
+            aoName: this.aoName,
         };
     }
 }

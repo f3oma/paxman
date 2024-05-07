@@ -1,15 +1,17 @@
 import { Injectable } from "@angular/core";
-import { DocumentReference, Firestore, QueryFieldFilterConstraint, Timestamp, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, orderBy, query, setDoc, where, writeBatch } from "@angular/fire/firestore";
+import { DocumentReference, Firestore, QueryCompositeFilterConstraint, QueryFieldFilterConstraint, Timestamp, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, or, orderBy, query, setDoc, where, writeBatch } from "@angular/fire/firestore";
 import { BeatdownConverter } from "../utils/beatdown.converter";
 import { Beatdown, IBeatdown, IBeatdownEntity, SpecialEventType } from "../models/beatdown.model";
 import { AOData, IAOData } from "../models/ao.model";
 import { AOManagerService } from "./ao-manager.service";
+import { AoLocationRef, PaxUser } from "../models/users.model";
+import { PaxManagerService } from "./pax-manager.service";
 
 @Injectable({
     providedIn: 'root'
 })
 export class BeatdownService {
-    
+
     beatdownCollection = 
         collection(this.firestore, 'beatdowns')
         .withConverter(this.beatdownConverter.getConverter())
@@ -31,6 +33,7 @@ export class BeatdownService {
     constructor(
         private firestore: Firestore,
         private aoManagerService: AOManagerService,
+        private paxManagerService: PaxManagerService,
         private beatdownConverter: BeatdownConverter) {}
 
     async getBeatdownDetail(id: string): Promise<Beatdown | undefined> {
@@ -38,7 +41,7 @@ export class BeatdownService {
         return (await getDoc(ref)).data() as Beatdown;
     }
 
-    async getBeatdownsBetweenDates(startDate: Date, endDate: Date, filter: QueryFieldFilterConstraint[]): Promise<Beatdown[]> {
+    async getBeatdownsBetweenDates(startDate: Date, endDate: Date, filter: QueryFieldFilterConstraint[] | QueryCompositeFilterConstraint[]): Promise<Beatdown[]> {
         const beatdowns: Promise<Beatdown>[] = [];
         const q = query(this.beatdownCollection, and(where("date", ">=", startDate), where("date", "<", endDate), ...filter), orderBy("date", "asc"));
         (await getDocs(q)).docs.forEach(async (d) => {
@@ -53,9 +56,45 @@ export class BeatdownService {
         const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoRef), where("date", ">=", new Date()), ...filters), orderBy("date", "asc"));
         (await getDocs(q)).docs.forEach(async (d) => {
             beatdowns.push(d.data());
-        });
+        })
         return Promise.all(beatdowns);
     }
+
+    // This might need a better name.
+    // Look-up beatdowns for today by SQ and Q, ask for attendance reporting
+    async getBeatdownAttendanceReportForUser(user: PaxUser | undefined, siteQLocationRef: AoLocationRef | undefined) {
+        const beatdownsRequiringAttendanceData: Beatdown[] = [];
+        if (!user)
+            return [];
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
+        tomorrow.setHours(0,0,0,0);
+
+        // We need to find out if the user is a SQ or Q for a beatdown occurring today
+        // Start with SQ
+        if (siteQLocationRef) {
+            const beatdownsToday = await this.getBeatdownsBetweenDates(today, tomorrow, [where("aoLocationRef", "==", siteQLocationRef)]);
+            if (beatdownsToday && beatdownsToday.length) {
+                // Attendance reporting required
+                beatdownsRequiringAttendanceData.push(...beatdownsToday);
+            }
+        }
+
+        // A possible scenario where the SQ is a Q at a different site that day.
+        // Any Q
+        const userRef = this.paxManagerService.getUserReference('users/' + user.id);
+        const beatdownsTodayByQ = await this.getBeatdownsBetweenDates(today, tomorrow, [or(where("qUserRef", "==", userRef), where("coQUserRef", "==", userRef))]);
+        if (beatdownsTodayByQ && beatdownsTodayByQ.length) {
+            // Assuming just 1 Q, filter down to single beatdown
+            // This would happen if user is a SQ but also on the Q this day
+            if (beatdownsRequiringAttendanceData.filter(b => b.id === beatdownsTodayByQ[0].id).length === 0)
+                beatdownsRequiringAttendanceData.push(...beatdownsTodayByQ);
+        }
+        return beatdownsRequiringAttendanceData;
+      }
 
     async createBeatdown(beatdown: Partial<IBeatdown>) {
         return await addDoc(this.beatdownCollection, beatdown)
@@ -73,6 +112,13 @@ export class BeatdownService {
     async deleteBeatdownById(id: string) {
         const ref = doc(this.beatdownCollection, id);
         return await deleteDoc(ref);
+    }
+
+    getBeatdownReference(dbPath: string) {
+        if (dbPath.includes('beatdowns')) {
+            dbPath = dbPath.replace('beatdowns/', '');
+        }
+        return doc(this.beatdownCollection, dbPath);
     }
 
     public async generateBeatdownsBetweenDates(aoData: IAOData | null, startWeek: Date, endWeek: Date) {
