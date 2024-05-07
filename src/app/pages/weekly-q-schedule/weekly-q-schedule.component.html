@@ -23,9 +23,9 @@
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
                                     </div>
-                                    <a *ngIf="beatdown.aoLocation && beatdown.aoLocation.address" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + beatdown.aoLocation.address">
+                                    <a *ngIf="beatdown.aoLocation" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + (beatdown.eventAddress ? beatdown.eventAddress : beatdown.aoLocation.address)">
                                         <h5 id="ao-name"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
-                                    </a>                                        
+                                    </a>
                                     <a *ngIf="(beatdown.isCommunityEvent || beatdown.isPopup || beatdown.aoLocation?.rotating) && beatdown.eventAddress" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + beatdown.eventAddress">
                                         <p id="address">{{beatdown.eventAddress}}</p>
                                     </a>
