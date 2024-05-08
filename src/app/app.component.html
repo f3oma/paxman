@@ -20,7 +20,7 @@
       <li class="nav-item" *ngIf="authenticatedUser">
         <a class="nav-link" routerLink="/exicon">Exicon</a>
       </li>
-      <li class="nav-item" *ngIf="authenticatedUser && isAdmin">
+      <li class="nav-item" *ngIf="authenticatedUser">
         <a class="nav-link" routerLink="/weekly-schedule">Schedule</a>
       </li>
       <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
