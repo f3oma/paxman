@@ -218,7 +218,6 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
 
       // Reset hours for beatdown
       this.beatdown.date.setHours(0, 0, 0, 0);
-      console.log(this.beatdown.date);
 
       this.beatdownEventSaved.emit(this.beatdown);
     }
