@@ -19,6 +19,17 @@ export enum DayOfWeekAbbv {
     Saturday = 'Sat'
 }
 
+export enum AOCategory {
+    Running = 'Running',
+    Coupon = 'Coupon',
+    Murph = 'Murph',
+    Beatdown = 'Beatdown',
+    Biking = 'Biking',
+    Weights = 'Weights',
+    Rucking = 'Rucking',
+    Frisbee = 'Frisbee'
+}
+
 export interface IAOData {
     id: string;
     name: string;
@@ -36,6 +47,7 @@ export interface IAOData {
     lastFlagPass?: Date | null;
     launchDate?: Date | null;
     qSourceAvailable: boolean;
+    category: AOCategory;
 }
 
 export interface IAODataEntity {
@@ -54,6 +66,7 @@ export interface IAODataEntity {
     lastFlagPass: Timestamp;
     launchDate: Timestamp;
     qSourceAvailable: boolean;
+    category: AOCategory;
 }
 
 export class AOData {
@@ -73,6 +86,7 @@ export class AOData {
     private _lastFlagPass?: Date | null;
     private _launchDate?: Date | null;
     private _qSourceAvailable: boolean;
+    private _category: AOCategory;
 
     constructor(data: IAOData) {
         this._id = data.id;
@@ -91,6 +105,7 @@ export class AOData {
         this._lastFlagPass = data.lastFlagPass;
         this._launchDate = data.launchDate;
         this._qSourceAvailable = data.qSourceAvailable;
+        this._category = data.category;
     }
 
     public get id(): string {
@@ -157,6 +172,10 @@ export class AOData {
         return this._qSourceAvailable;
     }
 
+    public get category(): AOCategory {
+        return this._category;
+    }
+
     toProperties(): IAOData {
         return {
             id: this.id,
@@ -175,6 +194,7 @@ export class AOData {
             lastFlagPass: this.lastFlagPass,
             launchDate: this.launchDate,
             qSourceAvailable: this.qSourceAvailable,
+            category: this.category
         }
     }
 

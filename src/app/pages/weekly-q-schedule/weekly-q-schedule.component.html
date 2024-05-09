@@ -26,12 +26,7 @@
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
                                     </div>
-                                    <a *ngIf="beatdown.aoLocation" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + (beatdown.eventAddress ? beatdown.eventAddress : beatdown.aoLocation.address)">
-                                        <h5 id="ao-name"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
-                                    </a>
-                                    <a *ngIf="(beatdown.isCommunityEvent || beatdown.isPopup || beatdown.aoLocation?.rotating) && beatdown.eventAddress" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + beatdown.eventAddress">
-                                        <p id="address">{{beatdown.eventAddress}}</p>
-                                    </a>
+                                    <h5 *ngIf="beatdown.aoLocation" id="ao-name"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
                                 </div>
                                 <mat-chip-listbox>
                                     <mat-chip *ngIf="beatdown.isFlagPass">
@@ -63,6 +58,9 @@
                                     </mat-chip>
                                 </mat-chip-listbox>
                             </div>
+                            <a *ngIf="beatdown.eventAddress" target="_blank" [href]="'https://www.google.com/maps/dir/?api=1&destination=' + beatdown.eventAddress">
+                                <p id="address">{{beatdown.eventAddress}}</p>
+                            </a>
                             <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled this week</p>
                             <div class="metadata">
                                 <div class="no-q-warning" *ngIf="!beatdown.qUser && !beatdown.isCanceled">
@@ -78,9 +76,10 @@
                                         <span>{{beatdown.coQUser.f3Name}}</span>
                                     </div>
                                 </div>
+                                <p *ngIf="beatdown.aoLocation && beatdown.aoLocation.qSourceAvailable"><span class="q-source">Q Source Available</span></p>
                                 <div class="site-data same-line">
                                     <p><i>{{beatdown.startTime}}</i></p>
-                                    <p *ngIf="beatdown.aoLocation && beatdown.aoLocation.qSourceAvailable"> - <span class="q-source">Q Source Available</span></p>
+                                    <p *ngIf="beatdown.aoLocation">- {{beatdown.aoLocation.category}}</p>
                                 </div>
                             </div>
                         </div>

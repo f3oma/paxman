@@ -124,6 +124,19 @@
                     <mat-option value="Sat">Saturday</mat-option>
                 </mat-select>
             </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Category</mat-label>
+              <mat-select formControlName="category" [(ngModel)]="site.category">
+                <mat-option value="Beatdown">Beatdown</mat-option>
+                <mat-option value="Biking">Biking</mat-option>
+                <mat-option value="Coupon">Coupon</mat-option>
+                <mat-option value="Frisbee">Frisbee</mat-option>
+                <mat-option value="Murph">Murph</mat-option>
+                <mat-option value="Rucking">Rucking</mat-option>
+                <mat-option value="Running">Running</mat-option>
+                <mat-option value="Weights">Weights</mat-option>
+              </mat-select>
+          </mat-form-field>
         </mat-expansion-panel>
 
         <mat-expansion-panel>

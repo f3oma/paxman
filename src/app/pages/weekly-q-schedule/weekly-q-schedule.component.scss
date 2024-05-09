@@ -56,20 +56,19 @@
                                 }
                             }
 
-                            a {
-                                color: #000;
-
-                                #ao-name {
-                                    font-size: 16px;
-                                    font-weight: bold;
-                                    margin: 0;
-                                    margin-bottom: 2px;
-                                }
-                            }
-
-                            #address {
+                            #ao-name {
+                                font-size: 18px;
+                                font-weight: bold;
                                 margin: 0;
+                                margin-bottom: 2px;
                             }
+                        }
+                    }
+
+                    a {
+                        color: #000;
+                        #address {
+                            margin: 0;
                         }
                     }
                 }
@@ -114,9 +113,13 @@
 
     .site-data {
         p {
-            font-size: 12px;
+            font-size: 14px;
             margin: 0;
         }
+    }
+    p {
+        font-size: 14px;
+        margin: 0;
         .q-source {
             font-weight: bold;
             color: rgb(165, 0, 0);

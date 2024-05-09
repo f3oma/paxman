@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { DocumentData, DocumentReference, Firestore, addDoc, collection, deleteField, doc, getDoc, getDocs, orderBy, query, setDoc, updateDoc, where, writeBatch } from "@angular/fire/firestore";
-import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity, Sector } from "../models/ao.model";
+import { AOCategory, AOData, DayOfWeekAbbv, IAOData, IAODataEntity, Sector } from "../models/ao.model";
 import { AODataConverter } from "../utils/ao-data.converter";
 import { PaxUser } from "../models/users.model";
 import { arrayUnion } from "firebase/firestore";
@@ -61,6 +61,7 @@ export class AOManagerService {
             lastFlagPass: new Date(),
             launchDate: new Date(),
             qSourceAvailable: false,
+            category: AOCategory.Beatdown
         }
         return new AOData(aoData);
     }

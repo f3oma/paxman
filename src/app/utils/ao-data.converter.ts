@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { CollectionReference, DocumentData, DocumentReference, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, arrayUnion, collection, doc, getDoc } from "@angular/fire/firestore";
-import { AOData, DayOfWeekAbbv, IAOData, IAODataEntity } from "../models/ao.model";
+import { AOCategory, AOData, DayOfWeekAbbv, IAOData, IAODataEntity } from "../models/ao.model";
 import { PaxModelConverter } from "./pax-model.converter";
 import { PaxUser } from "../models/users.model";
 
@@ -54,6 +54,10 @@ export class AODataConverter {
     if (!data.qSourceAvailable) {
       data.qSourceAvailable = false;
     }
+
+    if (!data.category) {
+      data.category = AOCategory.Beatdown;
+    }
     
     return <IAODataEntity> {
       name: data.name,
@@ -71,6 +75,7 @@ export class AODataConverter {
       lastFlagPass: data.lastFlagPass ?? Timestamp.fromDate(new Date()),
       launchDate: data.launchDate ?? Timestamp.fromDate(new Date()),
       qSourceAvailable: data.qSourceAvailable,
+      category: data.category
     }
   }
 
@@ -104,6 +109,10 @@ export class AODataConverter {
       data.qSourceAvailable = false;
     }
 
+    if (!data.category) {
+      data.category = AOCategory.Beatdown;
+    }
+
     const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
     const lastFlagPass = data.lastFlagPass ? data.lastFlagPass.toDate() : new Date();
     const launchDate = data.launchDate ? data.launchDate.toDate() : new Date();
@@ -123,7 +132,8 @@ export class AODataConverter {
       sector: data.sector,
       lastFlagPass,
       launchDate,
-      qSourceAvailable: data.qSourceAvailable
+      qSourceAvailable: data.qSourceAvailable,
+      category: data.category
     }
     return new AOData(aoData);
   }

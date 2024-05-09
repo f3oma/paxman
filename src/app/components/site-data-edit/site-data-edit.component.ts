@@ -57,6 +57,7 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
     lastFlagPass: new FormControl(''),
     launchDate: new FormControl(''),
     qSource: new FormControl(''),
+    category: new FormControl('')
   });
 
   temporaryActiveSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
