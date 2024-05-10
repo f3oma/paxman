@@ -63,6 +63,7 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.component';
 import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
 import { PersonalWorkoutReportComponent } from './dialogs/personal-workout-report/personal-workout-report.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -132,6 +133,7 @@ import { PersonalWorkoutReportComponent } from './dialogs/personal-workout-repor
     MatProgressSpinnerModule,
     MatChipsModule,
     MatTabsModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

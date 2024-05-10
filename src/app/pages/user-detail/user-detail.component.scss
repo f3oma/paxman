@@ -81,6 +81,47 @@
   }
 }
 
+.workout-logs {
+
+  padding: 24px 0 0 0 !important;
+
+  .disclaimer {
+    margin: 0;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .workout-data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+
+    .pre-activities, .beatdowns-attended {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      h5 {
+        font-size: 12px;
+        margin: 0;
+      }
+      p {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+      }
+    }
+  }
+}
+
 .container {
   padding: 16px 32px;
 

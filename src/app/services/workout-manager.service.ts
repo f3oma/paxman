@@ -1,16 +1,15 @@
 import { Injectable, inject } from "@angular/core";
-import { Firestore, collection, doc, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc, increment } from "@angular/fire/firestore";
+import { Firestore, collection, doc, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc, increment, getDocs } from "@angular/fire/firestore";
 import { PersonalWorkoutConverter } from "../utils/personal-workout.converter";
 import { CommunityWorkoutConverter } from "../utils/community-workout.converter";
-import { PaxUser } from "../models/users.model";
+import { IPaxUser, PaxUser } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
-import { IBeatdownAttendance, PreActivity, UserReportedWorkout } from "../models/beatdown-attendance";
+import { IBeatdownAttendance, MyTotalAttendance, PreActivity, UserReportedWorkout } from "../models/beatdown-attendance";
 
 @Injectable({
     providedIn: 'root'
 })
 export class WorkoutManagerService {
-
     /**
      * Two processes and two tables for workout data - Community Workout & Personal Workouts
      * 
@@ -45,6 +44,29 @@ export class WorkoutManagerService {
         const beatdownAttendanceRef = doc(this.communityWorkoutCollection, workoutData.beatdown.id);
         return await updateDoc(beatdownAttendanceRef, { ...workoutData });
     }
+
+    public async getAllBeatdownAttendanceForUser(user: IPaxUser): Promise<UserReportedWorkout[]> {
+        const userPersonalWorkoutCollection = collection(this.firestore, `users/${user.id}/personal_attendance`).withConverter(this.personalWorkoutConverter.getConverter());
+        const docRes = await getDocs(userPersonalWorkoutCollection);
+        if (docRes.empty) {
+            return [];
+        }
+        return docRes.docs.map(d => d.data());
+    }
+
+    public async getTotalAttendanceDataForPax(paxDataId: string): Promise<MyTotalAttendance> {
+        const yearlyAttendanceCountCollection = collection(this.firestore, `users/${paxDataId}/yearly_attendance_counts`);
+        const attendenceDoc = doc(yearlyAttendanceCountCollection, String(this.currentYear));
+        const yearlyAttendance = await getDoc(attendenceDoc);
+        if (yearlyAttendance.exists()) {
+            return yearlyAttendance.data() as MyTotalAttendance;
+        } else {
+            return <MyTotalAttendance> {
+                preactivitiesCompleted: 0,
+                beatdownsAttended: 0,
+            }
+        }
+      }
 
     private async tryCreatePersonalWorkoutForUserRef(workoutReport: UserReportedWorkout, userRef: DocumentReference<PaxUser>): Promise<void> {
 

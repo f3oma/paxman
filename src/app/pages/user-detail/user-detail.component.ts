@@ -5,12 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { AOData } from 'src/app/models/ao.model';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
+import { MyTotalAttendance, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
 import { UserProfileData } from 'src/app/models/user-profile-data.model';
 import { IPaxUser, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
+import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
 
 @Component({
@@ -40,12 +42,14 @@ export class UserDetailComponent {
   public userEhLocation: AOData | undefined = undefined;
   public userProfileData: UserProfileData | null = null;
   public isPersonalProfile: boolean = false;
+  beatdownAttendance: MyTotalAttendance | null = null;
 
   constructor(
     private readonly paxManagerService: PaxManagerService,
     private activatedRoute: ActivatedRoute,
     private userAuthService: UserAuthenticationService,
     private readonly aoManagerService: AOManagerService,
+    private readonly workoutService: WorkoutManagerService,
     private router: Router,
     private userProfileService: UserProfileService,
     private location: Location
@@ -112,6 +116,9 @@ export class UserDetailComponent {
 
   private async getUserData(id: string) {
     const paxData = await (await this.paxManagerService.getDataByAuthId(id)).data();
+    if (paxData) {
+      this.beatdownAttendance = await this.workoutService.getTotalAttendanceDataForPax(id);
+    }
     this.ehUser = paxData?.ehByUserRef ? await this.paxManagerService.getPaxInfoByRef(paxData.ehByUserRef) : undefined;
     this.userSiteQLocation = paxData?.siteQLocationRef ? await this.aoManagerService.getDataByRef(paxData.siteQLocationRef) : undefined;
     this.userEhLocation = paxData?.ehLocationRef ? await this.aoManagerService.getDataByRef(paxData.ehLocationRef) : undefined;

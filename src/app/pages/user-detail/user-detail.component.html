@@ -32,7 +32,20 @@
           </div>
         </div>
       </div>
-      <!-- <activity-graph></activity-graph> -->
+      <!-- <activity-graph [user]="user"></activity-graph> -->
+      <div class="workout-logs bordered-container">
+        <div class="workout-data">
+          <div class="beatdowns-attended">
+            <h5>Beatdowns</h5>
+            <p><b>{{beatdownAttendance?.beatdownsAttended}}</b></p>
+          </div>
+          <div class="pre-activities">
+            <h5>Pre-Activities</h5>
+            <p><b>{{beatdownAttendance?.preactivitiesCompleted}}</b></p>
+          </div>
+        </div>
+        <p class="disclaimer" matTooltip="May 2024 onward">2024 Logged Attendance</p>
+      </div>
       <div class="bordered-container">
         <div class="info-section">
           <h5>Name</h5>
