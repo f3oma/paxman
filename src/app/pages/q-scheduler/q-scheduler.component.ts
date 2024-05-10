@@ -71,11 +71,11 @@ export class QSchedulerComponent implements OnInit {
       // Look for the linked active site-q connection
       this.userAuthService.authUserData$.subscribe((res) => {
         if (res) {
-          if (res.roles.includes(UserRole.SiteQ) && res.siteQLocationRef) {
-            this.getLinkedActiveSiteQAO(res.siteQLocationRef);
-          }
           if (res.roles.includes(UserRole.Admin)) {
             this.userIsAdmin = true;
+          }
+          if (res.roles.includes(UserRole.SiteQ) && res.siteQLocationRef) {
+            this.getLinkedActiveSiteQAO(res.siteQLocationRef);
           }
           if (res.paxDataId) {
             this.paxDataId = res.paxDataId;
@@ -86,6 +86,15 @@ export class QSchedulerComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.allAOs = await this.getAllAOs();
+    let ref = null;
+    if (this.activeSiteQAO) {
+      this.selectedSiteSubject.next(this.activeSiteQAO);
+      ref = this.aoManagerService.getAoLocationReference(this.activeSiteQAO.id);
+    } else {
+      this.selectedSiteSubject.next(this.allAOs[0]);
+      ref = this.aoManagerService.getAoLocationReference(this.allAOs[0].id);
+    }
+    await this.getMySiteBeatdowns(ref, this.activeFilters);
   }
 
   public editBeatdown(beatdown: Beatdown, beatdownList: Beatdown[], day: string) {
