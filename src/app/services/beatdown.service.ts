@@ -99,7 +99,7 @@ export class BeatdownService {
         // Finally, filter out beatdowns that have attendance reported already.
         const result = [];
         for (let beatdown of beatdownsRequiringAttendanceData) {
-            if (!(await this.workoutService.doesCommunityWorkoutExist(beatdown.id))) {
+            if (!(await this.workoutService.isAttendanceReported(beatdown.id))) {
                 result.push(beatdown);
             }
         }

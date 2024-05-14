@@ -5,7 +5,7 @@
       <p>Welcome to F3 Omaha's Internal Pax Network</p>
     </div>
     <div class="content" *ngIf="isLoggedIn; else loggedOut">
-      <div class="attendance-report-required" *ngIf="isAdminOrSiteQ && beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0">
+      <div class="attendance-report-required" *ngIf="beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0">
         <h4>Report Beatdown Attendance</h4>
         <button *ngFor="let beatdown of beatdownsRequiringAttendanceData" mat-button class="report-attendance-btn" (click)="reportCommunityBeatdownAttendance(beatdown)">
           <b>{{beatdown.eventName ? beatdown.eventName : beatdown.aoLocation?.name }}</b> - {{beatdown.date | date: 'fullDate'}}<mat-icon>notification_important</mat-icon>
