@@ -2,6 +2,7 @@ import { transition, trigger, useAnimation } from '@angular/animations';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap } from 'rxjs';
+import { CommunityWorkoutReportComponent, CommunityWorkoutReportProps } from 'src/app/dialogs/community-workout-report/community-workout-report.component';
 import { PersonalWorkoutReportComponent, UserReportedWorkoutProps } from 'src/app/dialogs/personal-workout-report/personal-workout-report.component';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
 import { Beatdown } from 'src/app/models/beatdown.model';
@@ -72,11 +73,26 @@ export class HomeComponent {
 
   public async getPaxUserData(paxDataId: string, siteQLocationRef: AoLocationRef | undefined) {
    this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
-  //  this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
+   this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
   }
 
   reportCommunityBeatdownAttendance(beatdown: Beatdown) {
-
+    this.matDialog.open(CommunityWorkoutReportComponent, {
+      data: <CommunityWorkoutReportProps> {
+        user: this.user,
+        beatdown,
+      },
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    }).afterClosed().subscribe((res) => {
+      if (!res) {
+        return;
+      } else {
+        this.beatdownsRequiringAttendanceData = this.beatdownsRequiringAttendanceData.filter(b => b.id !== beatdown.id);
+      }
+    });
   }    
 
   reportAttendance() {

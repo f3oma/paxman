@@ -64,6 +64,7 @@ import { ExiconEditDialog } from './dialogs/exicon-edit/exicon-edit-dialog.compo
 import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
 import { PersonalWorkoutReportComponent } from './dialogs/personal-workout-report/personal-workout-report.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommunityWorkoutReportComponent } from './dialogs/community-workout-report/community-workout-report.component';
 
 @NgModule({
   declarations: [
@@ -103,7 +104,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ExiconApprovalComponent,
     ExiconEditDialog,
     WeeklyQScheduleComponent,
-    PersonalWorkoutReportComponent
+    PersonalWorkoutReportComponent,
+    CommunityWorkoutReportComponent
   ],
   imports: [
     BrowserModule,

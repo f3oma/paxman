@@ -10,6 +10,7 @@ export interface IBeatdownAttendance {
     fngCount: number;
     totalPaxCount: number;
     usersAttended: UserRef[];
+    qReported: boolean;
 }
 
 // Personal attendance records

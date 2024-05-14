@@ -6,6 +6,7 @@ import { AOData, IAOData } from "../models/ao.model";
 import { AOManagerService } from "./ao-manager.service";
 import { AoLocationRef, PaxUser } from "../models/users.model";
 import { PaxManagerService } from "./pax-manager.service";
+import { WorkoutManagerService } from "./workout-manager.service";
 
 @Injectable({
     providedIn: 'root'
@@ -34,7 +35,8 @@ export class BeatdownService {
         private firestore: Firestore,
         private aoManagerService: AOManagerService,
         private paxManagerService: PaxManagerService,
-        private beatdownConverter: BeatdownConverter) {}
+        private beatdownConverter: BeatdownConverter,
+        private workoutService: WorkoutManagerService) {}
 
     async getBeatdownDetail(id: string): Promise<Beatdown | undefined> {
         const ref = doc(this.firestore, `beatdowns/${id}`);
@@ -93,7 +95,16 @@ export class BeatdownService {
             if (beatdownsRequiringAttendanceData.filter(b => b.id === beatdownsTodayByQ[0].id).length === 0)
                 beatdownsRequiringAttendanceData.push(...beatdownsTodayByQ);
         }
-        return beatdownsRequiringAttendanceData;
+
+        // Finally, filter out beatdowns that have attendance reported already.
+        const result = [];
+        for (let beatdown of beatdownsRequiringAttendanceData) {
+            if (!(await this.workoutService.doesCommunityWorkoutExist(beatdown.id))) {
+                result.push(beatdown);
+            }
+        }
+
+        return result;
       }
 
     async createBeatdown(beatdown: Partial<IBeatdown>) {

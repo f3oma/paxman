@@ -1,0 +1,17 @@
+<div class="container">
+    <h1>Report Community Beatdown Attendance</h1>
+    <p>Report total attendance for your beatdown</p>
+    <div class="attendance-form">
+        <form [formGroup]="form">
+            <mat-form-field appearance="outline">
+                <mat-label>Total number of PAX</mat-label>
+                <input formControlName="totalPaxCount" autocorrect="off" autocomplete="off" matInput type="number" placeholder="Total number of PAX">
+                <mat-hint>Include yourself and all other Q's</mat-hint>
+            </mat-form-field>
+          </form>
+    </div>
+    <div class="actions">
+        <button mat-raised-button style="background-color: orange;" (click)="submit()">Submit</button>
+        <button mat-flat-button (click)="userCancel()">Cancel</button>
+    </div>
+</div>

@@ -29,20 +29,57 @@ export class WorkoutManagerService {
         private readonly communityWorkoutConverter: CommunityWorkoutConverter,
         private readonly paxUserConverter: PaxModelConverter) {}
 
+    // A self reported personal workout tries to create the community workout as well as individual statistic records
     public async createPersonalReportedWorkout(workoutReport: UserReportedWorkout, user: PaxUser) {
-        // A self reported personal workout tries to create the community workout as well as an individual statistic records
         const currentUserRef: DocumentReference<PaxUser> = doc(this.paxCollection, user.id);
         await this.tryCreatePersonalWorkoutForUserRef(workoutReport, currentUserRef);
     }
 
-    public async createSiteQReportedWorkout(workoutReport: IBeatdownAttendance) {
+    // If the community workout does not exist, create it. Otherwise, update it without touching other fields.
+    public async createCommunityReportWithValidation(workout: Partial<IBeatdownAttendance>) {
+        if (!workout.beatdown) {
+            console.error("Beatdown must be provided");
+            return;
+        }
+
+        if (await this.doesCommunityWorkoutExist(workout.beatdown.id)) {
+            await this.updateCommunityWorkoutData(workout);
+        } else {
+            // We are going to create it with the given data
+            await this.createOrFindCommunityWorkout({
+                beatdown: workout.beatdown,
+                fngCount: 0,
+                usersAttended: workout.usersAttended ?? [],
+                totalPaxCount: workout.totalPaxCount ?? 0,
+                qReported: true,
+            })
+        }
+    }
+
+    private async createSiteQReportedWorkout(workoutReport: IBeatdownAttendance) {
         await this.createOrFindCommunityWorkout(workoutReport);
         await this.updateCommunityWorkoutData(workoutReport);
     }
 
-    public async updateCommunityWorkoutData(workoutData: IBeatdownAttendance) {
-        const beatdownAttendanceRef = doc(this.communityWorkoutCollection, workoutData.beatdown.id);
-        return await updateDoc(beatdownAttendanceRef, { ...workoutData });
+    public async updateCommunityWorkoutData(workoutData: Partial<IBeatdownAttendance>) {
+        if (workoutData.beatdown?.id) {
+            const beatdownAttendanceRef = doc(this.communityWorkoutCollection, workoutData.beatdown.id);
+            const workoutEntity: Record<string, any> = {};
+
+            if (workoutData.fngCount) {
+                workoutEntity['fngCount'] = workoutData.fngCount;
+            }
+            if (workoutData.totalPaxCount) {
+                workoutEntity['totalPaxCount'] = workoutData.totalPaxCount;
+            }
+            if (workoutData.usersAttended) {
+                workoutEntity['usersAttended'] = arrayUnion(...workoutData.usersAttended);
+            }
+            if (!!workoutData.qReported) {
+                workoutEntity['qReported'] = workoutData.qReported;
+            }
+            return await updateDoc(beatdownAttendanceRef, { ...workoutEntity });
+        }
     }
 
     public async getAllBeatdownAttendanceForUser(user: IPaxUser): Promise<UserReportedWorkout[]> {
@@ -122,6 +159,7 @@ export class WorkoutManagerService {
             fngCount: 0,
             totalPaxCount: 0,
             usersAttended: [],
+            qReported: false,
         };
         const beatdownAttendanceData = await this.createOrFindCommunityWorkout(defaultAttendanceData);
         await this.addUserToCommunityWorkoutAttendanceIfMissing(beatdownAttendanceData, userRef);
@@ -136,6 +174,16 @@ export class WorkoutManagerService {
         } else {
             await setDoc(beatdownAttendanceRef, workout);
             return workout;
+        }
+    }
+
+    public async doesCommunityWorkoutExist(beatdownId: string): Promise<boolean> {
+        const beatdownAttendanceRef = doc(this.communityWorkoutCollection, beatdownId);
+        const beatdownAttendanceEntity = (await getDoc(beatdownAttendanceRef));
+        if (beatdownAttendanceEntity.exists()) {
+            return true;
+        } else {
+            return false;
         }
     }
 
