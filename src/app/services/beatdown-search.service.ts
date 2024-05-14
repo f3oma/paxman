@@ -26,7 +26,7 @@ export class BeatdownSearchService {
         const yesterdayTimestamp = Math.ceil(Timestamp.fromDate(yesterday).toMillis());
         return this.idx.search(partialBeatdownName, {
             exactOnSingleWordQuery: "attribute",
-            restrictSearchableAttributes: ['name', 'aoName'],
+            restrictSearchableAttributes: ['name', 'aoName', 'eventName'],
             typoTolerance: "min",
             removeWordsIfNoResults: "allOptional",
             filters: `(date > ${yesterdayTimestamp} AND date < ${todayTimestamp})`
