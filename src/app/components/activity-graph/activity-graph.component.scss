@@ -1,5 +1,5 @@
 :host {
-    --square-size: 15px;
+    --square-size: 20px;
     --square-gap: 5px;
     --week-width: calc(var(--square-size) + var(--square-gap));
   }
@@ -24,16 +24,7 @@
     grid-template-columns: calc(var(--week-width) * 4) /* Jan */
                            calc(var(--week-width) * 4) /* Feb */
                            calc(var(--week-width) * 4) /* Mar */
-                           calc(var(--week-width) * 5) /* Apr */
-                           calc(var(--week-width) * 4) /* May */
-                           calc(var(--week-width) * 4) /* Jun */
-                           calc(var(--week-width) * 5) /* Jul */
-                           calc(var(--week-width) * 4) /* Aug */
-                           calc(var(--week-width) * 4) /* Sep */
-                           calc(var(--week-width) * 5) /* Oct */
-                           calc(var(--week-width) * 4) /* Nov */
-                           calc(var(--week-width) * 5) /* Dec */
-                           calc(var(--week-width) * 4) /* Jan */;
+                           calc(var(--week-width) * 4) /* Apr */
   }
   
   .days,
@@ -54,15 +45,71 @@
     font-size: 12px;
   }
   
-  .graph-container {
-    padding: 20px;
-    border: 1px #e1e4e8 solid;
-    margin: 20px;
-
+.container {
+  padding: 20px;
+  border: 1px #e1e4e8 solid;
+  margin-top: 20px;
+  .inner-data {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
+    width: 100%;
+  }
     h2 {
       font-size: 18px;
       font-weight: bold;
     }
+}
+
+.recent-activity-container {
+  width: 100%;
+
+  .recent-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+
+  .fill-container {
+    height: 150px;
+    display: block;
+  }
+
+  .recent-activity {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #ffc18f;
+    border-radius: 8px;
+    padding: 8px;
+    gap: 4px;
+    margin: 4px 0;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      #pre-activity {
+        font-weight: bold;
+      }
+    }
+    
+    h2 {
+      margin: 2px 0;
+      font-weight: bold;
+    }
+    p {
+      margin: 0;
+    }
+  }
+}
+
+  .graph-container {
+    padding: 20px;
 
     .legend {
       display: flex;
@@ -90,10 +137,26 @@
     background-color: #ffc18f;
   }
   
-  #l-2 {
-    background-color: #ffa33a;
+  #l-2, .activity-color {
+    background-color: #ffa33a !important;
   }
   
   #l-3 {
     background-color: #b85f00;
   }
+
+  @media only screen and (max-width: 1000px) {
+    .inner-data {
+      flex-direction: column !important;
+    } 
+}
+
+@media only screen and (max-width: 800px) {
+  .inner-data {
+    flex-direction: column !important;
+  } 
+  :host {
+    --square-size: 13px;
+    --square-gap: 4px;
+  }
+}

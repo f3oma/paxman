@@ -39,8 +39,8 @@ export class BeatdownService {
         private workoutService: WorkoutManagerService) {}
 
     async getBeatdownDetail(id: string): Promise<Beatdown | undefined> {
-        const ref = doc(this.firestore, `beatdowns/${id}`);
-        return (await getDoc(ref)).data() as Beatdown;
+        const ref = doc(this.beatdownCollection, id);
+        return (await (await getDoc(ref)).data()) as Beatdown;
     }
 
     async getBeatdownsBetweenDates(startDate: Date, endDate: Date, filter: QueryFieldFilterConstraint[] | QueryCompositeFilterConstraint[]): Promise<Beatdown[]> {

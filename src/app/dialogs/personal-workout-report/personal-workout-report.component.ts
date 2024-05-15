@@ -39,7 +39,7 @@ export class PersonalWorkoutReportComponent {
     @Inject(MAT_DIALOG_DATA) public data: UserReportedWorkoutProps
     ) {
     this.user = data.user;
-    
+
     this.form.controls['preActivity'].setValue('None');
     this.form.controls['beatdown'].valueChanges.pipe(
       debounceTime(1000),

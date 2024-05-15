@@ -1,9 +1,17 @@
-import { Component, Input } from '@angular/core';
+import { formatDate } from '@angular/common';
+import { AfterViewInit, Component, Input } from '@angular/core';
+import { PreActivity, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
+import { Beatdown } from 'src/app/models/beatdown.model';
 import { IPaxUser } from 'src/app/models/users.model';
+import { BeatdownService } from 'src/app/services/beatdown.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
 
 export interface DailyWorkoutReported {
   countPerDay: number;
+}
+
+export interface UserReportedWorkoutUI extends UserReportedWorkout {
+  beatdownDomain: Beatdown;
 }
 
 @Component({
@@ -11,74 +19,103 @@ export interface DailyWorkoutReported {
   templateUrl: './activity-graph.component.html',
   styleUrls: ['./activity-graph.component.scss']
 })
-export class ActivityGraphComponent {
+export class ActivityGraphComponent implements AfterViewInit {
 
   @Input('user') user!: IPaxUser;
   workouts: DailyWorkoutReported[] = [];
 
-  readonly MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep",  "Oct",  "Nov",  "Dec"];
-  public sortedMonths = this.MONTHS;
+  public sortedMonths: string[] = [];
+  beatdownAttendance: UserReportedWorkout[] = [];
+  monthsOut: number = 3;
+  recentActivity: UserReportedWorkoutUI[] = [];
+  loadingRecents = true;
 
-  constructor(private workoutService: WorkoutManagerService) {
-    this.calculateChartFromCurrentDate([]);
+  constructor(
+    private workoutService: WorkoutManagerService,
+    private beatdownService: BeatdownService) {
   }
 
-  getWorkoutLogs() {
-    // this.workoutService.getYearlyWorkoutLogs()
+  ngAfterViewInit(): void {
+    this.getBeatdownAttendanceLogs();
   }
 
-  calculateChartFromCurrentDate(workouts: DailyWorkoutReported[]) {
-    const today = new Date();
-    const month = today.getMonth() - 1; // -1 for idx
-    const dayOfWeek = today.getDay();
-    const date = today.getDate();
-    const year = today.getFullYear();
-    const daysInYear = this.getDaysInYear(today);
+  async getBeatdownAttendanceLogs() {
+    const beatdownAttendance = await this.workoutService.getAllBeatdownAttendanceForUser(this.user);
+    this.calculateChartFromCurrentDate(beatdownAttendance);
+    await this.updateRecents(beatdownAttendance);
+    this.loadingRecents = false;
+  }
 
-    const monthsInCurrentYear = [];
-    // Get whatever months have already happened in current year
-    for (let i = month; i >= 0; i--) {
-      monthsInCurrentYear.push(i);
-    }
+  async updateRecents(beatdownAttendance: UserReportedWorkout[]) {
+    const recentActivity = beatdownAttendance.sort((a, b) => a.date > b.date ? -1 : 1).slice(0, 4);
+    for (let activity of recentActivity) {
+      const beatdownData = await this.beatdownService.getBeatdownDetail(activity.beatdown.id);
+      if (!beatdownData)
+        continue;
 
-    const monthsFromLastYear = []
-    // Start from 12th month, go back and get any missing months
-    for (let i = 11; i > month; i--) {
-      monthsFromLastYear.push(i);
-    }
-
-    monthsInCurrentYear.sort((a, b) => a > b ? 1 : -1);
-    monthsFromLastYear.sort((a, b) => a > b ? 1 : -1);
-
-    let months = [...monthsFromLastYear, ...monthsInCurrentYear, monthsFromLastYear[0]];
-
-    let sortedMonths: string[] = [];
-    // Finally get month names
-    for (let monthIdx of months) {
-      const monthText = this.MONTHS[monthIdx];
-      sortedMonths.push(monthText)
-    }
-
-    this.sortedMonths = sortedMonths;
-
-    for (let i = 0; i < daysInYear - 1; i++) {
-      this.workouts.push({
-        countPerDay: Math.floor(Math.random() * 4)
+      this.recentActivity.push({
+        beatdown: activity.beatdown,
+        date: activity.date,
+        beatdownDomain: beatdownData,
+        preActivity: activity.preActivity
       })
     }
-
   }
 
-  getDaysInYear(today: Date) {
-    if (this.isLeapYear(today.getFullYear())) {
-      return 366;
-    } else {
-      return 365
+  generateMonthHeaders(): string[] {
+    const today = new Date();
+    const monthsAgo = new Date();
+    monthsAgo.setMonth(today.getMonth() - this.monthsOut);
+
+    const months: string[] = [];
+    while (monthsAgo <= today) {
+      months.push(formatDate(monthsAgo, 'MMM', 'en'));
+      monthsAgo.setMonth(monthsAgo.getMonth() + 1);
     }
+
+    return months;
   }
 
-  private isLeapYear(year: number) {
-    return ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
+  calculateChartFromCurrentDate(beatdownAttendance: UserReportedWorkout[]) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);    
+    var months = this.generateMonthHeaders();
+    this.sortedMonths = months;
+    
+    const dayMap = this.mapToRelativeDay(beatdownAttendance, today);
+    for (let entry of dayMap.values())
+      this.workouts.push({ countPerDay: entry})
   }
 
+  daysSince(date: Date, currentDate: Date): number {
+    const targetDate = new Date(date);
+    const differenceInTime = currentDate.getTime() - targetDate.getTime();
+    const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24));
+    return differenceInDays;
+  }
+
+  mapToRelativeDay(dateItems: UserReportedWorkout[], currentDate: Date): Map<number, number> {
+    const monthsOut = new Date();
+    monthsOut.setMonth(currentDate.getMonth() - this.monthsOut);
+    let daysSinceCount = this.daysSince(monthsOut, currentDate);
+
+    // We need the daysSinceCount to land on a Sunday to fill the chart
+    daysSinceCount = daysSinceCount + monthsOut.getDay();
+
+    // Relative Day to Workout Value
+    const relativeDays: Map<number, number> = new Map<number, number>();
+    // Pre-load
+    for (let i = 0; i < daysSinceCount + 2; i++) {
+      relativeDays.set(i, 0);
+    }
+
+    dateItems.forEach(item => {
+      const daysSinceDate = this.daysSince(item.date, currentDate);
+      const relativeDay = daysSinceCount - daysSinceDate;
+      const itemValue = item.preActivity != PreActivity.None ? 2 : 1;
+      relativeDays.set(relativeDay, itemValue);
+    });
+
+    return relativeDays;
+  }
 }
