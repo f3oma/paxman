@@ -35,7 +35,7 @@
       <ng-container *ngIf="recentActivity && !loadingRecents">
         <div class="recent-activity" *ngFor="let activity of recentActivity" [ngClass]="{ 'activity-color' : activity.preActivity !== 'None'}">
           <div class="title">            
-            <h2>{{activity.beatdownDomain.aoLocation?.name}}</h2>
+            <h2>{{activity.beatdownDomain.eventName ? activity.beatdownDomain.eventName : activity.beatdownDomain.aoLocation?.name}}</h2>
             <p>{{activity.date | date: 'MM/dd/yyyy'}}</p>
           </div>
           <p id="pre-activity" *ngIf="activity.preActivity !== 'None'">Pre-Activity: <b>{{activity.preActivity}}</b></p>
