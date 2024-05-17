@@ -11,6 +11,7 @@ import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welc
 import { LocationSearchService } from 'src/app/services/location-search.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { PaxSearchService } from 'src/app/services/pax-search.service';
+import { UserProfileService } from 'src/app/services/user-profile.service';
 
 @Component({
   selector: 'app-add-pax',
@@ -52,6 +53,7 @@ export class AddPaxComponent implements AfterViewInit {
     private readonly locationSearchService: LocationSearchService,
     private readonly aoManagerService: AOManagerService,
     private readonly paxWelcomeEmailService: PaxWelcomeEmailService,
+    private readonly userProfileService: UserProfileService,
     private readonly router: Router) {
       this.f3NameFormControl.setAsyncValidators(this.paxF3NameValidator());
     }
@@ -101,6 +103,8 @@ export class AddPaxComponent implements AfterViewInit {
         let ehRef: UserRef = null;
         if (ehedBy) {
           ehRef = this.paxManagerService.getUserReference(ehedBy.userRef);
+          const userEhId = ehedBy.userRef.replace('users/', '');
+          await this.userProfileService.updateUsersEHTree(userEhId);
         }
   
         const location = this.form.controls['ehLocation'].value;

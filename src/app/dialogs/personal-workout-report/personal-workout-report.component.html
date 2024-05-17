@@ -28,7 +28,13 @@
           </form>
     </div>
     <div class="actions">
-        <button mat-raised-button style="background-color: orange;" (click)="submit()">Submit</button>
+        <button mat-raised-button style="background-color: orange;" (click)="submit()">
+            <span *ngIf="!userSaveLoading; else loadingSpinner">Submit</span>
+        </button>
         <button mat-flat-button (click)="userCancel()">Cancel</button>
     </div>
 </div>
+
+<ng-template #loadingSpinner>
+    <mat-spinner [diameter]="16"></mat-spinner>
+</ng-template>

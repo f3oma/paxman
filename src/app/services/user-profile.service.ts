@@ -46,7 +46,7 @@ export class UserProfileService {
             
             // Quickly update the details before returning
             if (entity.countOfEHUsers > 0 && (!entity.ehUserJsonString || entity.ehUserJsonString.length === 0)) {
-                await this.updateEHTreeInfo(userId, entity, docRef);
+                await this.updateUsersEHTree(userId);
                 getDocResponse = (await getDoc(docRef))
                 entity = getDocResponse.data() as IUserProfileDataEntity;
             }
@@ -100,19 +100,18 @@ export class UserProfileService {
         return await setDoc(createReference, profileDataEntity);
     }
 
-    private async updateEHTreeInfo(
-        userId: string, 
-        profileDataEntity: Partial<IUserProfileDataEntity>,
-        documentReference: DocumentReference) {
+    public getUserProfileRefById(userId: string) {
+        const ref = doc(this.userProfileCollection, userId);
+        return ref;
+    }
+
+    public async updateUsersEHTree(userId: string): Promise<void> {
+        const userProfileRef = await this.getUserProfileRefById(userId);
         const pax = await this.paxManagerService.getAllEHDataForUserId(userId);
         const paxData: { id: string, f3Name: string }[] = pax.map((p) => { return { id: p.id, f3Name: p.f3Name} });
-        profileDataEntity.countOfEHUsers = pax.length;
-        profileDataEntity.ehUserJsonString = JSON.stringify(paxData);
-        return await updateDoc(documentReference, {
-            countOfEHUsers: profileDataEntity.countOfEHUsers,
-            ehUserJsonString: profileDataEntity.ehUserJsonString,
-            ehUserRefs: deleteField(),
-            ehUsers: deleteField(),
+        await updateDoc(userProfileRef, {
+            countOfEHUsers: pax.length,
+            ehUserJsonString: JSON.stringify(paxData)
         });
     }
 
@@ -126,11 +125,7 @@ export class UserProfileService {
             links: profileData.links,
         };
 
-        // Update this while we're here...
-        const pax = await this.paxManagerService.getAllEHDataForUserId(userId);
-        const paxData: { id: string, f3Name: string }[] = pax.map((p) => { return { id: p.id, f3Name: p.f3Name} });
-        profileDataEntity.countOfEHUsers = pax.length;
-        profileDataEntity.ehUserJsonString = JSON.stringify(paxData);
+        await this.updateUsersEHTree(userId);
         
         const docRef = doc(this.userProfileCollection, userId);
         return await updateDoc(docRef, {

@@ -26,6 +26,7 @@ export class PersonalWorkoutReportComponent {
   });
 
   user: PaxUser;
+  userSaveLoading: boolean = false;
 
   filteredBeatdownOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
   filteredBeatdownOptions$: Observable<any[]> = this.filteredBeatdownOptionsSubject.asObservable();
@@ -53,6 +54,7 @@ export class PersonalWorkoutReportComponent {
   }
 
   async submit() {
+    this.userSaveLoading = true;
     if (this.form.valid) {
       const beatdown = this.form.controls['beatdown'].value;
       const beatdownRef = this.beatdownService.getBeatdownReference(beatdown.ref);
@@ -64,6 +66,7 @@ export class PersonalWorkoutReportComponent {
       await this.workoutService.createPersonalReportedWorkout(workoutData, this.user);
       this.dialogRef.close();
     } else {
+      this.userSaveLoading = false;
       alert("Check inputs and try again");
     }
   }
