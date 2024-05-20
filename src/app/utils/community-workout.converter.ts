@@ -18,7 +18,8 @@ export class CommunityWorkoutConverter {
                 beatdown: data.beatdown,
                 totalPaxCount: data.totalPaxCount,
                 fngCount: data.fngCount,
-                usersAttended: data.usersAttended
+                usersAttended: data.usersAttended,
+                qReported: data.qReported,
             }
         },
         fromFirestore: (snap: QueryDocumentSnapshot): IBeatdownAttendance => {
