@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { DocumentReference, Firestore, QueryCompositeFilterConstraint, QueryFieldFilterConstraint, Timestamp, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, or, orderBy, query, setDoc, where, writeBatch } from "@angular/fire/firestore";
+import { DocumentData, DocumentReference, Firestore, QueryCompositeFilterConstraint, QueryFieldFilterConstraint, Timestamp, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, or, orderBy, query, setDoc, where, writeBatch } from "@angular/fire/firestore";
 import { BeatdownConverter } from "../utils/beatdown.converter";
 import { Beatdown, IBeatdown, IBeatdownEntity, SpecialEventType } from "../models/beatdown.model";
 import { AOData, IAOData } from "../models/ao.model";
@@ -12,7 +12,6 @@ import { WorkoutManagerService } from "./workout-manager.service";
     providedIn: 'root'
 })
 export class BeatdownService {
-
     beatdownCollection = 
         collection(this.firestore, 'beatdowns')
         .withConverter(this.beatdownConverter.getConverter())
@@ -54,13 +53,22 @@ export class BeatdownService {
 
     async getBeatdownsByAO(aoLocationRef: DocumentReference<AOData>, filters: QueryFieldFilterConstraint[]): Promise<Beatdown[]> {
         const beatdowns: Promise<Beatdown>[] = [];
-        const aoRef = doc(this.firestore, `ao_data/${aoLocationRef.id}`);
-        const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoRef), where("date", ">=", new Date()), ...filters), orderBy("date", "asc"));
+        const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoLocationRef), where("date", ">=", new Date()), ...filters), orderBy("date", "asc"));
         (await getDocs(q)).docs.forEach(async (d) => {
             beatdowns.push(d.data());
         })
         return Promise.all(beatdowns);
     }
+
+    async deleteAllBeatdownsForAO(siteId: string) {
+        const aoRef = this.aoManagerService.getAoLocationReference(siteId);
+        const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoRef), where("date", ">=", new Date())), orderBy("date", "asc"));
+        const batch = writeBatch(this.firestore);
+        (await getDocs(q)).docs.forEach(async (d) => {
+            batch.delete(d.ref);
+        });
+        return await batch.commit();
+    }  
 
     // This might need a better name.
     // Look-up beatdowns for today by SQ and Q, ask for attendance reporting

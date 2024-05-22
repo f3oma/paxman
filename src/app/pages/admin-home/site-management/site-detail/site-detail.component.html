@@ -5,7 +5,7 @@
             <ng-container *ngIf="editMode">
                 <h1>Editing {{site.name}}'s Data</h1>
                 <p>Save when finished</p>
-                <site-data-edit [site]="site" [isEditorAdmin]="true" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()"></site-data-edit>
+                <site-data-edit [site]="site" [isEditorAdmin]="true" (userSaved)="toggleEditMode()" (userCanceled)="toggleEditMode()" (userDeleted)="deleteSite($event)"></site-data-edit>
             </ng-container>
             <ng-container *ngIf="!editMode">
                 <div class="header">

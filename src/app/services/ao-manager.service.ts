@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { DocumentData, DocumentReference, Firestore, addDoc, collection, deleteField, doc, getDoc, getDocs, orderBy, query, setDoc, updateDoc, where, writeBatch } from "@angular/fire/firestore";
+import { DocumentData, DocumentReference, Firestore, addDoc, collection, deleteDoc, deleteField, doc, getDoc, getDocs, orderBy, query, setDoc, updateDoc, where, writeBatch } from "@angular/fire/firestore";
 import { AOCategory, AOData, DayOfWeekAbbv, IAOData, IAODataEntity, Sector } from "../models/ao.model";
 import { AODataConverter } from "../utils/ao-data.converter";
 import { PaxUser } from "../models/users.model";
@@ -39,6 +39,11 @@ export class AOManagerService {
             ref = this.getAoLocationReference(site.id);
         }
         return await setDoc(ref, site, { merge: true});
+    }
+
+    public async deleteAOById(siteId: string) {
+        const ref = this.getAoLocationReference(siteId);
+        return await deleteDoc(ref);
     }
 
     public get defaultNewAO(): AOData {

@@ -27,6 +27,7 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
   @Input('addNewSite') addNewSite: boolean = false;
   @Output('userSaved') userSavedEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output('userCanceled') userCanceledEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output('userDeleted') userDeleteEmitter: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild('activeSiteQInput') activeSiteQInput!: ElementRef<HTMLInputElement>;
   @ViewChild('retiredSiteQInput') retiredSiteQInput!: ElementRef<HTMLInputElement>;
@@ -150,9 +151,43 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       // These are very topical for now and need additional time to
       // validate that the user is not also a site q elsewhere before removing
       // any access. Time should be spent here...
-      await this.handleActiveSiteQSwaps();
-      await this.handleRetiredSiteQSwaps();
-      await this.handleFoundingSiteQSwaps();
+
+      const activeTempSet = new Set(this.temporaryActiveSiteQUsers.map(t => t.id));
+      const retiredTempSet = new Set(this.temporaryRetiredSiteQUsers.map(t => t.id));
+      const foundingTempSet = new Set(this.temporaryFoundingSiteQUsers.map(t => t.id));
+      let activeSQFieldChanged = false;
+      let retiredSQFieldChanged = false;
+      let foundingSQFieldChanged = false;
+
+      for (let activeQ of this.originalActiveSiteQUsers) {
+        if (!activeTempSet.has(activeQ.id)) {
+          activeSQFieldChanged = true;
+        }
+      }
+
+      for (let retiredQ of this.originalRetiredSiteQUsers) {
+        if (!retiredTempSet.has(retiredQ.id)) {
+          retiredSQFieldChanged = true;
+        }
+      }
+
+      for (let foundingQ of this.originalFoundingSiteQUsers) {
+        if (!foundingTempSet.has(foundingQ.id)) {
+          foundingSQFieldChanged = true;
+        }
+      }
+
+      if (activeSQFieldChanged) {
+        await this.handleActiveSiteQSwaps();
+      }
+      
+      if (retiredSQFieldChanged) {
+        await this.handleRetiredSiteQSwaps();
+      }
+
+      if (foundingSQFieldChanged) {
+        await this.handleFoundingSiteQSwaps();
+      }
   
       if (this.addNewSite) {
         await this.aoManagerService.addNewSite(site);
@@ -169,6 +204,12 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       }
       this.saveLoading = false;
       this.userSavedEmitter.emit(true);
+    }
+  }
+
+  public deleteSite(site: IAOData) {
+    if (confirm("Are you sure you want to permanently delete this site?")) {
+      this.userDeleteEmitter.emit(site.id);
     }
   }
 
@@ -289,6 +330,9 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
               await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
               await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, existingSiteQ.id);
               await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
+            } else {
+              // User canceled
+              return;
             }
           }
         } else {

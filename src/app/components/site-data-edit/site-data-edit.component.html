@@ -193,6 +193,7 @@
           <span *ngIf="!saveLoading">Save</span>
           <span *ngIf="saveLoading" class="spinner-border spinner-border-sm mr-1"></span>
         </button>
+        <button *ngIf="isEditorAdmin" class="action-btn" id="delete-btn" mat-flat-button (click)="deleteSite(site)">Permanently Delete Site</button>  
         <button mat-flat-button (click)="cancel()">Cancel</button>
     </div>
 </div>
