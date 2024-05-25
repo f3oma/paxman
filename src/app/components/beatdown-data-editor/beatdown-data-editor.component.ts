@@ -1,3 +1,4 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DocumentReference } from '@angular/fire/firestore';
 import { AsyncValidatorFn, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -21,7 +22,6 @@ interface AOLocationData {
   name: string
 }
 
-
 @Component({
   selector: 'app-beatdown-data-editor',
   templateUrl: './beatdown-data-editor.component.html',
@@ -37,6 +37,7 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
 
   @ViewChild('primaryQ') primaryQInput: ElementRef | null = null;
   @ViewChild('coQ') coQInput: ElementRef | null = null;
+  @ViewChild('additionalQsInput') additionalQsInput!: ElementRef<HTMLInputElement>;
   @ViewChild('aoLocation') locationInput: ElementRef | null = null;
 
   showAddressField = false;
@@ -54,6 +55,11 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
   filteredLocationOptions$: Observable<any[]> = this.filteredLocationOptionsSubject.asObservable();
   selectedLocation: any = '';
 
+  filteredAdditionalQsOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
+  filteredAdditionalQsOptions$: Observable<any[]> = this.filteredAdditionalQsOptionsSubject.asObservable();
+
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
   public form: FormGroup = new FormGroup({
     date: new FormControl('', [Validators.required]),
     qUser: new FormControl(''),
@@ -64,11 +70,14 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
     eventAddress:  new FormControl(''),
     additionalQs:  new FormControl(''),
     canceled: new FormControl(''),
-    startTime: new FormControl('')
+    startTime: new FormControl(''),
+    notes: new FormControl(''),
   });
 
-  additionalQs: QUserData[] = [];
+  temporaryAdditionalQs: QUserData[] = [];
   selectedAoRef: AOLocationData | null = null;
+
+  originalAdditionalQs: QUserData[] = [];
 
   constructor(
     private readonly paxSearchService: PaxSearchService,
@@ -81,10 +90,31 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
     if (this.beatdown.aoLocation?.rotating || this.beatdown.aoLocation?.popup) {
       this.showAddressField = true;
     }
+    if (this.beatdown.additionalQs) {
+      for(let q of this.beatdown.additionalQs) {
+        if (!q) {
+          continue;
+        }
+        this.temporaryAdditionalQs.push({
+          userRef: 'users/' + q.id,
+          f3Name: q.f3Name,
+        })
+      }
+      this.originalAdditionalQs = JSON.parse(JSON.stringify(this.temporaryAdditionalQs));
+    }
   }
 
   public ngAfterViewInit() {
     this.initializeForm();
+    this.form.controls['additionalQs'].valueChanges.pipe(
+      debounceTime(200),
+      map(async (value: string) => {
+        if (value) {
+          await this.updateUserAutocompleteResults(value, this.filteredAdditionalQsOptionsSubject);
+        }
+        return [];
+      })).subscribe();
+
     fromEvent<InputEvent>(this.primaryQInput?.nativeElement, 'input').pipe(
       debounceTime(500),
       map(async (event: InputEvent) => {
@@ -110,7 +140,7 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
           }
           return [];
         })).subscribe();
-    
+
       fromEvent<InputEvent>(this.locationInput?.nativeElement, 'keydown').pipe(
         debounceTime(500),
         map(async (event: InputEvent) => {
@@ -146,7 +176,6 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
     }
 
     // Add additional users
-
     if (this.beatdown.aoLocation) {
       if (!this.beatdown.startTime && this.beatdown.aoLocation.startTimeCST) {
         this.form.controls['startTime'].setValue(this.beatdown.aoLocation.startTimeCST);
@@ -159,6 +188,10 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
         })
       }
     }
+  }
+
+  removeAdditionalQ(siteQ: QUserData): void {
+    this.temporaryAdditionalQs = this.temporaryAdditionalQs.filter((a) => a.userRef !== siteQ.userRef);
   }
 
   specialEventChanged(event: any) {
@@ -208,6 +241,16 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
         this.beatdown.coQUser = undefined;
       }
 
+      if (this.temporaryAdditionalQs.length > 0) {
+        const additionalQs = [];
+        for (let user of this.temporaryAdditionalQs) {
+          const userRef = this.paxManagerService.getUserReference(user.userRef);
+          const userData = await this.paxManagerService.getPaxInfoByRef(userRef);
+          additionalQs.push(userData);
+        }
+        this.beatdown.additionalQs = additionalQs;
+      }
+
       if (this.form.controls['aoLocation'].value) {
         const locationRef = this.aoManagerService.getAoLocationReference(this.form.controls['aoLocation'].value.aoRef) as DocumentReference<AOData>;
         const aoData = await this.aoManagerService.getDataByRef(locationRef);
@@ -225,6 +268,12 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
 
   public updateCanceledValue($event: MatCheckboxChange, beatdown: IBeatdown) {
     beatdown.canceled = $event.checked;
+  }
+
+  addAdditionalQs(event: any): void {
+    const option = event.option.value;
+    this.temporaryAdditionalQs.push(option);
+    this.additionalQsInput.nativeElement.value = '';
   }
 
   userCancel() {

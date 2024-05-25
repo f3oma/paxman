@@ -60,7 +60,10 @@ export class PaxManagerService {
       return;
   }
   
-  public async getPaxInfoByRef(ref: DocumentReference<PaxUser>) {
+  public async getPaxInfoByRef(ref: UserRef) {
+    if (ref === null) {
+      return;
+    }
     const documentReference = ref.withConverter(this.paxConverter);
     return (await getDoc(documentReference)).data();
   }

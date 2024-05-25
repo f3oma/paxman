@@ -75,6 +75,14 @@
                                         <div class="current-profile-img" [style.background-image]="'url(' + beatdown.coQUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !beatdown.coQUser.profilePhotoUrl }"></div>
                                         <span>{{beatdown.coQUser.f3Name}}</span>
                                     </div>
+                                    <ng-container *ngIf="beatdown.additionalQs && beatdown.additionalQs.length > 0">
+                                        <ng-container *ngFor="let additionalQ of beatdown.additionalQs">
+                                            <div class="q-user-chip" *ngIf="additionalQ" [routerLink]="'/users/' + additionalQ.id">
+                                                <div class="current-profile-img" [style.background-image]="'url(' + additionalQ.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !additionalQ.profilePhotoUrl }"></div>
+                                                <span>{{additionalQ.f3Name}}</span>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
                                 </div>
                                 <p *ngIf="beatdown.aoLocation && beatdown.aoLocation.qSourceAvailable"><span class="q-source">Q Source Available</span></p>
                                 <div class="site-data same-line">

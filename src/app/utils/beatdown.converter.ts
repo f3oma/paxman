@@ -88,6 +88,7 @@ export class BeatdownConverter {
             canceled: data.canceled,
             startTime: data.startTime,
             aoName: data.aoName,
+            notes: data.notes ?? ''
         });
     }
 
@@ -140,7 +141,8 @@ export class BeatdownConverter {
             eventName: data.eventName,
             additionalQsRefs: additionalQsRefs,
             canceled: data.canceled,
-            aoName: data.aoName === undefined ? null : data.aoName
+            aoName: data.aoName === undefined ? null : data.aoName,
+            notes: data.notes ?? ''
         }
     }
 }

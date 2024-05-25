@@ -5,13 +5,19 @@
       font-size: 32px;
       font-weight: bold;
     }
+    .mat-mdc-tab-body-wrapper {
+        margin-top: 24px !important;
+    }
+    .internal-form {
+        padding: 16px 24px;
+    }
     .beatdown-form {
       display: flex;
       flex-direction: column;
       width: 100%;
       mat-form-field {
+        margin: 8px 0;
         width: 100%;
-        margin: 8px;
       }
     }
 }

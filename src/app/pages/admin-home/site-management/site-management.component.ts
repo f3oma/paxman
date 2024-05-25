@@ -9,6 +9,8 @@ import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.m
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
+import { UserProfileService } from 'src/app/services/user-profile.service';
+import { Badges } from 'src/app/utils/badges';
 
 @Component({
   selector: 'app-site-management',
@@ -30,6 +32,7 @@ export class SiteManagementComponent {
     private aoManagerService: AOManagerService, 
     private userAuthService: UserAuthenticationService,
     private paxManagementService: PaxManagerService,
+    private userProfileService: UserProfileService,
     private router: Router) {
 
     this.dataSource = null;
@@ -68,6 +71,16 @@ export class SiteManagementComponent {
     //         await this.userAuthService.updateSiteQUserLocation(aoRef, authRef);
     //         await this.userAuthService.promoteRole(UserRole.SiteQ, user.id);
     //       }
+    //     }
+    //   }
+    //   if (data.retiredSiteQUsers) {
+    //     for (let user of data.retiredSiteQUsers) {
+    //       await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, user.id);
+    //     }
+    //   }
+    //   if (data.foundingSiteQUsers) {
+    //     for (let user of data.foundingSiteQUsers) {
+    //       await this.userProfileService.addBadgeToProfile(Badges.SiteFounder, user.id);
     //     }
     //   }
     // }

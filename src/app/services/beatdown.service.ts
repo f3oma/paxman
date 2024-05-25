@@ -12,6 +12,7 @@ import { WorkoutManagerService } from "./workout-manager.service";
     providedIn: 'root'
 })
 export class BeatdownService {
+
     beatdownCollection = 
         collection(this.firestore, 'beatdowns')
         .withConverter(this.beatdownConverter.getConverter())
@@ -28,6 +29,7 @@ export class BeatdownService {
         specialEvent: SpecialEventType.None,
         canceled: false,
         startTime: '',
+        notes: ''
     }
 
     constructor(
@@ -140,6 +142,26 @@ export class BeatdownService {
         return doc(this.beatdownCollection, dbPath);
     }
 
+    public async generateDownrangeBeatdown(downrangeAOName: string, date: Date) {
+        // Create a very sparse beatdown, not linked to any AO or data that is tracked in attendance reporting
+        const emptyBeatdown: IBeatdown = JSON.parse(JSON.stringify(this.EMPTY_BEATDOWN));
+        emptyBeatdown.eventName = `DR - ${downrangeAOName}`;
+        date.setHours(0, 0, 0, 0);
+        emptyBeatdown.date = date;
+        emptyBeatdown.aoName = downrangeAOName;
+        return await this.createBeatdown(emptyBeatdown);
+    }
+
+    public async generateShieldLockBeatdown(date: any) {
+       // Create a very sparse beatdown, not linked to any AO or data that is tracked in attendance reporting
+       const emptyBeatdown: IBeatdown = JSON.parse(JSON.stringify(this.EMPTY_BEATDOWN));
+       emptyBeatdown.eventName = 'Shield Lock';
+       date.setHours(0, 0, 0, 0);
+       emptyBeatdown.date = date;
+       emptyBeatdown.aoName = 'Shield Lock';
+       return await this.createBeatdown(emptyBeatdown);
+    }
+
     public async generateBeatdownsBetweenDates(aoData: IAOData | null, startWeek: Date, endWeek: Date) {
         // Generate weekly beatdowns for a location from start week to end week
         // If the endWeek date provided is less than the specified AO's week time, no beatdown will be created...
@@ -183,7 +205,8 @@ export class BeatdownService {
                 eventName: null,
                 eventAddress: aoData.address,
                 canceled: false,
-                startTime: aoData.startTimeCST
+                startTime: aoData.startTimeCST,
+                notes: ''
             };
             batch.set(docRef, beatdownEntity);
 

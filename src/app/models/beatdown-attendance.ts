@@ -22,6 +22,7 @@ export interface UserReportedWorkout {
     beatdown: DocumentReference<Beatdown>;
     preActivity: PreActivity;
     date: Date;
+    notes?: string;
 }
 
 export interface UserReportedWorkoutEntity {
@@ -41,5 +42,6 @@ export enum PreActivity {
     Murph = "Murph",
     Smurph = "Smurph",
     Ruck = "Ruck",
+    Bookclub = "Bookclub",
     Other = "Other"
 }

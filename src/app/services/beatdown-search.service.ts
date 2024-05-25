@@ -21,9 +21,11 @@ export class BeatdownSearchService {
         const today = new Date();
         today.setHours(23, 59, 59, 999);
         const todayTimestamp = Math.floor(Timestamp.fromDate(today).toMillis());
-        const yesterday = new Date(today.getDate() - 1);
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 2);
         yesterday.setHours(0, 0, 0, 0);
         const yesterdayTimestamp = Math.ceil(Timestamp.fromDate(yesterday).toMillis());
+
         return this.idx.search(partialBeatdownName, {
             exactOnSingleWordQuery: "attribute",
             restrictSearchableAttributes: ['name', 'aoName', 'eventName'],
@@ -31,7 +33,10 @@ export class BeatdownSearchService {
             removeWordsIfNoResults: "allOptional",
             filters: `(date > ${yesterdayTimestamp} AND date < ${todayTimestamp})`
         }).then(({ hits }: any) => {
-            return hits;
+            if (!hits) {
+                return [];
+            }
+            return hits.filter((b: any) => !b.eventName || (b.eventName && !b.eventName?.includes('Shield Lock') && !b.eventName.includes("DR - ")));
         });
     }
 }

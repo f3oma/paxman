@@ -59,28 +59,28 @@
                 </mat-autocomplete>
                 <mat-hint>Optional. Select from autocomplete</mat-hint>
               </mat-form-field>
-            <!-- <mat-form-field appearance="outline">
+            <mat-form-field appearance="outline">
                 <mat-label>Additional Qs</mat-label>
                 <mat-chip-grid #chipGrid aria-label="Primary selection">
-                  <mat-chip-row *ngFor="let siteQ of temporaryActiveSiteQUsers" (removed)="removeActive(siteQ)">
+                  <mat-chip-row *ngFor="let siteQ of temporaryAdditionalQs" (removed)="removeAdditionalQ(siteQ)">
                     {{siteQ.f3Name}}
                     <button matChipRemove [attr.aria-label]="'remove ' + siteQ.f3Name">
                       <mat-icon>cancel</mat-icon>
                     </button>
                   </mat-chip-row>
                 </mat-chip-grid>
-                <input placeholder="New Active SiteQ..." #activeSiteQInput formControlName="activeSiteQUsers"
-                  [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                <input placeholder="Add additional Q's..." #additionalQsInput formControlName="additionalQs"
+                  [matChipInputFor]="chipGrid" [matAutocomplete]="auto3"
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes"/>
-                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addActiveSiteQ($event)" [displayWith]="displayF3NameOptions">
-                    <mat-option *ngFor="let option of filteredActiveSiteQOptions$ | async" [value]="option">
+                  <mat-autocomplete #auto3="matAutocomplete" (optionSelected)="addAdditionalQs($event)" [displayWith]="displayF3NameOptions">
+                    <mat-option *ngFor="let option of filteredAdditionalQsOptions$ | async" [value]="option">
                         <div class="option" style="padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;">
                             <h5 style="margin-bottom: 0;">{{option.f3Name}}</h5>
                             <p style="margin-bottom: 0;">{{option.fullName}}</p>
                         </div>
                     </mat-option>
                 </mat-autocomplete>
-              </mat-form-field> -->
+              </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Special Event</mat-label>
                 <mat-select formControlName="specialEvent" [(ngModel)]="beatdown.specialEvent" (selectionChange)="specialEventChanged($event)">
@@ -95,10 +95,15 @@
                     <mat-option value="BirthdayQ">Birthday Q</mat-option>
                     <mat-option value="QSwap">Site-Q Swap</mat-option>
                 </mat-select>
-            </mat-form-field>
-            <div class="checkbox">
-                <mat-checkbox formControlName="canceled" [(ngModel)]="beatdown.canceled" (change)="updateCanceledValue($event, beatdown)">Mark beatdown as canceled this week</mat-checkbox>
-            </div>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Additional notes</mat-label>
+                <textarea formControlName="notes" [(ngModel)]="beatdown.notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="Notes..."></textarea>
+                <mat-hint>Additional event notes or ideas</mat-hint>
+              </mat-form-field>
+              <div class="checkbox">
+                  <mat-checkbox formControlName="canceled" [(ngModel)]="beatdown.canceled" (change)="updateCanceledValue($event, beatdown)">Mark beatdown as canceled this week</mat-checkbox>
+              </div>
         </form>
         <div class="actions">
             <a mat-raised-button style="background-color: orange; text-decoration: none;" (click)="save()">Save</a>

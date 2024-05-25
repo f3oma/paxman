@@ -35,6 +35,7 @@ export interface IBeatdown {
     additionalQs?: Array<PaxUser | undefined>, // community events might have many q's
     canceled: boolean;
     startTime: string;
+    notes: string;
 }
 
 export interface IBeatdownEntity {
@@ -49,6 +50,7 @@ export interface IBeatdownEntity {
     additionalQsRefs?: Array<UserRef>; // community events might have many q's
     canceled: boolean;
     startTime: string;
+    notes: string;
 }
 
 export class Beatdown {
@@ -64,6 +66,7 @@ export class Beatdown {
     private _canceled: boolean;
     private _startTime: string;
     private _aoName?: string | undefined;
+    private _notes: string;
 
     constructor(beatdown: IBeatdown) {
         this._id = beatdown.id;
@@ -78,6 +81,7 @@ export class Beatdown {
         this._canceled = beatdown.canceled;
         this._startTime = beatdown.startTime;
         this._aoName = beatdown.aoName;
+        this._notes = beatdown.notes;
     }
 
     public get id(): string {
@@ -164,6 +168,10 @@ export class Beatdown {
         return this._aoName;
     }
 
+    public get notes(): string {
+        return this._notes;
+    }
+
     toProperties(): IBeatdown {
         return {
             id: this.id,
@@ -178,6 +186,7 @@ export class Beatdown {
             canceled: this.isCanceled,
             startTime: this.startTime,
             aoName: this.aoName,
+            notes: this.notes
         };
     }
 }

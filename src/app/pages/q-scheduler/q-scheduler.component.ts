@@ -197,7 +197,8 @@ export class QSchedulerComponent implements OnInit {
       } else {
         this.loadingBeatdownData = true;
         const beatdowns = await this.beatdownService.getBeatdownsBetweenDates(this.weekStartDate, this.weekEndDate, filter);
-        const sorted = beatdowns.sort((a, b) => {
+        const filtered = beatdowns.filter((b) => !b.eventName || (b.eventName && !b.eventName.includes("Shield Lock") && !b.eventName.includes("DR - ")));
+        const sorted = filtered.sort((a, b) => {
           const eventAName = a.aoLocation ? a.aoLocation.name : a.eventName;
           const eventBName = b.aoLocation ? b.aoLocation.name : b.eventName;
           if (!eventAName) {
