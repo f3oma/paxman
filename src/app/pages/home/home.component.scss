@@ -103,19 +103,19 @@
 
         .hasClaimedData, .dataNotClaimed {
           display: flex;
-          justify-content: center;
-          align-items: center;
           width: 100%;
-          padding: 12px;
+          flex-wrap: wrap;
+          justify-content: center;
 
           .quick-action {
-            width: 100%;
-            padding: 24px;
-            background-color: white;
+            padding: 12px 24px;
+            color: #fff;
+            background-color: #2f2f2f;
             margin: 4px;
             text-wrap: nowrap;
             box-shadow: 0px 1px 4px #ddd;
             cursor: pointer;
+            font-weight: bold;
 
             .icon mat-icon {
               color: orange;
@@ -181,7 +181,7 @@
 
 .upcoming-qs {
   width: 100%;
-  padding: 8px;
+  padding: 8px 0;
   text-align: left;
 
   h4 {
@@ -230,6 +230,9 @@
 @media only screen and (max-width: 450px) {
   .side-container {
     padding: 24px 0 !important;
+  }
+  .quick-action {
+    width: 100% !important;
   }
 }
 
