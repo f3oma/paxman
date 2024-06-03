@@ -187,14 +187,13 @@ export class WorkoutManagerService {
         }
     }
 
-    public async isAttendanceReported(beatdownId: string): Promise<boolean> {
+    public async getReportedAttendance(beatdownId: string): Promise<IBeatdownAttendance | null> {
         const beatdownAttendanceRef = doc(this.communityWorkoutCollection, beatdownId);
         const beatdownAttendanceEntity = (await getDoc(beatdownAttendanceRef));
-        if (beatdownAttendanceEntity.exists() && beatdownAttendanceEntity.data().qReported) {
-            return true;
-        } else {
-            return false;
-        }
+        if (beatdownAttendanceEntity.exists())
+            return beatdownAttendanceEntity.data();
+        else
+            return null;
     }
 
     private async addUserToCommunityWorkoutAttendanceIfMissing(beatdownAttendance: IBeatdownAttendance, userRef: DocumentReference<PaxUser>): Promise<void> {

@@ -1,5 +1,6 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { Component } from '@angular/core';
+import { or, where } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap } from 'rxjs';
 import { CommunityWorkoutReportComponent, CommunityWorkoutReportProps } from 'src/app/dialogs/community-workout-report/community-workout-report.component';
@@ -38,7 +39,8 @@ export class HomeComponent {
   public anniversaryEndDate: Date = new Date();
   public anniversaryStartDate: Date = new Date();
   public user: PaxUser | undefined = undefined;
-  beatdownsRequiringAttendanceData: Beatdown[] = [];
+  beatdownsRequiringAttendanceData: { beatdown: Beatdown, isReported: boolean, paxCount: number }[] = [];
+  upcomingQs: Beatdown[] = [];
 
   constructor(
     private userAuthService: UserAuthenticationService,
@@ -74,6 +76,11 @@ export class HomeComponent {
   public async getPaxUserData(paxDataId: string, siteQLocationRef: AoLocationRef | undefined) {
    this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
    this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
+   const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
+   const threeMonthsOut = new Date();
+   const today = new Date();
+   threeMonthsOut.setMonth(today.getMonth() + 3);
+   this.upcomingQs = await this.beatdownService.getBeatdownsBetweenDates(today, threeMonthsOut, [or(where("qUserRef", "==", userRef), where("coQUserRef", "==", userRef))]);
   }
 
   reportCommunityBeatdownAttendance(beatdown: Beatdown) {
@@ -90,7 +97,7 @@ export class HomeComponent {
       if (!res) {
         return;
       } else {
-        this.beatdownsRequiringAttendanceData = this.beatdownsRequiringAttendanceData.filter(b => b.id !== beatdown.id);
+        this.beatdownsRequiringAttendanceData.find(b => b.beatdown.id === beatdown.id)!.isReported = true;
       }
     });
   }    

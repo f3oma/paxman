@@ -1,24 +1,34 @@
 <div class="home-container">
   <div class="primary-content">
-    <div class="top-head">
-      <img src="/assets/logo.svg" alt="Logo">
-      <p>F3 Omaha Pax Network</p>
-    </div>
     <div class="content" *ngIf="isLoggedIn; else loggedOut">
-      <div class="attendance-report-required" *ngIf="beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0">
-        <h4>Report Beatdown Attendance</h4>
-        <button *ngFor="let beatdown of beatdownsRequiringAttendanceData" mat-button class="report-attendance-btn" (click)="reportCommunityBeatdownAttendance(beatdown)">
-          <b>{{beatdown.eventName ? beatdown.eventName : beatdown.aoLocation?.name }}</b> - {{beatdown.date | date: 'fullDate'}}<mat-icon>notification_important</mat-icon>
-        </button>
-      </div>
+      <h4 class="quick-actions-header">Quick actions</h4>
       <div class="quick-actions">
-        <h4>Quick actions</h4>
         <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/settings']">Claim My Data <mat-icon>person</mat-icon></button>
         <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']"><mat-icon>search</mat-icon>Search PAX</button>
         <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
         <button mat-button class="action-btn" [routerLink]="['/weekly-schedule']"><mat-icon>list</mat-icon>Weekly Q Schedule</button>
         <button *ngIf="hasClaimedData" mat-button class="action-btn" (click)="reportAttendance()"><mat-icon>directions_run</mat-icon>Log Workout</button>
         <button *ngIf="hasClaimedData && isAdminOrSiteQ" mat-button class="action-btn q-schedule-btn" [routerLink]="['/admin/q-scheduler']"><mat-icon>alarm</mat-icon> Q-Scheduler</button>
+      </div>
+      <div class="attendance-report-required" *ngIf="hasClaimedData && beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0">
+        <h4 class="report-attendance-header">Report Beatdown Attendance</h4>
+        <p>It looks like you might have Q'd recently, please report attendance.</p>
+        <div class="report-attendance-buttons">
+          <ng-container *ngFor="let attendance of beatdownsRequiringAttendanceData">
+            <div class="alreadyReported" *ngIf="attendance.isReported">
+              <p><i>Attendance at {{attendance.beatdown.eventName ? attendance.beatdown.eventName : attendance.beatdown.aoLocation?.name }} has been reported ({{attendance.paxCount}})</i></p>
+            </div>
+            <button *ngIf="!attendance.isReported" mat-button class="report-attendance-btn" (click)="reportCommunityBeatdownAttendance(attendance.beatdown)">
+              <b>{{attendance.beatdown.eventName ? attendance.beatdown.eventName : attendance.beatdown.aoLocation?.name }}</b> - {{attendance.beatdown.date | date: 'fullDate'}}<mat-icon>notification_important</mat-icon>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+      <div class="upcoming-qs" *ngIf="hasClaimedData && upcomingQs.length > 0">
+        <h4 class="upcoming-qs-header">My Upcoming Q's</h4>
+        <ul>
+            <li *ngFor="let beatdown of upcomingQs">{{beatdown.date | date: 'fullDate'}} at <b>{{beatdown.eventName ? beatdown.eventName : beatdown.aoLocation?.name }}</b></li>
+        </ul>
       </div>
     </div>
   </div>
@@ -43,7 +53,7 @@
     </div>
     <div class="new-pax" *ngIf="anniversaryPax && anniversaryPax.length > 0" @fadeInOut>
       <h4>Weekly Anniversaries</h4>
-      <p>{{anniversaryStartDate | date: "MM/dd"}} - {{anniversaryEndDate | date: "MM/dd"}}</p>
+      <p class="anniversaryDate">{{anniversaryStartDate | date: "MM/dd"}} - {{anniversaryEndDate | date: "MM/dd"}}</p>
       <div class="recent-pax-list">
         <div class="pax-line" *ngFor="let pax of anniversaryPax" [routerLink]="['/users/' + pax.id]">
           <div class="pax-data">
@@ -66,6 +76,8 @@
 
 <ng-template #loggedOut>
   <div class="content">
+    <h2><b>Welcome to F3 Omaha's PaxNet!</b></h2>
+    <p>To get started and join the community, please use the button below to get authenticated.</p>
     <button *ngIf="!isLoggedIn" mat-button id="login-btn" class="action-btn" [routerLink]="['/login']">Log in to continue<mat-icon>lock</mat-icon></button>
   </div>
 </ng-template>

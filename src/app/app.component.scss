@@ -6,6 +6,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.navbar-brand {
+  height: 65px;
+  width: 190px;
+  .logo {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    width: 100%;
+  }
+}
+
 h1,
 h2,
 h3,

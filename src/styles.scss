@@ -42,7 +42,7 @@ $homebase-theme: mat.define-light-theme((
 html, body { height: 100%; }
 body { 
   margin: 0; 
-  font-family: "Inter";
+  font-family: "Inter" !important;
   font-size: 14px;
   color: #333;
 }

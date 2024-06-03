@@ -105,13 +105,18 @@ export class BeatdownService {
             if (beatdownsRequiringAttendanceData.filter(b => b.id === beatdownsTodayByQ[0].id).length === 0)
                 beatdownsRequiringAttendanceData.push(...beatdownsTodayByQ);
         }
-
-        // Finally, filter out beatdowns that have attendance reported already.
-        const result = [];
+        
+        // Finally, assign beatdowns with their reported status
+        const result: { beatdown: Beatdown, isReported: boolean, paxCount: number }[] = [];
         for (let beatdown of beatdownsRequiringAttendanceData) {
-            if (!(await this.workoutService.isAttendanceReported(beatdown.id))) {
-                result.push(beatdown);
+            const attendanceData = await this.workoutService.getReportedAttendance(beatdown.id);
+            let isReported = false;
+            let paxCount = 0;
+            if (attendanceData !== null) {
+                isReported = attendanceData.qReported;
+                paxCount = attendanceData.totalPaxCount;
             }
+            result.push({ beatdown, isReported, paxCount });
         }
 
         return result;
