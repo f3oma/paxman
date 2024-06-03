@@ -109,16 +109,17 @@
 
           .quick-action {
             padding: 12px 24px;
-            color: #fff;
-            background-color: #2f2f2f;
+            color: #2f2f2f;
+            background-color: orange;
             margin: 4px;
             text-wrap: nowrap;
             box-shadow: 0px 1px 4px #ddd;
             cursor: pointer;
             font-weight: bold;
+            border-radius: 7px;
 
             .icon mat-icon {
-              color: orange;
+              color: #2f2f2f;
             }
           }
         }
@@ -133,7 +134,7 @@
           padding: 22px 0px;
           max-width: 190px;
         }
-        .q-schedule-btn {
+        .q-schedule-btn, #qScheduler {
           background-color: #7b8ce2;
         }
         #claim-data-btn {
