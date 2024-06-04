@@ -3,34 +3,12 @@
     <div class="content" *ngIf="isLoggedIn; else loggedOut">
       <h4 class="quick-actions-header">Quick actions</h4>
       <div class="quick-actions">
-        <div class="hasClaimedData" *ngIf="hasClaimedData">
-          <div id="search" class="quick-action" [routerLink]="['/search']">
-            <div class="icon"><mat-icon>search</mat-icon></div>
-            <div class="title">Search PAX</div>
-          </div>
-          <div id="addPax" class="quick-action" [routerLink]="['/add-pax']">
-            <div class="icon"><mat-icon>person_add</mat-icon></div>
-            <div class="title">Add an FNG</div>
-          </div>
-          <div id="logWorkout" class="quick-action" (click)="reportAttendance()">
-            <div class="icon"><mat-icon>directions_run</mat-icon></div>
-            <div class="title">Log Workout</div>
-          </div>
-          <div id="weeklySchedule" class="quick-action" [routerLink]="['/weekly-schedule']">
-            <div class="icon"><mat-icon>list</mat-icon></div>
-            <div class="title">Weekly Q Schedule</div>
-          </div>
-          <div id="qScheduler" *ngIf="isAdminOrSiteQ" class="quick-action" [routerLink]="['/admin/q-scheduler']">
-            <div class="icon"><mat-icon>calendar_month</mat-icon></div>
-            <div class="title">Q-Scheduler</div>
-          </div>
-        </div>
-        <div class="dataNotClaimed" *ngIf="!hasClaimedData">
-          <div id="claimMyData" class="quick-action" [routerLink]="['/settings']">
-            <div class="icon"></div>
-            <div class="title">Claim my Data</div>
-          </div>
-        </div>
+          <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/settings']">Claim My Data <mat-icon>person</mat-icon></button>
+          <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']"><mat-icon>search</mat-icon>Search PAX</button>
+          <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>add</mat-icon></button>
+          <button mat-button class="action-btn" [routerLink]="['/weekly-schedule']"><mat-icon>list</mat-icon>Weekly Q Schedule</button>
+          <button *ngIf="hasClaimedData" mat-button class="action-btn" (click)="reportAttendance()"><mat-icon>directions_run</mat-icon>Log Workout</button>
+          <button *ngIf="hasClaimedData && isAdminOrSiteQ" mat-button class="action-btn q-schedule-btn" [routerLink]="['/admin/q-scheduler']"><mat-icon>alarm</mat-icon> Q-Scheduler</button>
       </div>
       <div class="attendance-report-required" *ngIf="hasClaimedData && beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0">
         <h4 class="report-attendance-header">Report Beatdown Attendance</h4>

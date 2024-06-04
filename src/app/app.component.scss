@@ -1,9 +1,6 @@
 :host {
   font-size: 14px;
   color: #333;
-  box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .navbar-brand {
@@ -64,7 +61,6 @@ p {
   align-items: center;
   background-color: #2d364c;
   color: white;
-  font-weight: 600;
 }
 
 .navbar img {
@@ -77,5 +73,4 @@ p {
   width: 100%;
   height: 2.5rem;
   text-align: center;
-
 }

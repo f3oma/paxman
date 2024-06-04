@@ -111,13 +111,6 @@
   .graph-container {
     padding: 20px;
 
-    .legend {
-      display: flex;
-      flex-direction: row;
-      gap: 8px;
-      align-items: center;
-    }
-
     .legend-square {
       display: block;
       height: var(--square-size);
@@ -151,6 +144,21 @@
     } 
 }
 
+.legend {
+  display: flex;
+  flex-direction: column !important;
+  align-items: flex-start;
+  gap: 8px;
+
+  li {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
 @media only screen and (max-width: 800px) {
   .inner-data {
     flex-direction: column !important;
@@ -159,4 +167,15 @@
     --square-size: 13px;
     --square-gap: 4px;
   }
+  .legend {
+    padding: 0 !important;
+  }
+  .days {
+    padding: 0 !important;
+  }
+  .graph-container {
+    width: 100% !important;
+    overflow: scroll !important;
+  }
+
 }
