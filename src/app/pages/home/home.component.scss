@@ -7,6 +7,52 @@
   text-align: center;
   width: 100%;
 
+  .challengeAnnouncement {
+    background-color: #ffffff;
+    box-shadow: 0px 2px 5px #ddd;
+    color: #000;
+    padding: 16px;
+    margin: 0 16px 32px 16px;
+    border-radius: 7px;
+
+    .display-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+
+      .image {
+        img {
+          height: 150px;
+          width: 150px;
+        }
+      }
+  
+      .text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        h5 {
+          font-size: 18px;
+          font-weight: bold;
+        }
+        p {
+          margin-bottom: 8px;
+          text-align: left;
+        }
+      }
+    }
+
+
+    #join-challenge {
+      background-color: rgb(255, 132, 0) !important;
+      color: #fff;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+  }
+
   .side-container {
     width: 100%;
     border-top: 1px solid #ddd;
@@ -180,7 +226,7 @@
   color: #fff;
 }
 
-.upcoming-qs {
+.upcoming-qs, .active-challenges {
   width: 100%;
   padding: 8px 0;
   text-align: left;
@@ -193,6 +239,29 @@
   li {
     font-size: 16px;
     list-style: circle;
+  }
+
+  .challenges {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+
+    .challenge {
+      background: linear-gradient(rgb(162, 193, 255), #edb1fa);
+      color: #333;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 8px;
+  
+      h5 {
+        font-weight: bold;
+        font-size: 14px;
+        margin: 0;
+      }
+      p {
+        margin: 0;
+      }
+    }
   }
 }
 
@@ -242,6 +311,20 @@
   }
   .quick-actions {
     width: 100% !important;
+  }
+  .display-row {
+    flex-direction: column !important;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+    .text {
+      align-items: center !important;
+
+      p {
+        text-align: center !important;
+      }
+    }
   }
 }
 

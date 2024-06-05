@@ -3,13 +3,16 @@ import { Component } from '@angular/core';
 import { or, where } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap } from 'rxjs';
+import { ChallengeDetail, ChallengeDetailProps, ChallengeInformation, IterativeCompletionRequirements } from 'src/app/dialogs/challenge-detail/challenge-detail.component';
 import { CommunityWorkoutReportComponent, CommunityWorkoutReportProps } from 'src/app/dialogs/community-workout-report/community-workout-report.component';
 import { PersonalWorkoutReportComponent, UserReportedWorkoutProps } from 'src/app/dialogs/personal-workout-report/personal-workout-report.component';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
 import { Beatdown } from 'src/app/models/beatdown.model';
+import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from 'src/app/models/user-challenge.model';
 import { AoLocationRef, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
+import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welcome-email.service';
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
@@ -41,12 +44,14 @@ export class HomeComponent {
   public user: PaxUser | undefined = undefined;
   beatdownsRequiringAttendanceData: { beatdown: Beatdown, isReported: boolean, paxCount: number }[] = [];
   upcomingQs: Beatdown[] = [];
+  activeChallenges: BaseChallenge[] = [];
+  showChallengeBanner: boolean = false;
 
   constructor(
     private userAuthService: UserAuthenticationService,
     private paxManagerService: PaxManagerService,
     private aoManagerService: AOManagerService,
-    private mailService: PaxWelcomeEmailService,
+    private challengeManager: ChallengeManager,
     private beatdownService: BeatdownService,
     private matDialog: MatDialog
   ) {
@@ -74,13 +79,86 @@ export class HomeComponent {
   }
 
   public async getPaxUserData(paxDataId: string, siteQLocationRef: AoLocationRef | undefined) {
-   this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
-   this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
-   const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
-   const threeMonthsOut = new Date();
-   const today = new Date();
-   threeMonthsOut.setMonth(today.getMonth() + 3);
-   this.upcomingQs = await this.beatdownService.getBeatdownsBetweenDates(today, threeMonthsOut, [or(where("qUserRef", "==", userRef), where("coQUserRef", "==", userRef))]);
+    this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
+    this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
+
+    this.handleChallenges(paxDataId);
+
+    const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
+    const threeMonthsOut = new Date();
+    const today = new Date();
+    threeMonthsOut.setMonth(today.getMonth() + 3);
+    this.upcomingQs = await this.beatdownService.getBeatdownsBetweenDates(today, threeMonthsOut, [or(where("qUserRef", "==", userRef), where("coQUserRef", "==", userRef))]);
+  }
+
+  async handleChallenges(paxDataId: string) {
+    this.activeChallenges = await this.challengeManager.getActiveChallengesForUser(paxDataId);
+
+    // Remove banner if already joined
+    let showChallengeBanner = true;
+    for (let challenge of this.activeChallenges) {
+      if (challenge.name === "July Murph Challenge - 2024") {
+        showChallengeBanner = false;
+      }
+    }
+    this.showChallengeBanner = showChallengeBanner;
+
+    await this.challengeCleanup(this.activeChallenges);
+  }
+
+  async challengeCleanup(challenges: BaseChallenge[]) {
+    const today = new Date();
+    const challengesToUpdate = [];
+    for(let challenge of challenges) {
+      console.log(challenge.endDateString);
+      const endDate = new Date(challenge.endDateString);
+      console.log(endDate);
+      if (endDate < today) {
+        if (challenge.state !== ChallengeState.Completed) {
+          challenge.updateState(ChallengeState.Failed);
+          challengesToUpdate.push(challenge);
+        }
+      }
+    }
+    
+    let challengeToUpdateNameSet = new Set(challengesToUpdate.map(c => c.id));
+    if (challengesToUpdate.length > 0) {
+      const promises: Promise<void>[] = [];
+      challengesToUpdate.forEach((c) => promises.push(this.challengeManager.updateChallenge(c)));
+      await Promise.all(promises);
+    }
+
+    this.activeChallenges = this.activeChallenges.filter((c) => !challengeToUpdateNameSet.has(c.id));
+  }
+
+  joinChallenge() {
+    // TODO: Move to class level property
+    const challengeInformation: ChallengeInformation = {
+      description: 'Take part in this year\'s Murph Challenge by completing 20 days of murphs during the month of July. Most AOs will offer a murph pre-activity giving you ample opportunities! To log your completed Murphs, record a murph pre-activity in the month of July. Complete this challenge and earn a new profile badge',
+      imageSrc: 'assets/challenges/murph-challenge-2024.png',
+      challengeBase: new BaseChallenge('', this.user!, "July Murph Challenge - 2024", ChallengeType.IterativeCompletions, ChallengeState.PreRegistered, '07/01/2024', '08/01/2024'),
+      completionRequirements: {
+        totalCompletionsRequired: 20
+      } as IterativeCompletionRequirements
+    };
+
+    this.matDialog.open(ChallengeDetail, {
+      data: <ChallengeDetailProps> {
+        challenge: challengeInformation
+      },
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    }).afterClosed().subscribe((res) => {
+      if (res) {
+        this.handleChallenges(this.user!.id);
+      }
+    })
+  }
+
+  isIterativeCompletionChallenge(challenge: BaseChallenge): challenge is IterativeCompletionChallenge {
+    return (challenge as IterativeCompletionChallenge).activeCompletions !== undefined;
   }
 
   reportCommunityBeatdownAttendance(beatdown: Beatdown) {
@@ -105,7 +183,8 @@ export class HomeComponent {
   reportAttendance() {
     this.matDialog.open(PersonalWorkoutReportComponent, {
       data: <UserReportedWorkoutProps> {
-        user: this.user
+        user: this.user,
+        activeChallenges: this.activeChallenges,
       },
       maxWidth: '100vw',
       maxHeight: '100vh',

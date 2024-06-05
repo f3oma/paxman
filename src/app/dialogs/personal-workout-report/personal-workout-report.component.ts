@@ -4,14 +4,17 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
-import { UserReportedWorkout } from 'src/app/models/beatdown-attendance';
+import { PreActivity, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
+import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { BeatdownSearchService } from 'src/app/services/beatdown-search.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
+import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
 
 export interface UserReportedWorkoutProps {
-  user: PaxUser
+  user: PaxUser,
+  activeChallenges: BaseChallenge[];
 }
 
 export const enum AvailableTabs {
@@ -46,6 +49,7 @@ export class PersonalWorkoutReportComponent {
   });
 
   user: PaxUser;
+  activeChallenges: BaseChallenge[] = [];
   userSaveLoading: boolean = false;
 
   filteredBeatdownOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
@@ -58,10 +62,12 @@ export class PersonalWorkoutReportComponent {
     private workoutService: WorkoutManagerService,
     private beatdownSearchService: BeatdownSearchService,
     private beatdownService: BeatdownService,
+    private challengeManager: ChallengeManager,
     public dialogRef: MatDialogRef<PersonalWorkoutReportComponent>,
     @Inject(MAT_DIALOG_DATA) public data: UserReportedWorkoutProps
     ) {
     this.user = data.user;
+    this.activeChallenges = data.activeChallenges;
 
     this.f3OmahaForm.controls['preActivity'].setValue('None');
     this.f3OmahaForm.controls['beatdown'].valueChanges.pipe(
@@ -91,6 +97,30 @@ export class PersonalWorkoutReportComponent {
     }
 
     await this.workoutService.createPersonalReportedWorkout(workoutData, this.user);
+
+    // Challenges, this will need to be centralized...
+    if (this.activeChallenges.length > 0) {
+      for (let challenge of this.activeChallenges) {
+        if (challenge.type === ChallengeType.IterativeCompletions && 
+          challenge.name === "July Murph Challenge - 2024" &&
+          workoutData.preActivity === PreActivity.Murph && 
+          new Date(challenge.startDateString) < new Date()) 
+          {
+          const iterativeChallenge = challenge as IterativeCompletionChallenge;
+
+          // Update the state, then handle complete states
+          iterativeChallenge.updateState(ChallengeState.InProgress);
+          iterativeChallenge.addNewIteration();
+
+          if (iterativeChallenge.isComplete()) {
+            await this.challengeManager.completeChallenge(iterativeChallenge);
+          } else {
+            await this.challengeManager.updateChallenge(iterativeChallenge);
+          }
+        }
+      }
+    }
+
     this.dialogRef.close();
   }
 

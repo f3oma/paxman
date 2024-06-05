@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="eventData" *ngIf="!showCompleteMessage">
+        <img [src]="challenge.imageSrc" />
+        <h4>{{challenge.challengeBase.name}}</h4>
+        <p>{{challenge.description}}</p>
+    </div>
+    <div class="completeMessage" *ngIf="showCompleteMessage">
+        <h2><mat-icon id="success">check</mat-icon> You're in! Good luck.</h2>
+    </div>
+    <div class="actions" *ngIf="!showCompleteMessage">
+        <button class="primary-action" *ngIf="isActive" mat-raised-button style="background-color: #ff8400;" (click)="joinChallenge()">Join the Challenge</button>
+        <button class="primary-action" *ngIf="!isActive" mat-raised-button style="background-color: #ff8400;" (click)="preRegister()">Pre-register</button>
+        <button mat-flat-button (click)="userCancel()">Cancel</button>
+    </div>
+</div>

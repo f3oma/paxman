@@ -1,6 +1,7 @@
 import { Badge } from "../models/user-profile-data.model";
 
 export enum Badges {
+    // Leadership
     TheWeasel = 'the weasel',
     Redwood = 'redwood',
     SectorLeader = 'sector leader',
@@ -13,8 +14,14 @@ export enum Badges {
     Nantan = 'nantan',
     NantanEmeritus = 'nantan emeritus',
     CommzQ = 'commz q',
+
+    // Age
     Respect = 'respect',
     Hate = 'hate',
+
+    // Activity
+    FarvaAward = 'farva award',
+    MurphChallenge2024 = 'murph challenge 2024',
 }
 
 export const availableBadges: Array<Badge | undefined> = [
@@ -33,6 +40,15 @@ export const availableBadges: Array<Badge | undefined> = [
     getBadgeDetail(Badges.Respect),
     getBadgeDetail(Badges.Hate),
 ];
+
+export function badgeFromChallengeName(challengeName: string): Badge | undefined {
+    switch(challengeName) {
+        case "July Murph Challenge - 2024":
+            return getBadgeDetail(Badges.MurphChallenge2024)
+        default:
+            return undefined;
+    }
+}
 
 export function getBadgeDetail(badge: string): Badge | undefined {
     const badgeNoCase = badge.toLowerCase();
@@ -120,6 +136,12 @@ export function getBadgeDetail(badge: string): Badge | undefined {
                 text: 'Hate',
                 textColor: '#fff',
                 backgroundColor: '#54c4ff'
+            };
+        case Badges.MurphChallenge2024:
+            return {
+                text: 'Murph Challenge \'24',
+                textColor: '#fff',
+                backgroundColor: 'linear-gradient(360deg, #9432af, #5436ea)'
             };
         default:
             console.error("Badge not found");
