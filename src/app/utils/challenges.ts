@@ -29,13 +29,13 @@ export function getChallengeInformation(challenge: Challenges, user: PaxUser): C
 
 export const createSummerMurph2024ChallengeInformation = (paxUser: PaxUser): ChallengeInformation => {
     return {
-        description: `Take part in this year's Murph Challenge by completing 20 murphs from 07/01 to 08/26. 
+        description: `Take part in this year's Murph Challenge by completing 24 murphs in 8 weeks (07/01 - 08/26). 
         Most AOs will offer a murph pre-activity giving you ample opportunities! To log your completed Murphs, 
         record a murph pre-activity using 'Log Workout'. Complete this challenge and earn a new profile badge and community recognition`,
         imageSrc: 'assets/challenges/murph-challenge-2024.png',
         challengeBase: new BaseChallenge('', paxUser, Challenges.SummerMurph2024, ChallengeType.IterativeCompletions, ChallengeState.PreRegistered, '07/01/2024', '08/26/2024'),
         completionRequirements: {
-        totalCompletionsRequired: 20
+        totalCompletionsRequired: 24
         } as IterativeCompletionRequirements
     }
 }
