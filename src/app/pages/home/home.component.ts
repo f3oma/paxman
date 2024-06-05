@@ -17,6 +17,7 @@ import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welc
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
+import { Challenges, getChallengeInformation } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-home',
@@ -97,7 +98,7 @@ export class HomeComponent {
     // Remove banner if already joined
     let showChallengeBanner = true;
     for (let challenge of this.activeChallenges) {
-      if (challenge.name === "July Murph Challenge - 2024") {
+      if (challenge.name === Challenges.SummerMurph2024) {
         showChallengeBanner = false;
       }
     }
@@ -110,38 +111,34 @@ export class HomeComponent {
     const today = new Date();
     const challengesToUpdate = [];
     for(let challenge of challenges) {
-      console.log(challenge.endDateString);
       const endDate = new Date(challenge.endDateString);
-      console.log(endDate);
+      const startDate = new Date(challenge.startDateString);
       if (endDate < today) {
         if (challenge.state !== ChallengeState.Completed) {
           challenge.updateState(ChallengeState.Failed);
           challengesToUpdate.push(challenge);
+          continue;
+        }
+      }
+      if (startDate <= today) {
+        if (challenge.state === ChallengeState.PreRegistered) {
+          challenge.updateState(ChallengeState.InProgress);
+          challengesToUpdate.push(challenge);
         }
       }
     }
-    
-    let challengeToUpdateNameSet = new Set(challengesToUpdate.map(c => c.id));
+
     if (challengesToUpdate.length > 0) {
       const promises: Promise<void>[] = [];
       challengesToUpdate.forEach((c) => promises.push(this.challengeManager.updateChallenge(c)));
       await Promise.all(promises);
     }
 
-    this.activeChallenges = this.activeChallenges.filter((c) => !challengeToUpdateNameSet.has(c.id));
+    this.activeChallenges = await this.challengeManager.getActiveChallengesForUser(this.user!.id);
   }
 
   joinChallenge() {
-    // TODO: Move to class level property
-    const challengeInformation: ChallengeInformation = {
-      description: 'Take part in this year\'s Murph Challenge by completing 20 days of murphs during the month of July. Most AOs will offer a murph pre-activity giving you ample opportunities! To log your completed Murphs, record a murph pre-activity in the month of July. Complete this challenge and earn a new profile badge',
-      imageSrc: 'assets/challenges/murph-challenge-2024.png',
-      challengeBase: new BaseChallenge('', this.user!, "July Murph Challenge - 2024", ChallengeType.IterativeCompletions, ChallengeState.PreRegistered, '07/01/2024', '08/01/2024'),
-      completionRequirements: {
-        totalCompletionsRequired: 20
-      } as IterativeCompletionRequirements
-    };
-
+    const challengeInformation = getChallengeInformation(Challenges.SummerMurph2024, this.user!);
     this.matDialog.open(ChallengeDetail, {
       data: <ChallengeDetailProps> {
         challenge: challengeInformation

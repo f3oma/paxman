@@ -11,6 +11,7 @@ import { BeatdownSearchService } from 'src/app/services/beatdown-search.service'
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
+import { Challenges } from 'src/app/utils/challenges';
 
 export interface UserReportedWorkoutProps {
   user: PaxUser,
@@ -102,7 +103,7 @@ export class PersonalWorkoutReportComponent {
     if (this.activeChallenges.length > 0) {
       for (let challenge of this.activeChallenges) {
         if (challenge.type === ChallengeType.IterativeCompletions && 
-          challenge.name === "July Murph Challenge - 2024" &&
+          challenge.name === Challenges.SummerMurph2024 &&
           workoutData.preActivity === PreActivity.Murph && 
           new Date(challenge.startDateString) < new Date()) 
           {

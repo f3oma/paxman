@@ -1,4 +1,5 @@
 import { Badge } from "../models/user-profile-data.model";
+import { Challenges } from "./challenges";
 
 export enum Badges {
     // Leadership
@@ -43,7 +44,7 @@ export const availableBadges: Array<Badge | undefined> = [
 
 export function badgeFromChallengeName(challengeName: string): Badge | undefined {
     switch(challengeName) {
-        case "July Murph Challenge - 2024":
+        case Challenges.SummerMurph2024:
             return getBadgeDetail(Badges.MurphChallenge2024)
         default:
             return undefined;

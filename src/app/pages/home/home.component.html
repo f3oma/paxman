@@ -7,8 +7,8 @@
             <img src="assets/challenges/murph-challenge-2024.png" />
           </div>
           <div class="text">
-            <h5>July Murph Challenge - 2024</h5>
-            <p>Can you complete 20 murphs in 30 days? Prove it!</p>
+            <h5>Summer Murph Challenge - 2024</h5>
+            <p>Can you complete 20 murphs in 57 days? Prove it!</p>
             <button id="join-challenge" mat-flat-button (click)="joinChallenge()">Join the challenge</button>
           </div>
         </div>
@@ -48,7 +48,8 @@
           <div class="challenge" *ngFor="let challenge of activeChallenges">
             <h5>{{challenge.name}}</h5>
             <ng-container *ngIf="isIterativeCompletionChallenge(challenge)">
-              <p>Progress: {{ challenge.activeCompletions }} / {{challenge.totalToComplete }}</p>
+              <p *ngIf="challenge.state === 'pre-registered'">Pre-registered</p>
+              <p *ngIf="challenge.state === 'in-progress'">Progress: {{ challenge.activeCompletions }} / {{challenge.totalToComplete }}</p>
             </ng-container>
           </div>
         </div>

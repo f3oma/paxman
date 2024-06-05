@@ -66,7 +66,7 @@ export interface ChallengeInformation {
             await this.challengeManager.startChallenge(iterativeChallenge);
             this.showCompleteMessage = true;
             setTimeout(() => {
-                this.dialogRef.close();
+                this.dialogRef.close(true);
             }, 3000);
         }
     }
@@ -88,7 +88,7 @@ export interface ChallengeInformation {
             await this.challengeManager.startChallenge(iterativeChallenge);
             this.showCompleteMessage = true;
             setTimeout(() => {
-                this.dialogRef.close();
+                this.dialogRef.close(true);
             }, 3000);
         }
     }
