@@ -1,8 +1,20 @@
 <div class="home-container">
   <div class="primary-content">
     <div class="content" *ngIf="isLoggedIn; else loggedOut">
+      <div class="challengeAnnouncement" *ngIf="showChallengeBanner" @fadeInOut>
+        <div class="display-row">
+          <div class="image">
+            <img src="assets/challenges/murph-challenge-2024.png" />
+          </div>
+          <div class="text">
+            <h5>Summer Murph Challenge - 2024</h5>
+            <p>Can you complete 24 murphs in 8 weeks? Prove it!</p>
+            <button id="join-challenge" mat-flat-button (click)="joinChallenge()">Join the challenge</button>
+          </div>
+        </div>
+      </div>
       <h4 class="quick-actions-header">Quick actions</h4>
-      <div class="quick-actions">
+      <div class="quick-actions" @fadeInOut>
           <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/settings']">Claim My Data <mat-icon>person</mat-icon></button>
           <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/search']"><mat-icon>search</mat-icon>Search PAX</button>
           <button *ngIf="hasClaimedData" mat-button class="action-btn" [routerLink]="['/add-pax']">Add an FNG <mat-icon>person_add</mat-icon></button>
@@ -10,7 +22,7 @@
           <button *ngIf="hasClaimedData" mat-button class="action-btn" (click)="reportAttendance()"><mat-icon>directions_run</mat-icon>Log Workout</button>
           <button *ngIf="hasClaimedData && isAdminOrSiteQ" mat-button class="action-btn q-schedule-btn" [routerLink]="['/admin/q-scheduler']"><mat-icon>calendar_month</mat-icon> Q-Scheduler</button>
       </div>
-      <div class="attendance-report-required" *ngIf="hasClaimedData && beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0">
+      <div class="attendance-report-required" *ngIf="hasClaimedData && beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0" @fadeInOut>
         <h4 class="report-attendance-header">Report Beatdown Attendance</h4>
         <p>It looks like you might have Q'd recently, please report attendance.</p>
         <div class="report-attendance-buttons">
@@ -24,11 +36,23 @@
           </ng-container>
         </div>
       </div>
-      <div class="upcoming-qs" *ngIf="hasClaimedData && upcomingQs.length > 0">
+      <div class="upcoming-qs" *ngIf="hasClaimedData && upcomingQs.length > 0" @fadeInOut>
         <h4 class="upcoming-qs-header">My Upcoming Q's</h4>
         <ul>
             <li *ngFor="let beatdown of upcomingQs">{{beatdown.date | date: 'fullDate'}} at <b>{{beatdown.eventName ? beatdown.eventName : beatdown.aoLocation?.name }}</b></li>
         </ul>
+      </div>
+      <div class="active-challenges" *ngIf="hasClaimedData && activeChallenges.length > 0" @fadeInOut>
+        <h4 class="activeChallenges-header">Active Challenges</h4>
+        <div class="challenges">
+          <div class="challenge" *ngFor="let challenge of activeChallenges">
+            <h5>{{challenge.name}}</h5>
+            <ng-container *ngIf="isIterativeCompletionChallenge(challenge)">
+              <p *ngIf="challenge.state === 'pre-registered'">Pre-registered</p>
+              <p *ngIf="challenge.state === 'in-progress'">Progress: {{ challenge.activeCompletions }} / {{challenge.totalToComplete }}</p>
+            </ng-container>
+          </div>
+        </div>
       </div>
     </div>
   </div>

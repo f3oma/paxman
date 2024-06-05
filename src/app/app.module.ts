@@ -65,6 +65,7 @@ import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-sch
 import { PersonalWorkoutReportComponent } from './dialogs/personal-workout-report/personal-workout-report.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommunityWorkoutReportComponent } from './dialogs/community-workout-report/community-workout-report.component';
+import { ChallengeDetail } from './dialogs/challenge-detail/challenge-detail.component';
 
 @NgModule({
   declarations: [
@@ -105,7 +106,8 @@ import { CommunityWorkoutReportComponent } from './dialogs/community-workout-rep
     ExiconEditDialog,
     WeeklyQScheduleComponent,
     PersonalWorkoutReportComponent,
-    CommunityWorkoutReportComponent
+    CommunityWorkoutReportComponent,
+    ChallengeDetail,
   ],
   imports: [
     BrowserModule,
