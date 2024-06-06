@@ -76,11 +76,13 @@ export class SiteManagementComponent {
     //   if (data.retiredSiteQUsers) {
     //     for (let user of data.retiredSiteQUsers) {
     //       await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, user.id);
+    //       await this.userAuthService.promoteRole(UserRole.SiteQ, user.id);
     //     }
     //   }
     //   if (data.foundingSiteQUsers) {
     //     for (let user of data.foundingSiteQUsers) {
     //       await this.userProfileService.addBadgeToProfile(Badges.SiteFounder, user.id);
+    //       await this.userAuthService.promoteRole(UserRole.SiteQ, user.id);
     //     }
     //   }
     // }

@@ -1,0 +1,62 @@
+<ng-container *ngIf="!showChallengeNotFoundError; else challengeNotFound"></ng-container>
+<div class="loading" *ngIf="!loading; else loadingSpinner">
+    <div class="auth" *ngIf="authUserData$ | async as authUser">
+        <div class="container" *ngIf="challengeInformation" @fadeInOut>
+            <div class="challenge-data">
+                <div class="image">
+                    <img [src]="challengeInformation.imageSrc" />
+                </div>
+                <div class="details">
+                    <h2>{{challengeInformation.name}}</h2>
+                    <p>{{challengeInformation.description}}</p>
+                    <div class="duration">
+                        <p><b>Runs from {{challengeInformation.startDateString}} to {{ challengeInformation.endDateString }}</b></p>
+                    </div>
+                    <div class="actions">
+                        <button class="primary-action" *ngIf="!paxChallengeData" mat-raised-button id="join-challenge" (click)="joinChallenge()">Join the Challenge</button>
+                        <button class="primary-action" disabled="true" *ngIf="paxChallengeData" mat-raised-button id="youre-in">You're in!</button>
+                        <button *ngIf="paxChallengeData" mat-flat-button id="withdraw" (click)="withdraw()">Withdraw</button>
+                    </div>
+                </div>
+            </div>
+            <div class="challenge-leaderboard">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+                    <ng-container matColumnDef="f3Name">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name"> Participants ({{getRowCount()}}) </th>
+                        <td mat-cell *matCellDef="let challengeParticipant">
+                            <div class="user-chip" [routerLink]="'/users/' + challengeParticipant.paxUser.id">
+                                <div class="current-profile-img" [style.background-image]="'url(' + challengeParticipant.paxUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !challengeParticipant.paxUser.profilePhotoUrl }"></div>
+                                <span>{{challengeParticipant.paxUser.f3Name}}</span>
+                            </div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef> Status </th>
+                        <td mat-cell *matCellDef="let challengeParticipant"> {{getStateForDisplay(challengeParticipant.state)}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="totalCompleted" >
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by completed count"> Total Completed </th>
+                        <td mat-cell *matCellDef="let challengeParticipant"> {{challengeParticipant.activeCompletions}} </td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #challengeNotFound>
+    <div class="challengeNotFound">
+      <h1>Challenge not found</h1>
+      <p>We either made a mistake, or this challenge does not exist.</p>
+      <button mat-raised-button (click)="goBack()">Go Back</button>
+    </div>
+  </ng-template>
+  
+  <ng-template #loadingSpinner>
+    <div class="fill-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  </ng-template>
+  

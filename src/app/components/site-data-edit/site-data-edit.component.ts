@@ -155,37 +155,19 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       const activeTempSet = new Set(this.temporaryActiveSiteQUsers.map(t => t.id));
       const retiredTempSet = new Set(this.temporaryRetiredSiteQUsers.map(t => t.id));
       const foundingTempSet = new Set(this.temporaryFoundingSiteQUsers.map(t => t.id));
-      let activeSQFieldChanged = false;
-      let retiredSQFieldChanged = false;
-      let foundingSQFieldChanged = false;
+      const activeOriginalSet = new Set(this.originalActiveSiteQUsers.map(t => t.id));
+      const retiredOriginalSet = new Set(this.originalRetiredSiteQUsers.map(t => t.id));
+      const foundingOriginalSet = new Set(this.originalFoundingSiteQUsers.map(t => t.id));
 
-      for (let activeQ of this.originalActiveSiteQUsers) {
-        if (!activeTempSet.has(activeQ.id)) {
-          activeSQFieldChanged = true;
-        }
-      }
-
-      for (let retiredQ of this.originalRetiredSiteQUsers) {
-        if (!retiredTempSet.has(retiredQ.id)) {
-          retiredSQFieldChanged = true;
-        }
-      }
-
-      for (let foundingQ of this.originalFoundingSiteQUsers) {
-        if (!foundingTempSet.has(foundingQ.id)) {
-          foundingSQFieldChanged = true;
-        }
-      }
-
-      if (activeSQFieldChanged) {
+      if (!this.setsAreEqual(activeOriginalSet, activeTempSet)) {
         await this.handleActiveSiteQSwaps();
       }
-      
-      if (retiredSQFieldChanged) {
+
+      if (!this.setsAreEqual(retiredOriginalSet, retiredTempSet)) {
         await this.handleRetiredSiteQSwaps();
       }
 
-      if (foundingSQFieldChanged) {
+      if (!this.setsAreEqual(foundingOriginalSet, foundingTempSet)) {
         await this.handleFoundingSiteQSwaps();
       }
   
@@ -205,6 +187,17 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       this.saveLoading = false;
       this.userSavedEmitter.emit(true);
     }
+  }
+
+  setsAreEqual(set1: Set<any>, set2: Set<any>): boolean {
+    if (set1.size !== set2.size) return false;
+    let isEqual = true;
+    set1.forEach(item => {
+        if (!set2.has(item)) {
+            isEqual = false;
+        }
+    });
+    return isEqual;
   }
 
   public deleteSite(site: IAOData) {
@@ -353,6 +346,7 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
         await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
+        await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, paxUser.id);
         retiredSiteQUsers.push(paxUser);
       }
     }
@@ -374,7 +368,7 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       const userRef = this.paxManagerService.getUserReference(siteq.userRef) as DocumentReference<PaxUser>;
       const paxUser = await this.paxManagerService.getPaxInfoByRef(userRef);
       if (paxUser && paxUser !== undefined) {
-        await this.authManagerService.promoteRole(UserRole.SiteQ, paxUser.id).catch((err) => console.error(err));
+        await this.authManagerService.promoteRole(UserRole.SiteQ, siteq.id).catch((err) => console.error(err));
         await this.userProfileService.addBadgeToProfile(Badges.SiteFounder, siteq.id);
         foundingSiteQUsers.push(paxUser);
       }

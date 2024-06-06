@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { or, where } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, tap } from 'rxjs';
-import { ChallengeDetail, ChallengeDetailProps, ChallengeInformation, IterativeCompletionRequirements } from 'src/app/dialogs/challenge-detail/challenge-detail.component';
+import { ChallengeDetail, ChallengeDetailProps } from 'src/app/dialogs/challenge-detail/challenge-detail.component';
 import { CommunityWorkoutReportComponent, CommunityWorkoutReportProps } from 'src/app/dialogs/community-workout-report/community-workout-report.component';
 import { PersonalWorkoutReportComponent, UserReportedWorkoutProps } from 'src/app/dialogs/personal-workout-report/personal-workout-report.component';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
@@ -138,10 +138,11 @@ export class HomeComponent {
   }
 
   joinChallenge() {
-    const challengeInformation = getChallengeInformation(Challenges.SummerMurph2024, this.user!);
+    const challengeInformation = getChallengeInformation(Challenges.SummerMurph2024);
     this.matDialog.open(ChallengeDetail, {
       data: <ChallengeDetailProps> {
-        challenge: challengeInformation
+        challenge: challengeInformation,
+        paxUser: this.user
       },
       maxWidth: '100vw',
       maxHeight: '100vh',

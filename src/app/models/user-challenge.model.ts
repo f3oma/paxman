@@ -19,7 +19,7 @@ export interface IChallengeEntityBase {
     name: string,
     type: ChallengeType,
     state: ChallengeState
-    startDateString: string; // Format '07-01-2024'
+    startDateString: string; // Format '07/01/2024'
     endDateString: string;
 }
 export interface IIterativeCompletionChallengeEntity extends IChallengeEntityBase {
