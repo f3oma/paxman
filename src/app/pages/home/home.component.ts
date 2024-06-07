@@ -17,7 +17,7 @@ import { PaxWelcomeEmailService } from 'src/app/services/email-services/pax-welc
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
-import { Challenges, getChallengeInformation } from 'src/app/utils/challenges';
+import { Challenges, getChallengeIdByName } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-home',
@@ -137,8 +137,13 @@ export class HomeComponent {
     this.activeChallenges = await this.challengeManager.getActiveChallengesForUser(this.user!.id);
   }
 
-  joinChallenge() {
-    const challengeInformation = getChallengeInformation(Challenges.SummerMurph2024);
+  async joinChallenge() {
+    const challengeId = getChallengeIdByName(Challenges.SummerMurph2024);
+    if (!challengeId) {
+      console.error("Unknown challenge");
+      return;
+    }
+    const challengeInformation = await this.challengeManager.getChallengeInformation(challengeId);
     this.matDialog.open(ChallengeDetail, {
       data: <ChallengeDetailProps> {
         challenge: challengeInformation,

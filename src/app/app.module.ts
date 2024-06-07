@@ -66,8 +66,9 @@ import { PersonalWorkoutReportComponent } from './dialogs/personal-workout-repor
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CommunityWorkoutReportComponent } from './dialogs/community-workout-report/community-workout-report.component';
 import { ChallengeDetail } from './dialogs/challenge-detail/challenge-detail.component';
-// import { ChallengesComponent } from './pages/challenges/challenges.component';
+import { ChallengesComponent } from './pages/challenges/challenges.component';
 import { ChallengeViewComponent } from './pages/challenges/challenge-view/challenge-view.component';
+import { TruncatePipe } from './utils/truncate.pipe';
 
 @NgModule({
   declarations: [
@@ -110,8 +111,9 @@ import { ChallengeViewComponent } from './pages/challenges/challenge-view/challe
     PersonalWorkoutReportComponent,
     CommunityWorkoutReportComponent,
     ChallengeDetail,
-    // ChallengesComponent,
+    ChallengesComponent,
     ChallengeViewComponent,
+    TruncatePipe,
   ],
   imports: [
     BrowserModule,

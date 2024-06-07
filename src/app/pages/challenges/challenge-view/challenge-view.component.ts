@@ -12,7 +12,7 @@ import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
-import { ChallengeInformation, ChallengeStatus, Challenges, IterativeCompletionRequirements, getChallengeInformation, getChallengesEnumKeyByValue } from 'src/app/utils/challenges';
+import { ChallengeInformation, ChallengeStatus, Challenges, IterativeCompletionRequirements, getChallengeIdByName, getChallengesEnumKeyByValue } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-challenge-view',
@@ -123,7 +123,12 @@ export class ChallengeViewComponent implements OnInit {
   }
 
   async getChallengeData(challenge: Challenges) {
-    this.challengeInformation = getChallengeInformation(challenge);
+    const id = getChallengeIdByName(challenge);
+    if (!id) {
+      console.error("Unknown challenge");
+      return;
+    }
+    this.challengeInformation = await this.challengeManager.getChallengeInformation(id);
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
     if (!tableData) {
       this.showChallengeNotFoundError = true;

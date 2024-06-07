@@ -23,7 +23,7 @@ import { QSchedulerComponent } from './pages/q-scheduler/q-scheduler.component';
 import { ExiconComponent } from './pages/exicon/exicon.component';
 import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exicon-approval.component';
 import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
-// import { ChallengesComponent } from './pages/challenges/challenges.component';
+import { ChallengesComponent } from './pages/challenges/challenges.component';
 import { ChallengeViewComponent } from './pages/challenges/challenge-view/challenge-view.component';
 
 const routes: Routes = [
@@ -85,11 +85,11 @@ const routes: Routes = [
     path: 'users/:id/unsubscribe',
     component: UnsubscribeComponent
   },
-  // {
-  //   path: 'challenges',
-  //   component: ChallengesComponent,
-  //   canActivate: [BasicAuthenticatedAuthGuard]
-  // },
+  {
+    path: 'challenges',
+    component: ChallengesComponent,
+    canActivate: [BasicAuthenticatedAuthGuard]
+  },
   {
     path: 'challenges/:name',
     component: ChallengeViewComponent,

@@ -5,30 +5,54 @@ import { Badges, badgeFromChallengeName } from "../utils/badges";
 import { DocumentData, Firestore, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where } from "@angular/fire/firestore";
 import { UserChallengeConverter } from "../utils/user-challenge.converter";
 import { PaxManagerService } from "./pax-manager.service";
-import { Challenges } from "../utils/challenges";
+import { ChallengeInformation, ChallengeStatus, Challenges } from "../utils/challenges";
+import { ChallengeInformationConverter } from "../utils/challenge-information.converter";
 
 @Injectable({
     providedIn: 'root'
 })
 export class ChallengeManager {
     firestore: Firestore = inject(Firestore);
-    private challengeConverter = this.userChallengeConverter.getConverter();
-    private UserChallengeCollection = collection(this.firestore, 'user_challenges').withConverter(this.challengeConverter);
-    
+    private UserChallengeCollection = collection(this.firestore, 'user_challenges').withConverter(this.userChallengeConverter.getConverter());
+    private ChallengeInformationCollection = collection(this.firestore, 'challenge_information').withConverter(this.challengeInformationConverter.getConverter());
+
     constructor(
         private paxManagerService: PaxManagerService,
         private userProfileService: UserProfileService,
-        private userChallengeConverter: UserChallengeConverter) {}
+        private userChallengeConverter: UserChallengeConverter,
+        private challengeInformationConverter: ChallengeInformationConverter) {}
+
+
+    // Get all challenge information for active challenges
+    async getAllActiveChallenges(): Promise<ChallengeInformation[]> {
+        const q = query(this.ChallengeInformationCollection, and(where("status", "in", ["pre-registration", "started"])));
+        return Promise.all((await getDocs<Promise<ChallengeInformation>, DocumentData>(q)).docs.map((d) => d.data()));
+    }
+
+    // Get challenge information for single challenge
+    async getChallengeInformation(challengeId: string) {
+        const ref = doc(this.ChallengeInformationCollection, challengeId);
+        return (await getDoc(ref)).data();
+    }
+
+    async addNewChallenge(challengeInformation: ChallengeInformation) {
+        return await addDoc(this.ChallengeInformationCollection, challengeInformation);
+    }
+
+    async deleteChallenge(challengeInformation: ChallengeInformation) {
+        const ref = doc(this.ChallengeInformationCollection, challengeInformation.id);
+        return await deleteDoc(ref);
+    }
 
     // Iterative challenges
     async startChallenge(challenge: BaseChallenge) {
-        await addDoc(this.UserChallengeCollection, challenge);
+        return await addDoc(this.UserChallengeCollection, challenge);
     }
 
     async updateChallenge(challenge: BaseChallenge) {
         // Update db
         const ref = doc(this.UserChallengeCollection, challenge.id);
-        await setDoc(ref, challenge);
+        return await setDoc(ref, challenge);
     }
 
     async completeChallenge(challenge: BaseChallenge) {
@@ -38,7 +62,7 @@ export class ChallengeManager {
             const badgeFromChallenge = badgeFromChallengeName(challenge.name);
             await this.userProfileService.addBadgeToProfileInternal(badgeFromChallenge, challenge.paxUser.id);
         }
-        await this.updateChallenge(challenge);
+        return await this.updateChallenge(challenge);
     }
 
     async withdrawUserFromChallenge(challenge: BaseChallenge) {

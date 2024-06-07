@@ -20,6 +20,7 @@ export enum ChallengeStatus {
 
 // Challenge Information defines basic details about the challenge
 export interface ChallengeInformation {
+    id?: string; // undefined when not set yet
     description: string;
     imageSrc: string;
     name: Challenges;
@@ -30,30 +31,12 @@ export interface ChallengeInformation {
     completionRequirements: ICompletionRequirements;
 }
 
-export function getChallengeInformation(challenge: Challenges): ChallengeInformation | null  {
+export function getChallengeIdByName(challenge: Challenges): string | null  {
     switch(challenge) {
         case Challenges.SummerMurph2024:
-            return createSummerMurph2024ChallengeInformation();
+            return "aI66pjf8m5wq5FBjGh4j";
         default:
             return null;
-    }
-}
-
-// Challenges - could be moved to db...
-export const createSummerMurph2024ChallengeInformation = (): ChallengeInformation => {
-    return {
-        description: `Take part in this year's Murph Challenge by completing 24 murphs in 8 weeks (07/01 - 08/26). 
-        Most AOs will offer a murph pre-activity giving you ample opportunities! To log your completed Murphs, 
-        record a murph pre-activity using 'Log Workout'. Complete this challenge and earn a new profile badge and community recognition`,
-        imageSrc: 'assets/challenges/murph-challenge-2024.png',
-        name: Challenges.SummerMurph2024,
-        type: ChallengeType.IterativeCompletions,
-        status: ChallengeStatus.PreRegistration,
-        startDateString: '07/01/2024',
-        endDateString: '08/26/2024',
-        completionRequirements: {
-            totalCompletionsRequired: 24
-        } as IterativeCompletionRequirements
     }
 }
 
