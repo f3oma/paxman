@@ -18,6 +18,9 @@
                         <p *ngIf="challenge.state === 'in-progress'">Progress: {{ challenge.activeCompletions }} / {{challenge.totalToComplete }}</p>
                       </ng-container>
                     </div>
+                    <div class="no-challenges" *ngIf="activeUserChallenges.length === 0">
+                        <p>No committed challenges.</p>
+                    </div>
                 </div>
             </div>
             <div class="section">
