@@ -2,6 +2,9 @@
   <div class="primary-content">
     <div class="content" *ngIf="isLoggedIn; else loggedOut">
       <div class="challengeAnnouncement" *ngIf="showChallengeBanner" @fadeInOut>
+        <div class="close" (click)="closeChallengeAnnouncement()">
+          <mat-icon>close</mat-icon>
+        </div>
         <div class="display-row">
           <div class="image">
             <img src="assets/challenges/murph-challenge-2024.png" />

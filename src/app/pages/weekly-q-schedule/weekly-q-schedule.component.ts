@@ -16,19 +16,36 @@ export class WeeklyQScheduleComponent {
   weekList: { dayName: string | undefined; date: Date; dateString: string }[] = [];
   loadingBeatdownData: boolean = true;
 
+  beatdownCache: Map<string, Beatdown[]> = new Map<string, Beatdown[]>();
+
+  initialWeekRange: string = '';
+  currentWeekDate: Date = new Date();
+  shouldShowScrollToday = true;
+
   constructor(
     private beatdownService: BeatdownService,
     @Inject(LOCALE_ID) private locale: string) {
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const firstDay = today.getDate() - today.getDay();
     const weekStartDate = new Date(today.setDate(firstDay));
-    const weekEndDate = new Date(today.setDate(weekStartDate.getDate()+7));
+    const weekEndDate = new Date(today.setDate(weekStartDate.getDate()+6));
+    weekEndDate.setHours(23, 59, 59, 0);
+    this.currentWeekDate = weekStartDate;
 
     this.createDayMap();
+    this.updateWeek(weekStartDate, weekEndDate);
+  }
+
+  updateWeek(weekStartDate: Date, weekEndDate: Date) {
+    this.loadingBeatdownData = true;
     this.initializeWeekList(weekStartDate);
     this.initializeBeatdowns(weekStartDate, weekEndDate);
     this.setWeekRangeString(weekStartDate, weekEndDate);
+    setTimeout(() => {
+      this.loadingBeatdownData = false;
+    }, 2000);
   }
 
   initializeWeekList(weekStartDate: Date) {
@@ -44,6 +61,32 @@ export class WeeklyQScheduleComponent {
       date = this.addDays(date, 1);
     }
     this.weekList = weekList;
+  }
+
+  viewPreviousWeek(currentWeekDate: Date) {
+    currentWeekDate.setDate(this.currentWeekDate.getDate() - 7);
+    currentWeekDate.setHours(0, 0, 0, 0);
+
+    const firstDay = currentWeekDate.getDate() - currentWeekDate.getDay();
+    const weekStartDate = new Date(currentWeekDate.setDate(firstDay));
+    const weekEndDate = new Date(currentWeekDate.setDate(weekStartDate.getDate()+6));
+    weekEndDate.setHours(23, 59, 59, 0);
+
+    this.updateWeek(weekStartDate, weekEndDate);
+    this.currentWeekDate = weekStartDate;
+  }
+
+  viewNextWeek(currentWeekDate: Date) {
+    currentWeekDate.setDate(this.currentWeekDate.getDate() + 7);
+    currentWeekDate.setHours(0, 0, 0, 0);
+
+    const firstDay = currentWeekDate.getDate() - currentWeekDate.getDay();
+    const weekStartDate = new Date(currentWeekDate.setDate(firstDay));
+    const weekEndDate = new Date(currentWeekDate.setDate(weekStartDate.getDate()+6));
+    weekEndDate.setHours(23, 59, 59, 0);
+
+    this.updateWeek(weekStartDate, weekEndDate);
+    this.currentWeekDate = weekStartDate;
   }
 
   addDays(date: Date, days: number): Date {
@@ -71,6 +114,12 @@ export class WeeklyQScheduleComponent {
   }
 
   async initializeBeatdowns(weekStartDate: Date, weekEndDate: Date) {
+    if (this.beatdownCache.has(weekStartDate.toDateString())) {
+      this.generateDailyBeatdowns(this.beatdownCache.get(weekStartDate.toDateString())!);
+      this.loadingBeatdownData = false;
+      return;
+    }
+
     const beatdowns = await this.beatdownService.getBeatdownsBetweenDates(weekStartDate, weekEndDate, []);
     const filtered = beatdowns.filter((b) => !b.eventName || (b.eventName && !b.eventName.includes("Shield Lock") && !b.eventName.includes("DR - ")));
     const sorted = filtered.sort((a, b) => {
@@ -84,14 +133,18 @@ export class WeeklyQScheduleComponent {
       }
       return eventAName > eventBName ? 1 : -1;
     });
+    this.beatdownCache.set(weekStartDate.toDateString(), sorted);
     this.generateDailyBeatdowns(sorted);
-    this.loadingBeatdownData = false;
   }
 
   private setWeekRangeString(weekStartDate: Date, weekEndDate: Date) {
     const weekStartDateString = formatDate(weekStartDate, 'MM/dd', this.locale);
     const weekEndDateString = formatDate(weekEndDate, 'MM/dd', this.locale);
     this.weekRange = `${weekStartDateString} - ${weekEndDateString}`;
+    if (this.initialWeekRange === '') {
+      this.initialWeekRange = this.weekRange;
+    }
+    this.shouldShowScrollToday = this.weekRange === this.initialWeekRange;
   }
 
   private generateDailyBeatdowns(beatdowns: Beatdown[]) {

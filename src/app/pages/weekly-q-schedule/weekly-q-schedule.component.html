@@ -1,6 +1,6 @@
-<div class="banner">
+<!-- <div class="banner">
     <p><b>🎉 Try it out</b> We're currently migrating the weekly schedule to PaxNet. You may experience minor data inconsistencies, but we're working on it!</p>
-</div>
+</div> -->
 <div class="container">
     <div class="header">
         <div class="title">
@@ -8,7 +8,9 @@
             <h4>{{weekRange}}</h4>
         </div>
         <div class="action">
-            <button mat-stroked-button (click)="scrollToToday()">Scroll to Today <mat-icon>arrow_downward</mat-icon></button>
+            <button mat-stroked-button (click)="scrollToToday()" *ngIf="shouldShowScrollToday">Scroll to Today <mat-icon>arrow_downward</mat-icon></button>
+            <button mat-flat-button (click)="viewPreviousWeek(currentWeekDate)"><mat-icon>arrow_left</mat-icon> Last week</button>
+            <button mat-flat-button (click)="viewNextWeek(currentWeekDate)">Next week <mat-icon>arrow_right</mat-icon></button>
         </div>
     </div>
 
@@ -102,4 +104,4 @@
       <mat-spinner [diameter]="40"></mat-spinner>
       <p style="margin-top: 6px">Getting week data...</p>
     </div>
-  </ng-template>  
+</ng-template>  

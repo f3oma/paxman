@@ -15,6 +15,11 @@
     margin: 0 2px 32px 2px;
     border-radius: 7px;
 
+    .close {
+      display: flex;
+      justify-content: flex-end;
+    }
+
     .display-row {
       display: flex;
       flex-direction: row;

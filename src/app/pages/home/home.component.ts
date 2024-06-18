@@ -102,6 +102,14 @@ export class HomeComponent {
         showChallengeBanner = false;
       }
     }
+
+    // Remove banner if user closed it
+    let localStorageChallengeBannerPreference = localStorage.getItem('showChallengeAnnouncement');
+    if (localStorageChallengeBannerPreference !== null) {
+      const result = localStorageChallengeBannerPreference === 'false' ? false : true;
+      showChallengeBanner = result;
+    }
+
     this.showChallengeBanner = showChallengeBanner;
 
     await this.challengeCleanup(this.activeChallenges);
@@ -158,6 +166,11 @@ export class HomeComponent {
         this.handleChallenges(this.user!.id);
       }
     })
+  }
+
+  closeChallengeAnnouncement() {
+    localStorage.setItem('showChallengeAnnouncement', 'false');
+    this.showChallengeBanner = false;
   }
 
   isIterativeCompletionChallenge(challenge: BaseChallenge): challenge is IterativeCompletionChallenge {
