@@ -64,8 +64,8 @@ export class BeatdownConverter {
         }
 
         if (!data.startTime) {
-            if (aoLocation?.startTimeCST) {
-                data.startTime = aoLocation.startTimeCST;
+            if (aoLocation?.startTimes) {
+                data.startTime = aoLocation.startTimes[0];
             } else {
                 // Needs to be filled in...
                 data.startTime = '';
@@ -120,7 +120,7 @@ export class BeatdownConverter {
 
         if (!data.startTime) {
             if (data.aoLocation) {
-                data.startTime = data.aoLocation.startTimeCST;
+                data.startTime = data.aoLocation.startTimes[0];
             } else {
                 data.startTime = '';
             }

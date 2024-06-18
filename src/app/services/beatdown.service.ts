@@ -201,20 +201,24 @@ export class BeatdownService {
             }
 
             const docRef = doc(beatdowns);
-            const beatdownEntity: IBeatdownEntity = {
-                date: Timestamp.fromDate(currentAOBeatdownDate),
-                specialEvent: SpecialEventType.None,
-                qUserRef: null,
-                aoLocationRef: aoRef,
-                coQUserRef: null,
-                eventName: null,
-                eventAddress: aoData.address,
-                canceled: false,
-                startTime: aoData.startTimeCST,
-                notes: ''
-            };
-            batch.set(docRef, beatdownEntity);
 
+            // For each start time, we need to generate a beatdown
+            for (let startTime of aoData.startTimes) {
+                const beatdownEntity: IBeatdownEntity = {
+                    date: Timestamp.fromDate(currentAOBeatdownDate),
+                    specialEvent: SpecialEventType.None,
+                    qUserRef: null,
+                    aoLocationRef: aoRef,
+                    coQUserRef: null,
+                    eventName: null,
+                    eventAddress: aoData.address,
+                    canceled: false,
+                    startTime: startTime,
+                    notes: ''
+                };
+                batch.set(docRef, beatdownEntity);
+            }
+ 
             currentAOBeatdownDate = new Date(currentAOBeatdownDate.setDate(currentAOBeatdownDate.getDate() + nextWeek));
         }
         await batch.commit();

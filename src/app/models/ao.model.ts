@@ -40,7 +40,6 @@ export interface IAOData {
     activeSiteQUsers: PaxUser[] | [];
     retiredSiteQUsers: PaxUser[] | [];
     foundingSiteQUsers: PaxUser[] | [];
-    startTimeCST: string;
     xAccount: string;
     weekDay: DayOfWeekAbbv;
     sector: Sector;
@@ -48,6 +47,8 @@ export interface IAOData {
     launchDate?: Date | null;
     qSourceAvailable: boolean;
     category: AOCategory;
+    hasMultipleStartTimes: boolean;
+    startTimes: Array<string>;
 }
 
 export interface IAODataEntity {
@@ -59,7 +60,6 @@ export interface IAODataEntity {
     activeSiteQUserRefs: DocumentReference<DocumentData>[];
     retiredSiteQUserRefs: DocumentReference<DocumentData>[];
     foundingSiteQUserRefs: DocumentReference<DocumentData>[];
-    startTimeCST: string; // stored as '05:15'
     xAccount: string; // stored without @ symbol
     weekDay: string;
     sector: Sector;
@@ -67,6 +67,8 @@ export interface IAODataEntity {
     launchDate: Timestamp;
     qSourceAvailable: boolean;
     category: AOCategory;
+    hasMultipleStartTimes: boolean;
+    startTimes: Array<string>; // stored as ['05:15', '6:00']
 }
 
 export class AOData {
@@ -79,7 +81,6 @@ export class AOData {
     private _activeSiteQUsers: PaxUser[] | [];
     private _retiredSiteQUsers: PaxUser[] | [];
     private _foundingSiteQUsers: PaxUser[] | [];
-    private _startTimeCST: string;
     private _xAccount: string;
     private _weekDay: DayOfWeekAbbv;
     private _sector: Sector;
@@ -87,6 +88,8 @@ export class AOData {
     private _launchDate?: Date | null;
     private _qSourceAvailable: boolean;
     private _category: AOCategory;
+    private _hasMultipleStartTimes: boolean;
+    private _startTimes: Array<string>;
 
     constructor(data: IAOData) {
         this._id = data.id;
@@ -98,7 +101,6 @@ export class AOData {
         this._activeSiteQUsers = data.activeSiteQUsers;
         this._retiredSiteQUsers = data.retiredSiteQUsers;
         this._foundingSiteQUsers = data.foundingSiteQUsers;
-        this._startTimeCST = data.startTimeCST;
         this._xAccount = data.xAccount;
         this._weekDay = data.weekDay;
         this._sector = data.sector;
@@ -106,6 +108,8 @@ export class AOData {
         this._launchDate = data.launchDate;
         this._qSourceAvailable = data.qSourceAvailable;
         this._category = data.category;
+        this._hasMultipleStartTimes = data.hasMultipleStartTimes;
+        this._startTimes = data.startTimes;
     }
 
     public get id(): string {
@@ -144,10 +148,6 @@ export class AOData {
         return this._foundingSiteQUsers;
     }
 
-    public get startTimeCST(): string {
-        return this._startTimeCST;
-    }
-
     public get xAccount(): string {
         return this._xAccount;
     }
@@ -176,6 +176,14 @@ export class AOData {
         return this._category;
     }
 
+    public get hasMultipleStartTimes(): boolean {
+        return this._hasMultipleStartTimes;
+    }
+
+    public get startTimes(): Array<string> {
+        return this._startTimes;
+    }
+
     toProperties(): IAOData {
         return {
             id: this.id,
@@ -187,14 +195,15 @@ export class AOData {
             activeSiteQUsers: this.activeSiteQUsers,
             retiredSiteQUsers: this.retiredSiteQUsers,
             foundingSiteQUsers: this.foundingSiteQUsers,
-            startTimeCST: this.startTimeCST,
             xAccount: this.xAccount,
             weekDay: this.weekDay,
             sector: this.sector,
             lastFlagPass: this.lastFlagPass,
             launchDate: this.launchDate,
             qSourceAvailable: this.qSourceAvailable,
-            category: this.category
+            category: this.category,
+            hasMultipleStartTimes: this.hasMultipleStartTimes,
+            startTimes: this.startTimes,
         }
     }
 

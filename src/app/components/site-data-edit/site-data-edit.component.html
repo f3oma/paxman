@@ -108,10 +108,29 @@
                 Workout Data
               </mat-panel-title>
             </mat-expansion-panel-header>
-            <mat-form-field appearance="outline">
-                <mat-label>Start time</mat-label>
-                <input formControlName="startTimeCST" [(ngModel)]="site.startTimeCST" autocomplete="off" matInput type="text" placeholder="Start time" required>
-            </mat-form-field>
+            <div class="start-time">
+              <p>Some AOs have multiple beatdowns that require multiple attendance records to be recorded. If you fit the following criteria, you probably need multiple start times:</p>
+              <ul>
+                <li>We'd like attendance to be recorded for each beatdown</li>
+                <li>Beatdown has announcements, prayers, COT</li>
+                <li>Multiple beatdowns should show on the Weekly Schedule</li>
+              </ul>
+              <div class="checkbox" style="margin-bottom: 16px;">
+                <mat-checkbox formControlName="hasMultipleStartTimes" [(ngModel)]="site.hasMultipleStartTimes" (change)="updateMultipleStartTimesValue($event, site)">Multiple start times</mat-checkbox>
+              </div>
+
+              <div formArrayName="startTimes">
+                <div *ngFor="let startTime of startTimes.controls; let i = index" [formGroupName]="i">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Start time {{i + 1}}</mat-label>
+                    <input formControlName="time" autocomplete="off" matInput type="time" placeholder="Start time" required>
+                  </mat-form-field>
+                </div>
+              </div>
+              
+              <button mat-raised-button id="add-new-start-time" (click)="addStartTime()" *ngIf="site.hasMultipleStartTimes"><mat-icon>add</mat-icon> Additional start time</button>
+            </div>
+            
             <mat-form-field appearance="outline">
                 <mat-label>Day of week</mat-label>
                 <mat-select formControlName="weekDay" [(ngModel)]="site.weekDay">

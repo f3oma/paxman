@@ -59,14 +59,15 @@ export class AOManagerService {
             activeSiteQUsers: new Array<PaxUser>(),
             retiredSiteQUsers: new Array<PaxUser>(),
             foundingSiteQUsers: new Array<PaxUser>(),
-            startTimeCST: '00:00',
+            startTimes: ['00:00'],
             xAccount: '',
             weekDay: DayOfWeekAbbv.None,
             sector: Sector['DC - East'],
             lastFlagPass: new Date(),
             launchDate: new Date(),
             qSourceAvailable: false,
-            category: AOCategory.Beatdown
+            category: AOCategory.Beatdown,
+            hasMultipleStartTimes: false,
         }
         return new AOData(aoData);
     }

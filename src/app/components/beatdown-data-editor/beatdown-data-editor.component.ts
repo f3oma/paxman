@@ -177,8 +177,8 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
 
     // Add additional users
     if (this.beatdown.aoLocation) {
-      if (!this.beatdown.startTime && this.beatdown.aoLocation.startTimeCST) {
-        this.form.controls['startTime'].setValue(this.beatdown.aoLocation.startTimeCST);
+      if (!this.beatdown.startTime && this.beatdown.aoLocation.startTimes && this.beatdown.aoLocation.startTimes.length > 0) {
+        this.form.controls['startTime'].setValue(this.beatdown.aoLocation.startTimes[0]);
       }
       const refData = this.beatdown.aoLocation;
       if (refData !== undefined) {

@@ -59,6 +59,14 @@
         {
             "name": "qSourceAvailable",
             "type": "boolean"
+        },
+        {
+            "name": "startTimes",
+            "type": "array"
+        },
+        {
+            "name": "hasMultipleStartTimes",
+            "type": "boolean"
         }
     ]
 }

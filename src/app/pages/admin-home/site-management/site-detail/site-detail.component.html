@@ -30,7 +30,7 @@
                     </div>
                     <div class="info-section">
                     <h5>Workout Time</h5>
-                    <p>{{site.weekDay}} @ {{ site.startTimeCST }}</p>
+                    <p>{{site.weekDay}} @ {{site.startTimes | commaSeparated }}</p>
                     </div>
                     <div class="info-section">
                     <ng-container *ngIf="site.activeSiteQUsers && site.activeSiteQUsers.length > 0">

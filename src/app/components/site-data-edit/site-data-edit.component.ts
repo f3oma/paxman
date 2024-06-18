@@ -1,5 +1,5 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { IAOData } from 'src/app/models/ao.model';
 import { PaxUser } from 'src/app/models/users.model';
@@ -46,7 +46,6 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
     name: new FormControl('', [Validators.required]),
     address: new FormControl('', [Validators.required]),
     location: new FormControl('', [Validators.required]),
-    startTimeCST: new FormControl('', [Validators.required]),
     weekDay: new FormControl('', [Validators.required]),
     sector: new FormControl('', [Validators.required]),
     xAccount: new FormControl (''),
@@ -58,7 +57,9 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
     lastFlagPass: new FormControl(''),
     launchDate: new FormControl(''),
     qSource: new FormControl(''),
-    category: new FormControl('')
+    category: new FormControl(''),
+    startTimes: this.formBuilder.array([]),
+    hasMultipleStartTimes: new FormControl(false),
   });
 
   temporaryActiveSiteQUsers: { id: string, userRef: string, f3Name: string, fullName: string }[] = [];
@@ -78,6 +79,7 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
     private paxManagerService: PaxManagerService,
     private authManagerService: UserAuthenticationService,
     private userProfileService: UserProfileService,
+    private formBuilder: FormBuilder,
     private beatdownService: BeatdownService) {
       this.form.controls['activeSiteQUsers'].valueChanges.pipe(
         debounceTime(200),
@@ -136,6 +138,39 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
     this.originalActiveSiteQUsers = JSON.parse(JSON.stringify(this.temporaryActiveSiteQUsers));
     this.originalRetiredSiteQUsers = JSON.parse(JSON.stringify(this.temporaryRetiredSiteQUsers));
     this.originalFoundingSiteQUsers = JSON.parse(JSON.stringify(this.temporaryFoundingSiteQUsers));
+
+    // Populate start times:
+    console.log(this.site.startTimes);
+    if (this.site.startTimes) {
+      this.site.startTimes.forEach((time: string) => {
+        this.addStartTime(time);
+      })
+    }
+
+  }
+
+  get startTimes(): FormArray {
+    return this.form.get('startTimes') as FormArray;
+  }
+
+  createStartTimeGroup(time: string = ''): FormGroup {
+    return this.formBuilder.group({
+      time: [time, Validators.required]
+    });
+  }
+
+  addStartTime(time: string = '') {
+    this.startTimes.push(this.createStartTimeGroup(time));
+  }
+
+  updateMultipleStartTimesValue(event: MatCheckboxChange, site: IAOData) {
+    if (!event.checked) {
+      // Clear additional start times if the checkbox is unchecked
+      while (this.startTimes.length > 1) {
+        this.startTimes.removeAt(this.startTimes.length - 1);
+      }
+    }
+    site.hasMultipleStartTimes = event.checked;
   }
 
   public ngAfterViewChecked() {
@@ -148,9 +183,6 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
   public async saveData(site: IAOData) {
     if (this.form.valid && this.validateSiteLeaders()) {
       this.saveLoading = true;
-      // These are very topical for now and need additional time to
-      // validate that the user is not also a site q elsewhere before removing
-      // any access. Time should be spent here...
 
       const activeTempSet = new Set(this.temporaryActiveSiteQUsers.map(t => t.id));
       const retiredTempSet = new Set(this.temporaryRetiredSiteQUsers.map(t => t.id));
@@ -170,6 +202,8 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       if (!this.setsAreEqual(foundingOriginalSet, foundingTempSet)) {
         await this.handleFoundingSiteQSwaps();
       }
+
+      site.startTimes = this.startTimes.controls.map((v) => v.value.time);
   
       if (this.addNewSite) {
         await this.aoManagerService.addNewSite(site);

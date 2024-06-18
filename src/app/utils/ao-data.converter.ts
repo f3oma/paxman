@@ -4,6 +4,14 @@ import { AOCategory, AOData, DayOfWeekAbbv, IAOData, IAODataEntity } from "../mo
 import { PaxModelConverter } from "./pax-model.converter";
 import { PaxUser } from "../models/users.model";
 
+export interface DeprecationIAOData extends IAOData {
+  startTimeCST: string;
+}
+
+export interface DeprecationIAODataEntity extends IAODataEntity {
+  startTimeCST: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,16 +28,16 @@ export class AODataConverter {
     const paxModelConverter = this.paxModelConverter;
     const paxUserCollection = this.paxUserCollection;
     return {
-      toFirestore: (data: IAOData): DocumentData => {
+      toFirestore: (data: DeprecationIAOData): DocumentData => {
         return toEntity(data, paxUserCollection);
       },
       fromFirestore(snap: QueryDocumentSnapshot) {
-        return toDomain(snap.data() as IAODataEntity, snap.id, paxModelConverter);
+        return toDomain(snap.data() as DeprecationIAODataEntity, snap.id, paxModelConverter);
       }
     }
   }
 
-  toEntity(data: IAOData, paxUserCollection: CollectionReference<DocumentData>): IAODataEntity {
+  toEntity(data: DeprecationIAOData, paxUserCollection: CollectionReference<DocumentData>): IAODataEntity {
     let activeSiteQDataRefs: DocumentReference<DocumentData>[] = [];
     if ((data.activeSiteQUsers && data.activeSiteQUsers.length > 0)) {
       for (let siteQ of data.activeSiteQUsers) {
@@ -58,6 +66,14 @@ export class AODataConverter {
     if (!data.category) {
       data.category = AOCategory.Beatdown;
     }
+
+    if (!data.hasMultipleStartTimes) {
+      data.hasMultipleStartTimes = false;
+    }
+
+    if (!data.startTimes) {
+      data.startTimes = [data.startTimeCST]
+    }
     
     return <IAODataEntity> {
       name: data.name,
@@ -68,18 +84,19 @@ export class AODataConverter {
       activeSiteQUserRefs: activeSiteQDataRefs,
       retiredSiteQUserRefs: retiredSiteQDataRefs,
       foundingSiteQUserRefs: foundingSiteQDataRefs,
-      startTimeCST: data.startTimeCST, 
+      startTimes: data.startTimes, 
       xAccount: data.xAccount,
       weekDay: data.weekDay.toString(),
       sector: data.sector,
       lastFlagPass: data.lastFlagPass ?? Timestamp.fromDate(new Date()),
       launchDate: data.launchDate ?? Timestamp.fromDate(new Date()),
       qSourceAvailable: data.qSourceAvailable,
-      category: data.category
+      category: data.category,
+      hasMultipleStartTimes: data.hasMultipleStartTimes,
     }
   }
 
-  async toDomain(data: IAODataEntity, id: string, paxModelConverter: PaxModelConverter): Promise<AOData> {
+  async toDomain(data: DeprecationIAODataEntity, id: string, paxModelConverter: PaxModelConverter): Promise<AOData> {
     let activeSiteQUsers: PaxUser[] = [];
     if (data.activeSiteQUserRefs && data.activeSiteQUserRefs.length > 0) {
       for (let siteQUserRef of data.activeSiteQUserRefs) {
@@ -113,6 +130,14 @@ export class AODataConverter {
       data.category = AOCategory.Beatdown;
     }
 
+    if (!data.hasMultipleStartTimes) {
+      data.hasMultipleStartTimes = false;
+    }
+
+    if (!data.startTimes) {
+      data.startTimes = [data.startTimeCST];
+    }
+
     const weekDay: DayOfWeekAbbv = data.weekDay as DayOfWeekAbbv;
     const lastFlagPass = data.lastFlagPass ? data.lastFlagPass.toDate() : new Date();
     const launchDate = data.launchDate ? data.launchDate.toDate() : new Date();
@@ -126,14 +151,15 @@ export class AODataConverter {
       activeSiteQUsers,
       retiredSiteQUsers,
       foundingSiteQUsers,
-      startTimeCST: data.startTimeCST,
+      startTimes: data.startTimes,
       xAccount: data.xAccount,
       weekDay,
       sector: data.sector,
       lastFlagPass,
       launchDate,
       qSourceAvailable: data.qSourceAvailable,
-      category: data.category
+      category: data.category,
+      hasMultipleStartTimes: data.hasMultipleStartTimes,
     }
     return new AOData(aoData);
   }
