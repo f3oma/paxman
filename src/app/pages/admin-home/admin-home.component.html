@@ -4,12 +4,11 @@
     <div class="section">
         <h3>Site-Q Tools</h3>
         <a mat-flat-button [routerLink]="['/admin/q-scheduler']">Q-Scheduler</a>
-        <a mat-flat-button [routerLink]="['/admin/site-management']">Manage AO Data</a>
+        <a mat-flat-button [routerLink]="['/site-management']">Manage AO Data</a>
     </div>
     <div class="section" *ngIf="isAdmin">
         <h3>Admin Tools</h3>
         <a mat-flat-button (click)="downloadUserRoster()">Download Entire Roster CSV</a>
-        <!-- <a [routerLink]="['/admin/site-q-management']">Site-Q Role Management</a> -->
         <a mat-flat-button [routerLink]="['/admin/user-data-edit']">Admin Pax Data Edit</a>
         <a mat-flat-button [routerLink]="['/admin/exicon-approval']">Exicon Approval</a>
     </div>

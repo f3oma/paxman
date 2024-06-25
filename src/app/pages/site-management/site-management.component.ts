@@ -51,7 +51,7 @@ export class SiteManagementComponent {
   }
 
   public async viewSiteDetail(row: AOData) {
-    await this.router.navigate(['admin/site-management', row.id]);
+    await this.router.navigate(['site-management', row.id]);
   }
 
   async getSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
@@ -59,7 +59,7 @@ export class SiteManagementComponent {
   }
 
   async getAOData() {
-    const tableData = await this.aoManagerService.getAllAOData();
+    const tableData = await this.aoManagerService.getAllBeatdownEligibleAOData();
 
     // Uncomment to give rights to all site-qs
     // for (let data of tableData) {
