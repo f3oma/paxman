@@ -18,10 +18,10 @@ export class AddNewSiteComponent {
   }
 
   async navigateToSite() {
-    await this.router.navigate(['site-management', this.site.id]);
+    await this.router.navigate(['sites', this.site.id]);
   }
 
   async navigateBack() {
-    await this.router.navigate(['site-management']);
+    await this.router.navigate(['sites']);
   }
 }

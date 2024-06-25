@@ -76,7 +76,7 @@ export class SiteDetailComponent implements OnInit {
   public async deleteSite(siteId: string) {
     await this.beatdownService.deleteAllBeatdownsForAO(siteId);
     await this.aoManagerService.deleteAOById(siteId);
-    await this.router.navigate(['site-management']);
+    await this.router.navigate(['sites']);
   }
 
   public goBack() {

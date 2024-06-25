@@ -96,7 +96,7 @@ const routes: Routes = [
     canActivate: [BasicAuthenticatedAuthGuard]
   },
   {
-    path: 'site-management',
+    path: 'sites',
     canActivate: [BasicAuthenticatedAuthGuard],
     children: [
       {

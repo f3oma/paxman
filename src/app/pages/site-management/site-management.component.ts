@@ -51,7 +51,7 @@ export class SiteManagementComponent {
   }
 
   public async viewSiteDetail(row: AOData) {
-    await this.router.navigate(['site-management', row.id]);
+    await this.router.navigate(['sites', row.id]);
   }
 
   async getSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
