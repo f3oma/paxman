@@ -50,6 +50,11 @@ export class SiteManagementComponent {
     })
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   public async viewSiteDetail(row: AOData) {
     await this.router.navigate(['sites', row.id]);
   }

@@ -21,10 +21,10 @@ export class BeatdownSearchService {
         const today = new Date();
         today.setHours(23, 59, 59, 999);
         const todayTimestamp = Math.floor(Timestamp.fromDate(today).toMillis());
-        const yesterday = new Date();
-        yesterday.setDate(today.getDate() - 7);
-        yesterday.setHours(0, 0, 0, 0);
-        const yesterdayTimestamp = Math.ceil(Timestamp.fromDate(yesterday).toMillis());
+        const sixDaysAway = new Date();
+        sixDaysAway.setDate(today.getDate() - 6);
+        sixDaysAway.setHours(0, 0, 0, 0);
+        const yesterdayTimestamp = Math.ceil(Timestamp.fromDate(sixDaysAway).toMillis());
 
         return this.idx.search(partialBeatdownName, {
             exactOnSingleWordQuery: "attribute",

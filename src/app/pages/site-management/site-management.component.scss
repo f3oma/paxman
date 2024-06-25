@@ -6,7 +6,11 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-
+      .align-right {
+        display: flex;
+        gap: 12px;
+        align-items: baseline;
+      }
       .column {
         display: flex;
         flex-direction: column;

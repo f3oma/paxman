@@ -4,7 +4,13 @@
             <h1>Site View</h1>
             <p>F3 Omaha AO Directory</p>        
         </div>
-        <button mat-flat-button id="new-site" *ngIf="isAdmin" [routerLink]="['/admin/add-location']">Add New Site</button>
+        <div class="align-right">
+            <button mat-flat-button id="new-site" *ngIf="isAdmin" [routerLink]="['/admin/add-location']">Add New Site</button>
+            <mat-form-field appearance="outline">
+                <mat-label>Search by Name</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="AO Name" #input>
+            </mat-form-field>
+        </div>
     </div>
 
     <div class="site-list">
