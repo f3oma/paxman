@@ -241,15 +241,13 @@ export class BeatdownDataEditorComponent implements OnInit, AfterViewInit {
         this.beatdown.coQUser = undefined;
       }
 
-      if (this.temporaryAdditionalQs.length > 0) {
-        const additionalQs = [];
-        for (let user of this.temporaryAdditionalQs) {
-          const userRef = this.paxManagerService.getUserReference(user.userRef);
-          const userData = await this.paxManagerService.getPaxInfoByRef(userRef);
-          additionalQs.push(userData);
-        }
-        this.beatdown.additionalQs = additionalQs;
+      const additionalQs = [];
+      for (let user of this.temporaryAdditionalQs) {
+        const userRef = this.paxManagerService.getUserReference(user.userRef);
+        const userData = await this.paxManagerService.getPaxInfoByRef(userRef);
+        additionalQs.push(userData);
       }
+      this.beatdown.additionalQs = additionalQs;
 
       if (this.form.controls['aoLocation'].value) {
         const locationRef = this.aoManagerService.getAoLocationReference(this.form.controls['aoLocation'].value.aoRef) as DocumentReference<AOData>;

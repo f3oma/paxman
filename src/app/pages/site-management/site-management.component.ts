@@ -22,7 +22,7 @@ export class SiteManagementComponent {
   isAdmin = false;
   siteQAO: AOData | undefined;
 
-  public displayedColumns: string[] = ['name', 'weekDay', 'startTimeCST', 'siteQ'];
+  public displayedColumns: string[] = ['name', 'weekDay', 'startTimeCST', 'category', 'siteQ'];
   public tableData: AOData[] = [];
   public dataSource: any;
 

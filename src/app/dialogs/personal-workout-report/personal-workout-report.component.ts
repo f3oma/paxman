@@ -4,6 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
+import { AOCategory } from 'src/app/models/ao.model';
 import { PreActivity, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
 import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
@@ -102,22 +103,31 @@ export class PersonalWorkoutReportComponent {
     // Challenges, this will need to be centralized...
     if (this.activeChallenges.length > 0) {
       for (let challenge of this.activeChallenges) {
+
+        // Do we have an active challenge
         if (challenge.type === ChallengeType.IterativeCompletions && 
           challenge.name === Challenges.SummerMurph2024 &&
-          workoutData.preActivity === PreActivity.Murph && 
-          new Date(challenge.startDateString) < new Date()) 
-          {
-          const iterativeChallenge = challenge as IterativeCompletionChallenge;
+          new Date(challenge.startDateString) < new Date()) {
 
-          // Update the state, then handle complete states
-          iterativeChallenge.updateState(ChallengeState.InProgress);
-          iterativeChallenge.addNewIteration();
+            const iterativeChallenge = challenge as IterativeCompletionChallenge;
+            iterativeChallenge.updateState(ChallengeState.InProgress);
+            if (workoutData.preActivity === PreActivity.Murph) {
+              // Update the state, then handle complete states
+              iterativeChallenge.addNewIteration();
+            }
 
-          if (iterativeChallenge.isComplete()) {
-            await this.challengeManager.completeChallenge(iterativeChallenge);
-          } else {
+            if (workoutData.beatdown) {
+              const beatdownData = await this.beatdownService.getBeatdownDetail(workoutData.beatdown.id);
+              if (beatdownData && beatdownData.aoLocation && beatdownData.aoLocation.category === AOCategory.Murph) {
+                iterativeChallenge.addNewIteration();
+              }
+            }
+
+            if (iterativeChallenge.isComplete()) {
+              await this.challengeManager.completeChallenge(iterativeChallenge);
+            }
+
             await this.challengeManager.updateChallenge(iterativeChallenge);
-          }
         }
       }
     }
@@ -201,8 +211,6 @@ export class PersonalWorkoutReportComponent {
   }
 
   private async updateBeatdownAutocompleteResults(partialBeatdownQuery: string): Promise<void> {
-    // Assuming user will filter by either Event Name or AO name...
-    // Filter down to dates yesterday and today for possible late reports
     const result = await this.findBeatdownByName(partialBeatdownQuery);
     const beatdowns = result.map((res) => {
         const date = new Date(res.date);

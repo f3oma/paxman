@@ -98,7 +98,8 @@ export class BaseChallenge {
     }
 
     updateState(newState: ChallengeState): void {
-        this._state = newState;
+        if (this._state !== ChallengeState.Completed)
+            this._state = newState;
     }
 
     isComplete(): boolean {
