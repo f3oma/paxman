@@ -35,6 +35,7 @@ export class PersonalWorkoutReportComponent {
     'beatdown': new FormControl(''),
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
+    'murphChallengeActivity': new FormControl(false)
   });
 
   downrangeForm: FormGroup = new FormGroup({
@@ -42,16 +43,19 @@ export class PersonalWorkoutReportComponent {
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
     'date': new FormControl(new Date()),
+    'murphChallengeActivity': new FormControl(false)
   });
 
   shieldLockForm: FormGroup = new FormGroup({
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
     'date': new FormControl(new Date()),
+    'murphChallengeActivity': new FormControl(false)
   });
 
   user: PaxUser;
   activeChallenges: BaseChallenge[] = [];
+  murphChallenge: boolean = false;
   userSaveLoading: boolean = false;
 
   filteredBeatdownOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
@@ -70,6 +74,15 @@ export class PersonalWorkoutReportComponent {
     ) {
     this.user = data.user;
     this.activeChallenges = data.activeChallenges;
+
+    this.murphChallenge = this.activeChallenges.filter((challenge) => {
+      if (challenge.type === ChallengeType.IterativeCompletions && 
+        challenge.name === Challenges.SummerMurph2024 &&
+        new Date(challenge.startDateString) < new Date()) {
+          return true;
+        }
+        return false;
+    }).length > 0;
 
     this.f3OmahaForm.controls['preActivity'].setValue('None');
     this.f3OmahaForm.controls['beatdown'].valueChanges.pipe(
@@ -111,15 +124,13 @@ export class PersonalWorkoutReportComponent {
 
             const iterativeChallenge = challenge as IterativeCompletionChallenge;
             iterativeChallenge.updateState(ChallengeState.InProgress);
+
             if (workoutData.preActivity === PreActivity.Murph) {
               iterativeChallenge.addNewIteration();
             }
 
-            if (workoutData.beatdown) {
-              const beatdownData = await this.beatdownService.getBeatdownDetail(workoutData.beatdown.id);
-              if (beatdownData && beatdownData.aoLocation && beatdownData.aoLocation.category === AOCategory.Murph) {
-                iterativeChallenge.addNewIteration();
-              }
+            if (this.challengeIterationCompleted()) {
+              iterativeChallenge.addNewIteration();
             }
 
             if (iterativeChallenge.isComplete()) {
@@ -132,6 +143,18 @@ export class PersonalWorkoutReportComponent {
     }
 
     this.dialogRef.close();
+  }
+
+  private challengeIterationCompleted(): boolean {
+    let iterationCompleted = false;
+    if (this.activeTab === AvailableTabs.F3Omaha) {
+      iterationCompleted = this.f3OmahaForm.controls['murphChallengeActivity'].value;
+    } else if (this.activeTab === AvailableTabs.Downrange) {
+      iterationCompleted = this.downrangeForm.controls['murphChallengeActivity'].value;
+    } else if (this.activeTab === AvailableTabs.ShieldLock) {
+      iterationCompleted = this.shieldLockForm.controls['murphChallengeActivity'].value;
+    }
+    return iterationCompleted;
   }
 
   async validateF3OmahaForm() {
@@ -190,6 +213,9 @@ export class PersonalWorkoutReportComponent {
   }
 
   public displayBeatdownOptions(option: any) {
+    if (!option)
+      return '';
+
     const date = option.date;
     return `${date.toDateString('MM/dd')} - ${option.name}`;
   }

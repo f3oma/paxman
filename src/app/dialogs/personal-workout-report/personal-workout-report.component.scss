@@ -10,6 +10,14 @@
     }
     .internal-form {
         padding: 16px 24px;
+
+        .challenge-checkbox {
+          background: linear-gradient(rgb(162, 193, 255), #edb1fa);
+          border-radius: 12px;
+          padding: 6px 12px;
+          margin-bottom: 12px;
+          font-weight: bold;
+        }
     }
     .beatdown-form {
       display: flex;
