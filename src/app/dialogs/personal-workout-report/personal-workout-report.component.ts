@@ -125,7 +125,7 @@ export class PersonalWorkoutReportComponent {
             const iterativeChallenge = challenge as IterativeCompletionChallenge;
             iterativeChallenge.updateState(ChallengeState.InProgress);
 
-            if (workoutData.preActivity === PreActivity.Murph) {
+            if (workoutData.preActivity === PreActivity.Murph || workoutData.preActivity === PreActivity.Smurph) {
               iterativeChallenge.addNewIteration();
             }
 
