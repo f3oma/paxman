@@ -128,7 +128,14 @@ export class ChallengeViewComponent implements OnInit {
       console.error("Unknown challenge");
       return;
     }
-    this.challengeInformation = await this.challengeManager.getChallengeInformation(id);
+
+    const challengeInformation: ChallengeInformation = await this.challengeManager.getChallengeInformation(id);
+    if (new Date(challengeInformation.startDateString) < new Date()) {
+      challengeInformation.status = ChallengeStatus.Started;
+      await this.challengeManager.updateChallengeInformation(challengeInformation);
+    }
+    this.challengeInformation = challengeInformation;
+
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
     if (!tableData) {
       this.showChallengeNotFoundError = true;
