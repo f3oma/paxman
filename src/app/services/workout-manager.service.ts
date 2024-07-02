@@ -76,7 +76,7 @@ export class WorkoutManagerService {
                 workoutEntity['usersAttended'] = arrayUnion(...workoutData.usersAttended);
             }
 
-            workoutEntity['qReported'] = workoutData.qReported;
+            workoutEntity['qReported'] = workoutData.qReported ?? true;
 
             return await updateDoc(beatdownAttendanceRef, { ...workoutEntity });
         }

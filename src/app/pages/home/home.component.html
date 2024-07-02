@@ -31,7 +31,7 @@
         <div class="report-attendance-buttons">
           <ng-container *ngFor="let attendance of beatdownsRequiringAttendanceData">
             <div class="alreadyReported" *ngIf="attendance.isReported">
-              <p><i>Attendance at {{attendance.beatdown.eventName ? attendance.beatdown.eventName : attendance.beatdown.aoLocation?.name }} has been reported ({{attendance.paxCount}})</i></p>
+              <p><i>Attendance at {{attendance.beatdown.eventName ? attendance.beatdown.eventName : attendance.beatdown.aoLocation?.name }} has been reported ({{attendance.paxCount}})</i> - <a (click)="editAttendance(attendance)">Edit</a></p>
             </div>
             <button *ngIf="!attendance.isReported" mat-button class="report-attendance-btn" (click)="reportCommunityBeatdownAttendance(attendance.beatdown)">
               <b>{{attendance.beatdown.eventName ? attendance.beatdown.eventName : attendance.beatdown.aoLocation?.name }}</b> - {{attendance.beatdown.date | date: 'fullDate'}}<mat-icon>notification_important</mat-icon>

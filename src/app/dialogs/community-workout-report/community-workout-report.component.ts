@@ -11,6 +11,7 @@ import { WorkoutManagerService } from 'src/app/services/workout-manager.service'
 export interface CommunityWorkoutReportProps {
   user: PaxUser;
   beatdown: Beatdown;
+  previouslyReportedTotalPaxCount?: number;
 }
 
 @Component({
@@ -21,11 +22,13 @@ export interface CommunityWorkoutReportProps {
 export class CommunityWorkoutReportComponent {
 
   form: FormGroup = new FormGroup({
-    'totalPaxCount': new FormControl(''),
+    'totalPaxCount': new FormControl(0),
   });
 
   user: PaxUser;
   beatdown: Beatdown;
+
+  private shouldUpdate = false;
 
   constructor(
     private workoutService: WorkoutManagerService,
@@ -35,11 +38,28 @@ export class CommunityWorkoutReportComponent {
     @Inject(MAT_DIALOG_DATA) public data: CommunityWorkoutReportProps) {
       this.user = data.user;
       this.beatdown = data.beatdown;
+      if (data.previouslyReportedTotalPaxCount) {
+        this.shouldUpdate = true;
+        this.form.controls['totalPaxCount'].setValue(data.previouslyReportedTotalPaxCount);
+      }
     }
 
   async submit() {
     if (this.form.valid) {
+
       const beatdown = this.beatdown;
+      const beatdownRef = this.beatdownService.getBeatdownReference(beatdown.id); 
+
+      if (this.shouldUpdate) {
+        let workoutData: Partial<IBeatdownAttendance> = {
+          beatdown: beatdownRef,
+          totalPaxCount: this.form.controls['totalPaxCount'].value,
+          qReported: true,
+        };
+        await this.workoutService.updateCommunityWorkoutData(workoutData);
+        this.dialogRef.close(workoutData);
+        return;
+      }
 
       // Add Q's to workout attendance
       const qRefs = [];
@@ -59,7 +79,6 @@ export class CommunityWorkoutReportComponent {
         }
       }
 
-      const beatdownRef = this.beatdownService.getBeatdownReference(beatdown.id);
       let workoutData: Partial<IBeatdownAttendance> = {
         beatdown: beatdownRef,
         totalPaxCount: this.form.controls['totalPaxCount'].value,
@@ -68,7 +87,7 @@ export class CommunityWorkoutReportComponent {
       };
 
       await this.workoutService.createCommunityReportWithValidation(workoutData);
-      this.dialogRef.close(beatdown);
+      this.dialogRef.close(workoutData);
     } else {
       alert("Check inputs and try again");
     }

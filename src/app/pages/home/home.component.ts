@@ -168,6 +168,27 @@ export class HomeComponent {
     })
   }
 
+  editAttendance(attendance: { beatdown: Beatdown, isReported: boolean, paxCount: number }) {
+    this.matDialog.open(CommunityWorkoutReportComponent, {
+      data: <CommunityWorkoutReportProps> {
+        user: this.user,
+        beatdown: attendance.beatdown,
+        previouslyReportedTotalPaxCount: attendance.paxCount,
+      },
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%'
+    }).afterClosed().subscribe((res) => {
+      if (!res) {
+        return;
+      } else {
+        this.beatdownsRequiringAttendanceData.find(b => b.beatdown.id === attendance.beatdown.id)!.isReported = true;
+        this.beatdownsRequiringAttendanceData.find(b => b.beatdown.id === attendance.beatdown.id)!.paxCount = res.totalPaxCount;
+      }
+    });
+  }
+
   closeChallengeAnnouncement() {
     localStorage.setItem('showChallengeAnnouncement', 'false');
     this.showChallengeBanner = false;
@@ -192,6 +213,7 @@ export class HomeComponent {
         return;
       } else {
         this.beatdownsRequiringAttendanceData.find(b => b.beatdown.id === beatdown.id)!.isReported = true;
+        this.beatdownsRequiringAttendanceData.find(b => b.beatdown.id === beatdown.id)!.paxCount = res.totalPaxCount;
       }
     });
   }    
