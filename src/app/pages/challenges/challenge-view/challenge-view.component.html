@@ -22,7 +22,7 @@
             <div class="challenge-leaderboard">
                 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
                     <ng-container matColumnDef="f3Name">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name"> Participants ({{getRowCount()}}) </th>
+                        <th mat-header-cell *matHeaderCellDef> Participants ({{getRowCount()}}) </th>
                         <td mat-cell *matCellDef="let challengeParticipant">
                             <div class="user-chip" [routerLink]="'/users/' + challengeParticipant.paxUser.id">
                                 <div class="current-profile-img" [style.background-image]="'url(' + challengeParticipant.paxUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !challengeParticipant.paxUser.profilePhotoUrl }"></div>

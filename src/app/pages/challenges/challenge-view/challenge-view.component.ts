@@ -129,17 +129,30 @@ export class ChallengeViewComponent implements OnInit {
       return;
     }
 
-    const challengeInformation: ChallengeInformation = await this.challengeManager.getChallengeInformation(id);
-    if (new Date(challengeInformation.startDateString) < new Date()) {
-      challengeInformation.status = ChallengeStatus.Started;
-      await this.challengeManager.updateChallengeInformation(challengeInformation);
-    }
-    this.challengeInformation = challengeInformation;
-
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
     if (!tableData) {
       this.showChallengeNotFoundError = true;
     }
+
+    const challengeInformation: ChallengeInformation = await this.challengeManager.getChallengeInformation(id);
+
+    // As soon as a challenge is active, set the state of all entries to in-progress
+    // and update challenge information to started
+    if (new Date(challengeInformation.startDateString) < new Date() && 
+      challengeInformation.status === ChallengeStatus.PreRegistration) {
+      challengeInformation.status = ChallengeStatus.Started;
+      await this.challengeManager.updateChallengeInformation(challengeInformation);
+      const promises: Promise<any>[] = [];
+      for (let challengeEntry of tableData) {
+        if (challengeEntry.state === ChallengeState.PreRegistered) {
+          challengeEntry.updateState(ChallengeState.InProgress);
+          promises.push(this.challengeManager.updateChallenge(challengeEntry));
+        }
+      }
+      await Promise.all(promises);
+    }
+
+    this.challengeInformation = challengeInformation;
     if (this.challengeInformation?.status === ChallengeStatus.PreRegistration) {
       this.displayedColumns = ['f3Name', 'status'];
     }
