@@ -151,7 +151,6 @@ export class BeatdownService {
         // Create a very sparse beatdown, not linked to any AO or data that is tracked in attendance reporting
         const emptyBeatdown: IBeatdown = JSON.parse(JSON.stringify(this.EMPTY_BEATDOWN));
         emptyBeatdown.eventName = `DR - ${downrangeAOName}`;
-        date.setHours(0, 0, 0, 0);
         emptyBeatdown.date = date;
         emptyBeatdown.aoName = downrangeAOName;
         return await this.createBeatdown(emptyBeatdown);
@@ -161,7 +160,6 @@ export class BeatdownService {
        // Create a very sparse beatdown, not linked to any AO or data that is tracked in attendance reporting
        const emptyBeatdown: IBeatdown = JSON.parse(JSON.stringify(this.EMPTY_BEATDOWN));
        emptyBeatdown.eventName = 'Shield Lock';
-       date.setHours(0, 0, 0, 0);
        emptyBeatdown.date = date;
        emptyBeatdown.aoName = 'Shield Lock';
        return await this.createBeatdown(emptyBeatdown);

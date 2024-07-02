@@ -131,6 +131,10 @@ export class BeatdownConverter {
             data.canceled = false;
         }
 
+        if (!data.aoName && data.aoLocation) {
+            data.aoName = data.aoLocation.name;
+        }
+
         return <IBeatdownEntity> {
             date: Timestamp.fromDate(data.date),
             aoLocationRef,
