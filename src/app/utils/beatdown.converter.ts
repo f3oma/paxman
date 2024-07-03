@@ -146,7 +146,8 @@ export class BeatdownConverter {
             additionalQsRefs: additionalQsRefs,
             canceled: data.canceled,
             aoName: data.aoName === undefined ? null : data.aoName,
-            notes: data.notes ?? ''
+            notes: data.notes ?? '',
+            startTime: data.startTime,
         }
     }
 }

@@ -13,9 +13,13 @@ export class PersonalWorkoutConverter {
     public getConverter() {
       return {
         toFirestore: (data: UserReportedWorkout): DocumentData => {
+            if (!data.notes) {
+                data.notes = '';
+            }
             return <UserReportedWorkoutEntity> {
                 date: Timestamp.fromDate(data.date),
-                preActivity: data.preActivity
+                preActivity: data.preActivity,
+                notes: data.notes,
             };
         },
         fromFirestore: (snap: QueryDocumentSnapshot): any => {
@@ -25,6 +29,7 @@ export class PersonalWorkoutConverter {
                 beatdown: beatdownRef,
                 date: data.date.toDate(),
                 preActivity: data.preActivity,
+                notes: data.notes
             };
         }
       }
