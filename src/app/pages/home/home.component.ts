@@ -47,6 +47,7 @@ export class HomeComponent {
   upcomingQs: Beatdown[] = [];
   activeChallenges: BaseChallenge[] = [];
   showChallengeBanner: boolean = false;
+  loadingChallenges: boolean = true;
 
   constructor(
     private userAuthService: UserAuthenticationService,
@@ -93,7 +94,9 @@ export class HomeComponent {
   }
 
   async handleChallenges(paxDataId: string) {
+    this.loadingChallenges = true;
     this.activeChallenges = await this.challengeManager.getActiveChallengesForUser(paxDataId);
+    this.loadingChallenges = false;
 
     // Remove banner if already joined
     let showChallengeBanner = true;
