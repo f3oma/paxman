@@ -165,6 +165,11 @@ export class Beatdown {
     }
 
     public get aoName(): string | undefined {
+        if (this.aoLocation) {
+            return this._aoLocation?.name;
+        } else if (this.eventName) {
+            return this.eventName;
+        }
         return this._aoName;
     }
 
