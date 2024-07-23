@@ -10,10 +10,10 @@
                     <h2>{{challengeInformation.name}}</h2>
                     <p>{{challengeInformation.description}}</p>
                     <div class="duration">
-                        <p><b>Runs from {{challengeInformation.startDateString}} to {{ challengeInformation.endDateString }}</b></p>
+                        <p><b>{{ canJoinChallenge() ? 'Runs' : 'Ran' }} from {{challengeInformation.startDateString}} to {{ challengeInformation.endDateString }}</b></p>
                     </div>
                     <div class="actions">
-                        <button class="primary-action" *ngIf="!paxChallengeData" mat-raised-button id="join-challenge" (click)="joinChallenge()">Join the Challenge</button>
+                        <button class="primary-action" *ngIf="!paxChallengeData && canJoinChallenge()" mat-raised-button id="join-challenge" (click)="joinChallenge()">Join the Challenge</button>
                         <button class="primary-action" disabled="true" *ngIf="paxChallengeData" mat-raised-button id="youre-in">You're in!</button>
                         <button *ngIf="paxChallengeData" mat-flat-button id="withdraw" (click)="withdraw()">Withdraw</button>
                     </div>

@@ -115,12 +115,21 @@ export class ChallengeViewComponent implements OnInit {
       case ChallengeState.Completed:
         return "🌟 Completed";
       case ChallengeState.Failed:
-        return "Failed";
+        return "DNF";
       case ChallengeState.InProgress:
         return "In Progress";
       default:
         return "Unknown";
     }
+  }
+
+  canJoinChallenge() {
+    if (this.challengeInformation) {
+      if (new Date() < new Date(this.challengeInformation.endDateString)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   async getChallengeData(challenge: Challenges) {
