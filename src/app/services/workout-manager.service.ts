@@ -48,7 +48,7 @@ export class WorkoutManagerService {
             // We are going to create it with the given data
             await this.createOrFindCommunityWorkout({
                 beatdown: workout.beatdown,
-                fngCount: 0,
+                fngCount: workout.fngCount ?? 0,
                 usersAttended: workout.usersAttended ?? [],
                 totalPaxCount: workout.totalPaxCount ?? 0,
                 qReported: true,
