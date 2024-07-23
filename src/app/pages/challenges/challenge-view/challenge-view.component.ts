@@ -171,30 +171,20 @@ export class ChallengeViewComponent implements OnInit {
   }
 
   refreshData(challenges: BaseChallenge[]) {
-    let sorted = challenges;
-    // If user is in the challenge put them first, followed by sotred completed status
-    if (this.paxChallengeData) {
-      sorted = sorted.sort((a, b) => {
-        if (a.id === this.paxChallengeData!.id) {
+    let sorted = challenges as IterativeCompletionChallenge[];
+
+    // If user is in the challenge put them first, followed by sorted completion status
+    sorted = sorted.sort((a, b) => {
+      if (this.paxChallengeData) {
+        if (a.id === this.paxChallengeData.id && b.id !== this.paxChallengeData.id) {
           return -1;
-        } else if (b.id === this.paxChallengeData!.id) {
-          return 1;
-        } else if (b.state === ChallengeState.Completed) {
-          return 0;
         }
-        return 0;
-      })
-    } else {
-      // Sort by completion status only
-      sorted = sorted.sort((a, b) => {
-        if (a.state === ChallengeState.Completed) {
-          return -1;
-        } else if (b.state !== ChallengeState.Completed) {
+        if (b.id === this.paxChallengeData.id && a.id !== this.paxChallengeData.id) {
           return 1;
         }
-        return 0;
-      })
-    }
+      }
+      return b.activeCompletions - a.activeCompletions;
+    });
     this.tableData = sorted;
     this.dataSource = new MatTableDataSource(this.tableData);
     this.dataSource.sort = this.sort;
