@@ -53,6 +53,7 @@ export interface ChallengeDetailProps {
                 state: ChallengeState.NotStarted,
                 startDateString: this.challenge.startDateString,
                 endDateString: this.challenge.endDateString,
+                endDateTime: new Date(this.challenge.endDateString),
                 name: this.challenge.name,
                 totalToComplete: completionRequirements.totalCompletionsRequired,
                 activeCompletions: 0
@@ -75,6 +76,7 @@ export interface ChallengeDetailProps {
                 state: ChallengeState.PreRegistered,
                 startDateString: this.challenge.startDateString,
                 endDateString: this.challenge.endDateString,
+                endDateTime: new Date(this.challenge.endDateString),
                 name: this.challenge.name,
                 totalToComplete: completionRequirements.totalCompletionsRequired,
                 activeCompletions: 0

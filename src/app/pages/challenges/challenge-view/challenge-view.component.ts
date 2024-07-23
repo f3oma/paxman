@@ -94,6 +94,7 @@ export class ChallengeViewComponent implements OnInit {
             state: challengeState,
             startDateString: this.challengeInformation.startDateString,
             endDateString: this.challengeInformation.endDateString,
+            endDateTime: new Date(this.challengeInformation.endDateString),
             name: this.challengeInformation.name,
             totalToComplete: completionRequirements.totalCompletionsRequired,
             activeCompletions: 0
@@ -112,7 +113,7 @@ export class ChallengeViewComponent implements OnInit {
       case ChallengeState.NotStarted:
         return "Not Started";
       case ChallengeState.Completed:
-        return "Completed";
+        return "🌟 Completed";
       case ChallengeState.Failed:
         return "Failed";
       case ChallengeState.InProgress:
@@ -162,11 +163,24 @@ export class ChallengeViewComponent implements OnInit {
 
   refreshData(challenges: BaseChallenge[]) {
     let sorted = challenges;
+    // If user is in the challenge put them first, followed by sotred completed status
     if (this.paxChallengeData) {
       sorted = sorted.sort((a, b) => {
         if (a.id === this.paxChallengeData!.id) {
           return -1;
         } else if (b.id === this.paxChallengeData!.id) {
+          return 1;
+        } else if (b.state === ChallengeState.Completed) {
+          return 0;
+        }
+        return 0;
+      })
+    } else {
+      // Sort by completion status only
+      sorted = sorted.sort((a, b) => {
+        if (a.state === ChallengeState.Completed) {
+          return -1;
+        } else if (b.state !== ChallengeState.Completed) {
           return 1;
         }
         return 0;
