@@ -76,7 +76,7 @@ export class ChallengeManager {
 
     async getActiveChallengesForUser(userId: string) {
         const userRef = this.paxManagerService.getUserReference('users/' + userId);
-        const q = query(this.UserChallengeCollection, and(where("paxUserRef", "==", userRef), where("state", "not-in", ["completed", "failed"])));
+        const q = query(this.UserChallengeCollection, and(where("paxUserRef", "==", userRef), where("state", "not-in", ["failed"])));
         const docs = Promise.all((await getDocs<Promise<BaseChallenge>, DocumentData>(q)).docs.map((d) => d.data()));
         return docs;
     }
