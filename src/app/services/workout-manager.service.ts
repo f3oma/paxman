@@ -48,7 +48,7 @@ export class WorkoutManagerService {
             // We are going to create it with the given data
             await this.createOrFindCommunityWorkout({
                 beatdown: workout.beatdown,
-                fngCount: 0,
+                fngCount: workout.fngCount ?? 0,
                 usersAttended: workout.usersAttended ?? [],
                 totalPaxCount: workout.totalPaxCount ?? 0,
                 qReported: true,
@@ -76,7 +76,7 @@ export class WorkoutManagerService {
                 workoutEntity['usersAttended'] = arrayUnion(...workoutData.usersAttended);
             }
 
-            workoutEntity['qReported'] = workoutData.qReported;
+            workoutEntity['qReported'] = workoutData.qReported ?? true;
 
             return await updateDoc(beatdownAttendanceRef, { ...workoutEntity });
         }

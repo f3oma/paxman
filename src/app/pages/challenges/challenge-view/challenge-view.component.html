@@ -10,10 +10,10 @@
                     <h2>{{challengeInformation.name}}</h2>
                     <p>{{challengeInformation.description}}</p>
                     <div class="duration">
-                        <p><b>Runs from {{challengeInformation.startDateString}} to {{ challengeInformation.endDateString }}</b></p>
+                        <p><b>{{ canJoinChallenge() ? 'Runs' : 'Ran' }} from {{challengeInformation.startDateString}} to {{ challengeInformation.endDateString }}</b></p>
                     </div>
                     <div class="actions">
-                        <button class="primary-action" *ngIf="!paxChallengeData" mat-raised-button id="join-challenge" (click)="joinChallenge()">Join the Challenge</button>
+                        <button class="primary-action" *ngIf="!paxChallengeData && canJoinChallenge()" mat-raised-button id="join-challenge" (click)="joinChallenge()">Join the Challenge</button>
                         <button class="primary-action" disabled="true" *ngIf="paxChallengeData" mat-raised-button id="youre-in">You're in!</button>
                         <button *ngIf="paxChallengeData" mat-flat-button id="withdraw" (click)="withdraw()">Withdraw</button>
                     </div>
@@ -22,7 +22,7 @@
             <div class="challenge-leaderboard">
                 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
                     <ng-container matColumnDef="f3Name">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name"> Participants ({{getRowCount()}}) </th>
+                        <th mat-header-cell *matHeaderCellDef> Participants ({{getRowCount()}}) </th>
                         <td mat-cell *matCellDef="let challengeParticipant">
                             <div class="user-chip" [routerLink]="'/users/' + challengeParticipant.paxUser.id">
                                 <div class="current-profile-img" [style.background-image]="'url(' + challengeParticipant.paxUser.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !challengeParticipant.paxUser.profilePhotoUrl }"></div>
@@ -32,15 +32,17 @@
                     </ng-container>
                     <ng-container matColumnDef="status">
                         <th mat-header-cell *matHeaderCellDef> Status </th>
-                        <td mat-cell *matCellDef="let challengeParticipant"> {{getStateForDisplay(challengeParticipant.state)}} </td>
+                        <td mat-cell *matCellDef="let challengeParticipant">
+                            <p [id]="challengeParticipant.state">{{getStateForDisplay(challengeParticipant.state)}} </p>
+                        </td>
                     </ng-container>
-                    <ng-container matColumnDef="totalCompleted" >
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by completed count"> Total Completed </th>
-                        <td mat-cell *matCellDef="let challengeParticipant"> {{challengeParticipant.activeCompletions}} </td>
+                    <ng-container matColumnDef="totalCompleted">
+                        <th mat-header-cell *matHeaderCellDef> Total Completed </th>
+                        <td mat-cell *matCellDef="let challengeParticipant"> {{challengeParticipant.activeCompletions}} / {{challengeParticipant.totalToComplete}} </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
+                </table>
             </div>
         </div>
     </div>

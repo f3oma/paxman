@@ -28,6 +28,7 @@ export interface UserReportedWorkout {
 export interface UserReportedWorkoutEntity {
     preActivity: PreActivity;
     date: Timestamp;
+    notes?: string;
 }
 
 // Single record for all attendance counts by year

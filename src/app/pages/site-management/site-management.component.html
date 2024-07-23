@@ -1,23 +1,18 @@
 <div class="container">
     <div class="header">
         <div class="column">
-            <h1>Site Management</h1>
-            <p>View and update AO information</p>        
+            <h1>Site View</h1>
+            <p>F3 Omaha AO Directory</p>        
         </div>
-        <button mat-flat-button id="new-site" *ngIf="isAdmin" [routerLink]="['/admin/add-location']">Add New Site</button>
+        <div class="align-right">
+            <button mat-flat-button id="new-site" *ngIf="isAdmin" [routerLink]="['/admin/add-location']">Add New Site</button>
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Name, category, start time" #input>
+            </mat-form-field>
+        </div>
     </div>
 
-    <div class="manage-my-site" *ngIf="!isAdmin; else adminView">
-        <h4>Manage my sites</h4>
-        <div class="my-site">
-            <h3>{{siteQAO?.name}}</h3>
-            <p>{{siteQAO?.address}}</p>
-            <button id="manage-site-btn" mat-flat-button [routerLink]="['/admin/site-management/', siteQAO?.id]">Manage site</button>
-        </div>
-    </div>   
-</div>
-
-<ng-template #adminView>
     <div class="site-list">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
             <ng-container matColumnDef="name">
@@ -32,12 +27,18 @@
                 <th mat-header-cell *matHeaderCellDef> Start Time </th>
                 <td mat-cell *matCellDef="let site"> {{site.startTimes | commaSeparated }} </td>
             </ng-container>
+            <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef> Category </th>
+                <td mat-cell *matCellDef="let site"> {{site.category}} </td>
+            </ng-container>
             <ng-container matColumnDef="siteQ">
                 <th mat-header-cell *matHeaderCellDef> Site Q(s) </th>
                 <td mat-cell *matCellDef="let site">
                     <ng-container *ngFor="let siteQ of site.activeSiteQUsers">
-                        <a [href]="'/users/' + siteQ.id">{{siteQ.f3Name}}</a>
-                        <br/>
+                        <div class="user-chip" [routerLink]="'/users/' + siteQ.id">
+                            <div class="current-profile-img" [style.background-image]="'url(' + siteQ.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !siteQ.profilePhotoUrl }"></div>
+                            <span>{{siteQ.f3Name}}</span>
+                        </div>
                     </ng-container>
                 </td>
             </ng-container>
@@ -49,4 +50,4 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="viewSiteDetail(row)"></tr>
           </table>
     </div>
-</ng-template>
+</div>

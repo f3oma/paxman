@@ -1,0 +1,44 @@
+{
+    "fields": [
+        {
+            "name": "additionalQsRefs",
+            "type": "array"
+        },
+        {
+            "name": "aoLocationRef",
+            "type": "reference"
+        },
+        {
+            "name": "aoName",
+            "type": "string"
+        },
+        {
+            "name": "canceled",
+            "type": "boolean"
+        },
+        {
+            "name": "coQUserRef",
+            "type": "reference"
+        },
+        {
+            "name": "date",
+            "type": "timestamp"
+        },
+        {
+            "name": "eventAddress",
+            "type": "string"
+        },
+        {
+            "name": "eventName",
+            "type": "string"
+        },
+        {
+            "name": "qUserRef",
+            "type": "reference"
+        },
+        {
+            "name": "specialEvent",
+            "type": "string"
+        }
+    ]
+}

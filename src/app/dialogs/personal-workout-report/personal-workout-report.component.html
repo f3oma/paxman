@@ -14,7 +14,6 @@
                           </mat-option>
                       </mat-autocomplete>
                     </mat-form-field>
-                    <!-- Beatdown selector, filtered down to the week? Filterable by text? -->
                     <!-- Preactivity selector -->
                     <mat-form-field appearance="outline">
                         <mat-label>Pre-Activity</mat-label>
@@ -28,6 +27,12 @@
                             <mat-option value="Other">Other</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <!-- Murph Challenge-->
+                    <ng-container *ngIf="murphChallenge">
+                        <div class="challenge-checkbox">
+                            <mat-checkbox formControlName="murphChallengeActivity">Completed Murph during Beatdown</mat-checkbox>
+                        </div>
+                    </ng-container>
                     <mat-form-field appearance="outline">
                         <mat-label>Additional notes</mat-label>
                         <textarea formControlName="notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="How was the beatdown today..."></textarea>
@@ -60,6 +65,11 @@
                             <mat-option value="Other">Other</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <ng-container *ngIf="murphChallenge">
+                        <div class="challenge-checkbox">
+                            <mat-checkbox formControlName="murphChallengeActivity">Completed Murph during Beatdown</mat-checkbox>
+                        </div>
+                    </ng-container>
                     <mat-form-field appearance="outline">
                         <mat-label>Additional notes</mat-label>
                         <textarea formControlName="notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="How was the beatdown today..."></textarea>
@@ -88,6 +98,11 @@
                             <mat-option value="Other">Other</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <ng-container *ngIf="murphChallenge">
+                        <div class="challenge-checkbox">
+                            <mat-checkbox formControlName="murphChallengeActivity">Completed Murph <b>during Beatdown</b></mat-checkbox>
+                        </div>
+                    </ng-container>
                     <mat-form-field appearance="outline">
                         <mat-label>Additional notes</mat-label>
                         <textarea formControlName="notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="How was the beatdown today..."></textarea>

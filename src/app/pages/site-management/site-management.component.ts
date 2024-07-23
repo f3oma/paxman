@@ -22,7 +22,7 @@ export class SiteManagementComponent {
   isAdmin = false;
   siteQAO: AOData | undefined;
 
-  public displayedColumns: string[] = ['name', 'weekDay', 'startTimes', 'siteQ'];
+  public displayedColumns: string[] = ['name', 'weekDay', 'startTimes', 'category', 'siteQ'];
   public tableData: AOData[] = [];
   public dataSource: any;
 
@@ -50,8 +50,13 @@ export class SiteManagementComponent {
     })
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   public async viewSiteDetail(row: AOData) {
-    await this.router.navigate(['admin/site-management', row.id]);
+    await this.router.navigate(['sites', row.id]);
   }
 
   async getSiteQAO(siteQLocationRef: DocumentReference<AOData>) {
@@ -59,8 +64,8 @@ export class SiteManagementComponent {
   }
 
   async getAOData() {
-    const tableData = await this.aoManagerService.getAllAOData();
-    console.log(tableData);
+    const tableData = await this.aoManagerService.getAllBeatdownEligibleAOData();
+
     // Uncomment to give rights to all site-qs
     // for (let data of tableData) {
     //   if (data.activeSiteQUsers) {

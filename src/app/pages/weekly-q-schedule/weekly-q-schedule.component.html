@@ -28,7 +28,7 @@
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
                                     </div>
-                                    <h5 *ngIf="beatdown.aoLocation" id="ao-name"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
+                                    <h5 *ngIf="beatdown.aoLocation" id="ao-name" [routerLink]="['/sites/', beatdown.aoLocation.id]"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
                                 </div>
                                 <mat-chip-listbox>
                                     <mat-chip *ngIf="beatdown.isFlagPass">

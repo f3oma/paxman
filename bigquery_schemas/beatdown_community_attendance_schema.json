@@ -1,0 +1,24 @@
+{
+    "fields": [
+        {
+            "name": "beatdown",
+            "type": "reference"
+        },
+        {
+            "name": "fngCount",
+            "type": "number"
+        },
+        {
+            "name": "qReported",
+            "type": "boolean"
+        },
+        {
+            "name": "totalPaxCount",
+            "type": "number"
+        },
+        {
+            "name": "usersAttended",
+            "type": "array"
+        }
+    ]
+}

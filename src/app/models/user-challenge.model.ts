@@ -21,6 +21,7 @@ export interface IChallengeEntityBase {
     state: ChallengeState
     startDateString: string; // Format '07/01/2024'
     endDateString: string;
+    endDateTime: Timestamp;
 }
 export interface IIterativeCompletionChallengeEntity extends IChallengeEntityBase {
     activeCompletions: number;
@@ -36,7 +37,9 @@ export interface IChallengeBase {
     state: ChallengeState
     startDateString: string;
     endDateString: string;
+    endDateTime: Date;
 }
+
 export interface IIterativeCompletionChallenge extends IChallengeBase {
     activeCompletions: number;
     totalToComplete: number;
@@ -51,6 +54,7 @@ export class BaseChallenge {
     private _state: ChallengeState;
     private _startDateString: string;
     private _endDateString: string;
+    private _endDateTime: Date;
 
     constructor(
         id: string,
@@ -59,7 +63,8 @@ export class BaseChallenge {
         type: ChallengeType,
         state: ChallengeState,
         startDateString: string,
-        endDateString: string) {
+        endDateString: string,
+        endDateTime: Date) {
         this._id = id;
         this._name = name;
         this._paxUser = paxUser;
@@ -67,6 +72,7 @@ export class BaseChallenge {
         this._state = state;
         this._startDateString = startDateString;
         this._endDateString = endDateString;
+        this._endDateTime = endDateTime;
     }
 
     get id(): string {
@@ -97,8 +103,13 @@ export class BaseChallenge {
         return this._endDateString;
     }
 
+    get endDateTime(): Date {
+        return this._endDateTime;
+    }
+
     updateState(newState: ChallengeState): void {
-        this._state = newState;
+        if (this._state !== ChallengeState.Completed)
+            this._state = newState;
     }
 
     isComplete(): boolean {
@@ -114,6 +125,7 @@ export class BaseChallenge {
             state: this.state,
             startDateString: this.startDateString,
             endDateString: this.endDateString,
+            endDateTime: this.endDateTime,
         }
     }
 }
@@ -123,7 +135,7 @@ export class IterativeCompletionChallenge extends BaseChallenge {
     private _totalToComplete: number;
 
     constructor(data: IIterativeCompletionChallenge) {
-        super(data.id, data.paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString);
+        super(data.id, data.paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString, data.endDateTime);
         this._activeCompletions = data.activeCompletions;
         this._totalToComplete = data.totalToComplete;
     }

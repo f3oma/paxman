@@ -72,6 +72,14 @@ export class BeatdownConverter {
             }
         }
 
+        if (!data.aoName) {
+            if (aoLocation) {
+                data.aoName = aoLocation.name;
+            } else if (data.eventName) {
+                data.aoName = data.eventName;
+            }
+        }
+
         const dateTz = new Date(data.date.toMillis());
         dateTz.setHours(dateTz.getHours() + 5); // cst conversion, hacky
 
@@ -131,6 +139,14 @@ export class BeatdownConverter {
             data.canceled = false;
         }
 
+        if (!data.aoName) {
+            if (data.aoLocation) {
+                data.aoName = data.aoLocation.name;
+            } else if (data.eventName) {
+                data.aoName = data.eventName;
+            }
+        }
+
         return <IBeatdownEntity> {
             date: Timestamp.fromDate(data.date),
             aoLocationRef,
@@ -142,7 +158,8 @@ export class BeatdownConverter {
             additionalQsRefs: additionalQsRefs,
             canceled: data.canceled,
             aoName: data.aoName === undefined ? null : data.aoName,
-            notes: data.notes ?? ''
+            notes: data.notes ?? '',
+            startTime: data.startTime,
         }
     }
 }

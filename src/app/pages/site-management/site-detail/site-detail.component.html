@@ -11,7 +11,7 @@
                 <div class="header">
                     <div class="title">
                     <h1>{{site.name}}</h1>
-                    <button mat-flat-button (click)="toggleEditMode()"><mat-icon>edit</mat-icon> Edit Site Data</button>
+                    <button *ngIf="isAdmin" mat-flat-button (click)="toggleEditMode()"><mat-icon>edit</mat-icon> Edit Site Data</button>
                     </div>
                     <p style="margin: 0"><b>{{site.location}}</b></p>
                     <a (click)="openGoogleMapsForAddress(site.address)">{{site.address}}</a>
@@ -35,24 +35,33 @@
                     <div class="info-section">
                     <ng-container *ngIf="site.activeSiteQUsers && site.activeSiteQUsers.length > 0">
                         <h5>Active Site-Q(s)</h5>
-                        <div class="user" *ngFor="let siteq of site.activeSiteQUsers">
-                            <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                        <div class="user" *ngFor="let siteQ of site.activeSiteQUsers">
+                            <div class="user-chip" [routerLink]="'/users/' + siteQ.id">
+                                <div class="current-profile-img" [style.background-image]="'url(' + siteQ.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !siteQ.profilePhotoUrl }"></div>
+                                <span>{{siteQ.f3Name}}</span>
+                            </div>
                         </div>
                     </ng-container>
                     </div>
                     <div class="info-section" style="padding-top: 12px">
                     <ng-container *ngIf="site.retiredSiteQUsers && site.retiredSiteQUsers.length > 0">
                         <h5>Retired Site-Q(s)</h5>
-                        <div class="user" *ngFor="let siteq of site.retiredSiteQUsers">
-                            <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                        <div class="user" *ngFor="let siteQ of site.retiredSiteQUsers">
+                            <div class="user-chip" [routerLink]="'/users/' + siteQ.id">
+                                <div class="current-profile-img" [style.background-image]="'url(' + siteQ.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !siteQ.profilePhotoUrl }"></div>
+                                <span>{{siteQ.f3Name}}</span>
+                            </div>
                         </div>
                     </ng-container>
                     </div>
                     <div class="info-section" style="padding-top: 12px">
                         <ng-container *ngIf="site.foundingSiteQUsers && site.foundingSiteQUsers.length > 0">
                         <h5>Site Founders</h5>
-                        <div class="user" *ngFor="let siteq of site.foundingSiteQUsers">
-                            <a [href]="'/users/' + siteq.id">{{siteq.f3Name}}</a>  
+                        <div class="user" *ngFor="let siteQ of site.foundingSiteQUsers">
+                            <div class="user-chip" [routerLink]="'/users/' + siteQ.id">
+                                <div class="current-profile-img" [style.background-image]="'url(' + siteQ.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !siteQ.profilePhotoUrl }"></div>
+                                <span>{{siteQ.f3Name}}</span>
+                            </div>
                         </div>
                         </ng-container>
                     </div>

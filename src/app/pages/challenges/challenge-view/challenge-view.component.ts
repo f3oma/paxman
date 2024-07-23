@@ -94,6 +94,7 @@ export class ChallengeViewComponent implements OnInit {
             state: challengeState,
             startDateString: this.challengeInformation.startDateString,
             endDateString: this.challengeInformation.endDateString,
+            endDateTime: new Date(this.challengeInformation.endDateString),
             name: this.challengeInformation.name,
             totalToComplete: completionRequirements.totalCompletionsRequired,
             activeCompletions: 0
@@ -112,14 +113,23 @@ export class ChallengeViewComponent implements OnInit {
       case ChallengeState.NotStarted:
         return "Not Started";
       case ChallengeState.Completed:
-        return "Completed";
+        return "🌟 Completed";
       case ChallengeState.Failed:
-        return "Failed";
+        return "DNF";
       case ChallengeState.InProgress:
         return "In Progress";
       default:
         return "Unknown";
     }
+  }
+
+  canJoinChallenge() {
+    if (this.challengeInformation) {
+      if (new Date() < new Date(this.challengeInformation.endDateString)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   async getChallengeData(challenge: Challenges) {
@@ -128,11 +138,31 @@ export class ChallengeViewComponent implements OnInit {
       console.error("Unknown challenge");
       return;
     }
-    this.challengeInformation = await this.challengeManager.getChallengeInformation(id);
+
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
     if (!tableData) {
       this.showChallengeNotFoundError = true;
     }
+
+    const challengeInformation: ChallengeInformation = await this.challengeManager.getChallengeInformation(id);
+
+    // As soon as a challenge is active, set the state of all entries to in-progress
+    // and update challenge information to started
+    if (new Date(challengeInformation.startDateString) < new Date() && 
+      challengeInformation.status === ChallengeStatus.PreRegistration) {
+      challengeInformation.status = ChallengeStatus.Started;
+      await this.challengeManager.updateChallengeInformation(challengeInformation);
+      const promises: Promise<any>[] = [];
+      for (let challengeEntry of tableData) {
+        if (challengeEntry.state === ChallengeState.PreRegistered) {
+          challengeEntry.updateState(ChallengeState.InProgress);
+          promises.push(this.challengeManager.updateChallenge(challengeEntry));
+        }
+      }
+      await Promise.all(promises);
+    }
+
+    this.challengeInformation = challengeInformation;
     if (this.challengeInformation?.status === ChallengeStatus.PreRegistration) {
       this.displayedColumns = ['f3Name', 'status'];
     }
@@ -141,17 +171,20 @@ export class ChallengeViewComponent implements OnInit {
   }
 
   refreshData(challenges: BaseChallenge[]) {
-    let sorted = challenges;
-    if (this.paxChallengeData) {
-      sorted = sorted.sort((a, b) => {
-        if (a.id === this.paxChallengeData!.id) {
+    let sorted = challenges as IterativeCompletionChallenge[];
+
+    // If user is in the challenge put them first, followed by sorted completion status
+    sorted = sorted.sort((a, b) => {
+      if (this.paxChallengeData) {
+        if (a.id === this.paxChallengeData.id && b.id !== this.paxChallengeData.id) {
           return -1;
-        } else if (b.id === this.paxChallengeData!.id) {
+        }
+        if (b.id === this.paxChallengeData.id && a.id !== this.paxChallengeData.id) {
           return 1;
         }
-        return 0;
-      })
-    }
+      }
+      return b.activeCompletions - a.activeCompletions;
+    });
     this.tableData = sorted;
     this.dataSource = new MatTableDataSource(this.tableData);
     this.dataSource.sort = this.sort;

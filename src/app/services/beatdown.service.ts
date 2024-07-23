@@ -107,20 +107,22 @@ export class BeatdownService {
         }
         
         // Finally, assign beatdowns with their reported status
-        const result: { beatdown: Beatdown, isReported: boolean, paxCount: number }[] = [];
+        const result: { beatdown: Beatdown, isReported: boolean, paxCount: number, fngCount: number }[] = [];
         for (let beatdown of beatdownsRequiringAttendanceData) {
             const attendanceData = await this.workoutService.getReportedAttendance(beatdown.id);
             let isReported = false;
             let paxCount = 0;
+            let fngCount = 0;
             if (attendanceData !== null) {
                 isReported = attendanceData.qReported;
                 paxCount = attendanceData.totalPaxCount;
+                fngCount = attendanceData.fngCount;
             }
-            result.push({ beatdown, isReported, paxCount });
+            result.push({ beatdown, isReported, paxCount, fngCount });
         }
 
         return result;
-      }
+    }
 
     async createBeatdown(beatdown: Partial<IBeatdown>) {
         return await addDoc(this.beatdownCollection, beatdown)
@@ -151,7 +153,6 @@ export class BeatdownService {
         // Create a very sparse beatdown, not linked to any AO or data that is tracked in attendance reporting
         const emptyBeatdown: IBeatdown = JSON.parse(JSON.stringify(this.EMPTY_BEATDOWN));
         emptyBeatdown.eventName = `DR - ${downrangeAOName}`;
-        date.setHours(0, 0, 0, 0);
         emptyBeatdown.date = date;
         emptyBeatdown.aoName = downrangeAOName;
         return await this.createBeatdown(emptyBeatdown);
@@ -161,7 +162,6 @@ export class BeatdownService {
        // Create a very sparse beatdown, not linked to any AO or data that is tracked in attendance reporting
        const emptyBeatdown: IBeatdown = JSON.parse(JSON.stringify(this.EMPTY_BEATDOWN));
        emptyBeatdown.eventName = 'Shield Lock';
-       date.setHours(0, 0, 0, 0);
        emptyBeatdown.date = date;
        emptyBeatdown.aoName = 'Shield Lock';
        return await this.createBeatdown(emptyBeatdown);

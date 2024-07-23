@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, doc, getDoc } from "@angular/fire/firestore";
+import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, doc, getDoc } from "@angular/fire/firestore";
 import { BaseChallenge, ChallengeType, IChallengeBase, IChallengeEntityBase, IIterativeCompletionChallengeEntity, IterativeCompletionChallenge } from "../models/user-challenge.model";
 import { PaxManagerService } from "../services/pax-manager.service";
 import { PaxModelConverter } from "./pax-model.converter";
@@ -39,6 +39,7 @@ export class UserChallengeConverter {
             type: data.type,
             startDateString: data.startDateString,
             endDateString: data.endDateString,
+            endDateTime: Timestamp.fromDate(data.endDateTime ?? new Date(data.endDateString)),
         };
         if (data instanceof IterativeCompletionChallenge) {
             return <IIterativeCompletionChallengeEntity> {
@@ -65,11 +66,12 @@ export class UserChallengeConverter {
                     state: data.state,
                     startDateString: data.startDateString,
                     endDateString: data.endDateString,
+                    endDateTime: data.endDateTime?.toDate() ?? new Date(data.endDateString),
                     activeCompletions: iterativeEntity.activeCompletions,
                     totalToComplete: iterativeEntity.totalToComplete,
                 });
             default:
-                return new BaseChallenge(id, paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString);
+                return new BaseChallenge(id, paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString, data.endDateTime?.toDate() ?? new Date(data.endDateString));
         }
     }
 }

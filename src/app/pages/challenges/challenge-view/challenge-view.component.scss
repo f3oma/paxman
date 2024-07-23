@@ -57,6 +57,33 @@
     }
 }
 
+.mat-column-status {
+    p {
+        margin: 0;
+        padding: 4px 8px;
+        width: fit-content;
+        border-radius: 18px;
+        font-weight: bold;
+        text-wrap: nowrap;
+    }
+    #completed {
+        background: linear-gradient(360deg, #9432af, #5436ea);
+        color: #fff;
+    }
+    
+    #in-progress {
+        background-color: #ecac00;
+        color: #000;
+    }
+
+    #failed {
+        background-color: #cb3f1c;
+        color: #fff;
+    }
+}
+
+
+
 .user-chip {
     display: flex;
     flex-direction: row;
