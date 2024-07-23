@@ -179,6 +179,8 @@ export class PersonalWorkoutReportComponent {
     if (this.downrangeForm.valid) {
       const downrangeAOName = this.downrangeForm.controls['downrangeAOName'].value;
       const date = this.downrangeForm.controls['date'].value;
+      date.setHours(6, 0, 0, 0);
+
       const beatdownRef = await this.beatdownService.generateDownrangeBeatdown(downrangeAOName, date);
       let workoutData: UserReportedWorkout = {
         preActivity: this.downrangeForm.controls['preActivity'].value,
@@ -196,7 +198,9 @@ export class PersonalWorkoutReportComponent {
 
   async validateShieldLockForm(): Promise<UserReportedWorkout | null> {
     if (this.shieldLockForm.valid) {
-      const date = this.shieldLockForm.controls['date'].value;
+      const date: Date = this.shieldLockForm.controls['date'].value;
+      date.setHours(6, 0, 0, 0);
+
       const beatdownRef = await this.beatdownService.generateShieldLockBeatdown(date);
       let workoutData: UserReportedWorkout = {
         preActivity: this.shieldLockForm.controls['preActivity'].value,
