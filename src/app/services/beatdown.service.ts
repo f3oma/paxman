@@ -107,20 +107,22 @@ export class BeatdownService {
         }
         
         // Finally, assign beatdowns with their reported status
-        const result: { beatdown: Beatdown, isReported: boolean, paxCount: number }[] = [];
+        const result: { beatdown: Beatdown, isReported: boolean, paxCount: number, fngCount: number }[] = [];
         for (let beatdown of beatdownsRequiringAttendanceData) {
             const attendanceData = await this.workoutService.getReportedAttendance(beatdown.id);
             let isReported = false;
             let paxCount = 0;
+            let fngCount = 0;
             if (attendanceData !== null) {
                 isReported = attendanceData.qReported;
                 paxCount = attendanceData.totalPaxCount;
+                fngCount = attendanceData.fngCount;
             }
-            result.push({ beatdown, isReported, paxCount });
+            result.push({ beatdown, isReported, paxCount, fngCount });
         }
 
         return result;
-      }
+    }
 
     async createBeatdown(beatdown: Partial<IBeatdown>) {
         return await addDoc(this.beatdownCollection, beatdown)

@@ -12,6 +12,7 @@ export interface CommunityWorkoutReportProps {
   user: PaxUser;
   beatdown: Beatdown;
   previouslyReportedTotalPaxCount?: number;
+  previouslyReportedFngCount?: number;
 }
 
 @Component({
@@ -23,6 +24,7 @@ export class CommunityWorkoutReportComponent {
 
   form: FormGroup = new FormGroup({
     'totalPaxCount': new FormControl(0),
+    'fngCount': new FormControl(0),
   });
 
   user: PaxUser;
@@ -41,6 +43,7 @@ export class CommunityWorkoutReportComponent {
       if (data.previouslyReportedTotalPaxCount) {
         this.shouldUpdate = true;
         this.form.controls['totalPaxCount'].setValue(data.previouslyReportedTotalPaxCount);
+        this.form.controls['fngCount'].setValue(data.previouslyReportedFngCount);
       }
     }
 
@@ -54,6 +57,7 @@ export class CommunityWorkoutReportComponent {
         let workoutData: Partial<IBeatdownAttendance> = {
           beatdown: beatdownRef,
           totalPaxCount: this.form.controls['totalPaxCount'].value,
+          fngCount: this.form.controls['fngCount'].value,
           qReported: true,
         };
         await this.workoutService.updateCommunityWorkoutData(workoutData);
@@ -82,6 +86,7 @@ export class CommunityWorkoutReportComponent {
       let workoutData: Partial<IBeatdownAttendance> = {
         beatdown: beatdownRef,
         totalPaxCount: this.form.controls['totalPaxCount'].value,
+        fngCount: this.form.controls['fngCount'].value,
         usersAttended: qRefs,
         qReported: true
       };

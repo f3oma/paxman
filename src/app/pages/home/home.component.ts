@@ -43,7 +43,7 @@ export class HomeComponent {
   public anniversaryEndDate: Date = new Date();
   public anniversaryStartDate: Date = new Date();
   public user: PaxUser | undefined = undefined;
-  beatdownsRequiringAttendanceData: { beatdown: Beatdown, isReported: boolean, paxCount: number }[] = [];
+  beatdownsRequiringAttendanceData: { beatdown: Beatdown, isReported: boolean, paxCount: number, fngCount: number }[] = [];
   upcomingQs: Beatdown[] = [];
   activeChallenges: BaseChallenge[] = [];
   showChallengeBanner: boolean = false;
@@ -83,7 +83,6 @@ export class HomeComponent {
   public async getPaxUserData(paxDataId: string, siteQLocationRef: AoLocationRef | undefined) {
     this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
     this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
-
     this.handleChallenges(paxDataId);
 
     const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
@@ -171,12 +170,13 @@ export class HomeComponent {
     })
   }
 
-  editAttendance(attendance: { beatdown: Beatdown, isReported: boolean, paxCount: number }) {
+  editAttendance(attendance: { beatdown: Beatdown, isReported: boolean, paxCount: number, fngCount: number }) {
     this.matDialog.open(CommunityWorkoutReportComponent, {
       data: <CommunityWorkoutReportProps> {
         user: this.user,
         beatdown: attendance.beatdown,
         previouslyReportedTotalPaxCount: attendance.paxCount,
+        previouslyReportedFngCount: attendance.fngCount,
       },
       maxWidth: '100vw',
       maxHeight: '100vh',
