@@ -132,6 +132,7 @@ export class QSchedulerComponent implements OnInit {
       height: '100%',
       width: '100%'
     }).afterClosed().subscribe(async (res) => {
+      alert("Beatdown created");
       delete this.beatdownCache[this.weekStartDate.toDateString()];
       await this.getBeatdowns(this.activeFilters);
     })
