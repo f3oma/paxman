@@ -1,0 +1,39 @@
+
+.metadata {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+
+    .community-event {
+        font-weight: bold;
+        background-color: black;
+        color: #fff;
+        border-radius: 50%;
+        font-size: 12px;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        font-family: sans-serif;
+    }
+}
+
+.smallIcons {
+    .mat-mdc-chip.mat-mdc-standard-chip { --mdc-chip-container-height: 24px; }
+    .mat-mdc-standard-chip {
+        border-radius: var(--mdc-chip-container-shape-radius);
+        height: var(--mdc-chip-container-height);
+        --mdc-chip-container-shape-family: rounded;
+        --mdc-chip-with-avatar-avatar-shape-family: rounded;
+        --mdc-chip-with-avatar-avatar-shape-radius: 14px 14px 14px 14px;
+        --mdc-chip-with-avatar-avatar-size: 19px;
+        --mdc-chip-with-icon-icon-size: 12px;
+        --mdc-chip-label-text-size: 12px;
+    }    
+}
+
+@media only screen and (max-width: 600px) {
+    .hide-when-mobile {
+        display: none;
+    }
+}

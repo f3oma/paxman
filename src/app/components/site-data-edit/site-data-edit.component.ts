@@ -176,6 +176,8 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
         const current = new Date();
         const sixMonths = new Date();
         sixMonths.setMonth(current.getMonth() + 6);
+        current.setHours(6, 0, 0, 0);
+        sixMonths.setHours(6, 0, 0, 0);
         await this.beatdownService.generateBeatdownsBetweenDates(site, current, sixMonths);
       } else {
         await this.aoManagerService.updateSiteData(site);

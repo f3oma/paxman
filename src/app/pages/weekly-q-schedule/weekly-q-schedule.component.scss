@@ -181,15 +181,3 @@
     align-items: center;
     justify-content: center;
 }
-
-.mat-mdc-chip.mat-mdc-standard-chip { --mdc-chip-container-height: 24px; }
-.mat-mdc-standard-chip {
-    border-radius: var(--mdc-chip-container-shape-radius);
-    height: var(--mdc-chip-container-height);
-    --mdc-chip-container-shape-family: rounded;
-    --mdc-chip-with-avatar-avatar-shape-family: rounded;
-    --mdc-chip-with-avatar-avatar-shape-radius: 14px 14px 14px 14px;
-    --mdc-chip-with-avatar-avatar-size: 19px;
-    --mdc-chip-with-icon-icon-size: 12px;
-    --mdc-chip-label-text-size: 12px;
-}

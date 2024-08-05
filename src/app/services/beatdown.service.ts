@@ -211,7 +211,8 @@ export class BeatdownService {
                 eventAddress: aoData.address,
                 canceled: false,
                 startTime: aoData.startTimeCST,
-                notes: ''
+                notes: '',
+                aoName: aoData.name
             };
             batch.set(docRef, beatdownEntity);
 

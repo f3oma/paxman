@@ -16,6 +16,7 @@ export enum SpecialEventType {
     BirthdayQ = 'BirthdayQ',
     QSwap = 'QSwap',
     None = 'None',
+    IPC = "IPC",
 }
 
 // Beatdown is defined as a single workout / custom event. Beatdown
@@ -43,7 +44,7 @@ export interface IBeatdownEntity {
     qUserRef: UserRef;
     specialEvent: SpecialEventType;
     aoLocationRef: AoLocationRef; // null in case of popup
-    aoName?: string; // only used for search indexing
+    aoName: string; // only used for search indexing
     coQUserRef: UserRef;
     eventName: string | null;
     eventAddress: string | null;
@@ -150,6 +151,10 @@ export class Beatdown {
 
     public get isSiteQSwap(): boolean {
         return this.specialEvent == SpecialEventType.QSwap;
+    }
+
+    public get isIpc(): boolean {
+        return this.specialEvent === SpecialEventType.IPC;
     }
 
     public get isCanceled(): boolean {

@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, Inject, LOCALE_ID } from '@angular/core';
+import { IconSize } from 'src/app/components/beatdown-category-chips/beatdown-category-chips.component';
 import { Beatdown } from 'src/app/models/beatdown.model';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 
@@ -21,6 +22,8 @@ export class WeeklyQScheduleComponent {
   initialWeekRange: string = '';
   currentWeekDate: Date = new Date();
   shouldShowScrollToday = true;
+
+  chipIconSize: IconSize = IconSize.Small;
 
   constructor(
     private beatdownService: BeatdownService,

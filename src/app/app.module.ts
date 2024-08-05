@@ -69,6 +69,7 @@ import { ChallengeDetail } from './dialogs/challenge-detail/challenge-detail.com
 import { ChallengesComponent } from './pages/challenges/challenges.component';
 import { ChallengeViewComponent } from './pages/challenges/challenge-view/challenge-view.component';
 import { TruncatePipe } from './utils/truncate.pipe';
+import { BeatdownCategoryChipsComponent } from './components/beatdown-category-chips/beatdown-category-chips.component';
 
 @NgModule({
   declarations: [
@@ -114,6 +115,7 @@ import { TruncatePipe } from './utils/truncate.pipe';
     ChallengesComponent,
     ChallengeViewComponent,
     TruncatePipe,
+    BeatdownCategoryChipsComponent,
   ],
   imports: [
     BrowserModule,

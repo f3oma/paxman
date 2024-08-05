@@ -12,16 +12,7 @@ import { EditBeatdownComponent, EditBeatdownProps } from './edit-beatdown-modal/
 import { CreateBeatdownComponent, CreateBeatdownProps } from './create-beatdown-modal/create-beatdown.component';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-
-// Models
-
-
-
-// Q Scheduler
-// Give me all beatdowns where date is this week
-// Give me all future and previous beatdowns for my site
-// Number of sites = number of beatdowns unless popup.
-
+import { IconSize } from 'src/app/components/beatdown-category-chips/beatdown-category-chips.component';
 
 @Component({
   selector: 'app-q-scheduler',
@@ -56,6 +47,8 @@ export class QSchedulerComponent implements OnInit {
   selectedSite$: Observable<AOData | null> = this.selectedSiteSubject.asObservable();
   allAOs: AOData[] = [];
   userIsAdmin: boolean = false;
+
+  chipIconSize: IconSize = IconSize.Large;
 
   constructor(
     private beatdownService: BeatdownService,
