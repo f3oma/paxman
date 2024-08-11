@@ -192,10 +192,11 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
   }
 
   setsAreEqual(set1: Set<any>, set2: Set<any>): boolean {
-    if (set1.size !== set2.size) return false;
+    if (set1.size !== set2.size) 
+      return false;
     let isEqual = true;
-    set1.forEach(item => {
-        if (!set2.has(item)) {
+    set2.forEach(item => {
+        if (!set1.has(item)) {
             isEqual = false;
         }
     });
