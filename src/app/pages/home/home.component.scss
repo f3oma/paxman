@@ -1,3 +1,34 @@
+.banner {
+  padding: 12px;
+  background-color: #ffd6b2;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    h5 {
+      font-size: 16px;
+      font-weight: bold;
+    }
+    p {
+        margin: 0;
+    }
+
+    a {
+      color: #000;
+    }
+  }
+  .action {
+    a {
+      text-decoration: none;
+    }
+  }
+}
+
 .home-container {
   padding: 16px 32px;
   display: flex;
@@ -307,6 +338,39 @@
   .quick-actions {
     .action-btn {
       max-width: 1000px !important;
+    }
+  }
+  .banner {
+    padding: 12px;
+    background-color: #ffd6b2;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      align-items: center !important;
+  
+      h5 {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      p {
+          margin: 0;
+      }
+  
+      a {
+        color: #000;
+      }
+    }
+    .action {
+      a {
+        text-decoration: none;
+      }
     }
   }
 }
