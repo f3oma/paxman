@@ -1,7 +1,7 @@
 import { Injectable, inject } from "@angular/core";
 import { CollectionReference, DocumentData, DocumentReference, Firestore, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, deleteField, setDoc, updateDoc } from "@angular/fire/firestore";
 import { PaxUser } from "../models/users.model";
-import { Badge, IUserProfileDataEntity, UserProfileData } from "../models/user-profile-data.model";
+import { Achievement, Badge, IUserProfileDataEntity, UserProfileData } from "../models/user-profile-data.model";
 import { PaxManagerService } from "./pax-manager.service";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { Badges, getBadgeDetail } from "../utils/badges";
@@ -20,7 +20,8 @@ export class UserProfileService {
         links: {},
         badges: [],
         countOfEHUsers: 0,
-        ehUsers: []
+        ehUsers: [],
+        achievements: [],
     }
 
     constructor(
@@ -56,7 +57,8 @@ export class UserProfileService {
                 badges: entity.badges,
                 countOfEHUsers: entity.countOfEHUsers,
                 links: entity.links,
-                ehUsers: users
+                ehUsers: users,
+                achievements: entity.achievements ?? []
             };
             return profileData;
         } else {
@@ -123,6 +125,7 @@ export class UserProfileService {
         let profileDataEntity: Partial<IUserProfileDataEntity> = {
             badges: profileData.badges,
             links: profileData.links,
+            achievements: profileData.achievements,
         };
 
         await this.updateUsersEHTree(userId);
@@ -136,6 +139,14 @@ export class UserProfileService {
     public async deleteUserProfile(userId: string) {
         const docRef = doc(this.userProfileCollection, userId);
         return await deleteDoc(docRef);
+    }
+
+    public async addAchievementToProfile(achievement: Achievement, userId: string) {
+        await this.getOrCreateUserProfileById(userId);
+        const docRef = doc(this.userProfileCollection, userId);
+        return await updateDoc(docRef, {
+            achievements: arrayUnion(achievement)
+        });
     }
 
     public async addBadgeToProfile(badgeName: Badges, userId: string) {

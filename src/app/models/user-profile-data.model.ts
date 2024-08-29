@@ -3,6 +3,7 @@ export interface IUserProfileDataEntity {
     badges: Badge[];
     countOfEHUsers: number;
     ehUserJsonString: string;
+    achievements: Achievement[]
 }
 
 export interface UserProfileData {
@@ -10,6 +11,7 @@ export interface UserProfileData {
     badges: Badge[];
     countOfEHUsers: number;
     ehUsers: { id: string, f3Name: string }[];
+    achievements: Achievement[];
 }
 
 interface ExternalLink {
@@ -21,4 +23,10 @@ export interface Badge {
     text: string;
     textColor: string;
     backgroundImage?: string;
+}
+
+export interface Achievement {
+    imageSrc: string;
+    text: string;
+    dateCompleted: string;
 }

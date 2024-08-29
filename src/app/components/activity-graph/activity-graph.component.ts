@@ -78,7 +78,7 @@ export class ActivityGraphComponent implements AfterViewInit {
 
   calculateChartFromCurrentDate(beatdownAttendance: UserReportedWorkout[]) {
     const today = new Date();
-    today.setHours(0, 0, 0, 0);    
+    today.setHours(23, 59, 59, 0);    
     var months = this.generateMonthHeaders();
     this.sortedMonths = months;
     
@@ -105,7 +105,8 @@ export class ActivityGraphComponent implements AfterViewInit {
     // Relative Day to Workout Value
     const relativeDays: Map<number, number> = new Map<number, number>();
     // Pre-load
-    for (let i = 0; i < daysSinceCount; i++) {
+    // +1 to include the current date as well
+    for (let i = 0; i < daysSinceCount + 1; i++) {
       relativeDays.set(i, 0);
     }
 
