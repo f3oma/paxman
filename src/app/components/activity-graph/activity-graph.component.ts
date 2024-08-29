@@ -35,8 +35,8 @@ export class ActivityGraphComponent implements AfterViewInit {
     private beatdownService: BeatdownService) {
   }
 
-  ngAfterViewInit(): void {
-    this.getBeatdownAttendanceLogs();
+  async ngAfterViewInit(): Promise<void> {
+    await this.getBeatdownAttendanceLogs();
   }
 
   async getBeatdownAttendanceLogs() {
@@ -97,19 +97,22 @@ export class ActivityGraphComponent implements AfterViewInit {
   mapToRelativeDay(dateItems: UserReportedWorkout[], currentDate: Date): Map<number, number> {
     const monthsOut = new Date();
     monthsOut.setMonth(currentDate.getMonth() - this.monthsOut);
+    monthsOut.setDate(monthsOut.getDate() - monthsOut.getDay());
+    monthsOut.setHours(0, 0, 0, 0);
+    
     let daysSinceCount = this.daysSince(monthsOut, currentDate);
-
-    // We need the daysSinceCount to land on a Sunday to fill the chart
-    daysSinceCount = daysSinceCount + monthsOut.getDay();
 
     // Relative Day to Workout Value
     const relativeDays: Map<number, number> = new Map<number, number>();
     // Pre-load
-    for (let i = 0; i < daysSinceCount + 2; i++) {
+    for (let i = 0; i < daysSinceCount; i++) {
       relativeDays.set(i, 0);
     }
 
+    dateItems = dateItems.filter(a => a.date > monthsOut);
+
     dateItems.forEach(item => {
+      item.date.setHours(0, 0, 0, 0);
       const daysSinceDate = this.daysSince(item.date, currentDate);
       const relativeDay = daysSinceCount - daysSinceDate;
       const itemValue = item.preActivity != PreActivity.None ? 2 : 1;
