@@ -1,5 +1,5 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ import { Badges } from 'src/app/utils/badges';
   templateUrl: './site-management.component.html',
   styleUrls: ['./site-management.component.scss']
 })
-export class SiteManagementComponent {
+export class SiteManagementComponent implements OnInit {
 
   isAdmin = false;
   siteQAO: AOData | undefined;
@@ -42,12 +42,13 @@ export class SiteManagementComponent {
       if (res) {
         if (res.roles.includes(UserRole.Admin)) {
           this.isAdmin = true;
-          this.getAOData();
-        } else if (res.roles.includes(UserRole.SiteQ) && res.siteQLocationRef) {
-          this.getSiteQAO(res.siteQLocationRef);
         }
       }
     })
+  }
+
+  async ngOnInit() {
+    await this.getAOData();
   }
 
   applyFilter(event: Event) {
