@@ -1,10 +1,12 @@
-.banner {
+.announcement {
   padding: 12px;
-  background-color: #ffd6b2;
   text-align: center;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
+  gap: 12px;
+
   .info {
     display: flex;
     flex-direction: column;
@@ -15,7 +17,10 @@
       font-weight: bold;
     }
     p {
+      text-align: left;
         margin: 0;
+        max-width: 800px;
+        text-wrap: wrap;
     }
 
     a {
@@ -27,6 +32,14 @@
       text-decoration: none;
     }
   }
+}
+
+#valas {
+  background-color: #ffd6b2;
+}
+
+#brickBuilder {
+  background-color: #eefcee;
 }
 
 .home-container {
@@ -95,7 +108,7 @@
     border-top: 1px solid #ddd;
     padding: 24px;
 
-    .new-pax {
+    .new-pax, .announcements {
       margin: 12px 0 32px 0;
       width: 100%;
 
@@ -340,9 +353,8 @@
       max-width: 1000px !important;
     }
   }
-  .banner {
+  .announcement {
     padding: 12px;
-    background-color: #ffd6b2;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -360,6 +372,7 @@
         font-weight: bold;
       }
       p {
+        text-align: center !important;
           margin: 0;
       }
   
