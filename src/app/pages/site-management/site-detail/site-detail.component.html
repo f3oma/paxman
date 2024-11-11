@@ -30,7 +30,7 @@
                     </div>
                     <div class="info-section">
                     <h5>Workout Time</h5>
-                    <p>{{site.weekDay}} @ {{ site.startTimeCST }}</p>
+                    <p>{{site.weekDay}} &#64; {{ site.startTimeCST }}</p>
                     </div>
                     <div class="info-section">
                     <ng-container *ngIf="site.activeSiteQUsers && site.activeSiteQUsers.length > 0">
@@ -72,6 +72,31 @@
                     <p>Is rotating site? <b>{{site.rotating ? 'Yes' : 'No'}}</b></p>
                     <p>Is Q Source Available? <b>{{site.qSourceAvailable ? 'Yes' : 'No'}}</b></p>
                     </div>
+                </div>
+                <div class="bordered-container">
+                    <h3>Previous Q's</h3>
+                    <table mat-table [dataSource]="recentQsDataSource" class="mat-elevation-z8">
+                        <ng-container matColumnDef="f3Names">
+                            <th mat-header-cell *matHeaderCellDef>Weekly Q's</th>
+                            <td mat-cell *matCellDef="let beatdown" id="qList">
+                                <ng-container *ngFor="let qic of getQsForBeatdown(beatdown)">
+                                    <div class="user-chip" [routerLink]="'/users/' + qic?.id">
+                                        <div class="current-profile-img" [style.background-image]="'url(' + qic?.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !qic?.profilePhotoUrl }"></div>
+                                        <span>{{qic?.f3Name}}</span>
+                                    </div>
+                                </ng-container>
+                            </td>
+
+                        </ng-container>
+                        <ng-container matColumnDef="date">
+                            <th mat-header-cell *matHeaderCellDef> Date </th>
+                            <td mat-cell *matCellDef="let beatdown">
+                                <p id="qDate">{{beatdown.date | date: 'MM/dd/yyyy'}} </p>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
                 </div>
             </ng-container>
       </div>  

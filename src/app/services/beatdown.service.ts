@@ -62,6 +62,15 @@ export class BeatdownService {
         return Promise.all(beatdowns);
     }
 
+    async getAllPreviousSiteBeatdowns(aoLocationRef: DocumentReference<AOData>, beforeDate: Date) {
+        const beatdowns: Promise<Beatdown>[] = [];
+        const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoLocationRef), where("date", "<=", beforeDate)), orderBy("date", "desc"));
+        (await getDocs(q)).docs.forEach(async (d) => {
+            beatdowns.push(d.data());
+        })
+        return Promise.all(beatdowns);
+    }
+
     async deleteAllBeatdownsForAO(siteId: string) {
         const aoRef = this.aoManagerService.getAoLocationReference(siteId);
         const q = query(this.beatdownCollection, and(where("aoLocationRef", "==", aoRef), where("date", ">=", new Date())), orderBy("date", "asc"));

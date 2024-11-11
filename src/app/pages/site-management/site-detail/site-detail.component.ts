@@ -1,10 +1,12 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, Observable } from 'rxjs';
 import { IAOData } from 'src/app/models/ao.model';
 import { UserRole } from 'src/app/models/authenticated-user.model';
+import { Beatdown } from 'src/app/models/beatdown.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
@@ -27,6 +29,9 @@ export class SiteDetailComponent implements OnInit {
   siteDataSubject = new Subject<IAOData | undefined>();
   siteData$: Observable<IAOData | undefined> = this.siteDataSubject.asObservable();
   retiredSiteQs: PaxUser[] = [];
+
+  recentQsDataSource: any;
+  public displayedColumns: string[] = ['f3Names', 'date'];
 
   public loading = true;
   public editMode = false;
@@ -53,6 +58,7 @@ export class SiteDetailComponent implements OnInit {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
     if (id !== null) {
       await this.getSiteData(id);
+      await this.getQsBySiteId(id);
     }
   }
 
@@ -67,6 +73,14 @@ export class SiteDetailComponent implements OnInit {
     }
   }
 
+  private async getQsBySiteId(siteId: string) {
+    const today = new Date();
+    const aoRef = this.aoManagerService.getAoLocationReference(siteId);
+    const beatdowns = await this.beatdownService.getAllPreviousSiteBeatdowns(aoRef, today);
+
+    this.recentQsDataSource = new MatTableDataSource(beatdowns);
+  }
+
   openGoogleMapsForAddress(address: string) {
     const googleMapsBaseUrl = "https://www.google.com/maps/search/?api=1";
     const addressUrl = googleMapsBaseUrl + '&query=' + encodeURIComponent(address);
@@ -77,6 +91,25 @@ export class SiteDetailComponent implements OnInit {
     await this.beatdownService.deleteAllBeatdownsForAO(siteId);
     await this.aoManagerService.deleteAOById(siteId);
     await this.router.navigate(['sites']);
+  }
+
+  public getQsForBeatdown(beatdown: Beatdown) {
+    const qs = [];
+    if (beatdown.qUser)
+      qs.push(beatdown.qUser);
+    if (beatdown.coQUser)
+      qs.push(beatdown.coQUser);
+    if (beatdown.additionalQs && beatdown.additionalQs.length > 0)
+      qs.push(...(beatdown.additionalQs as []));
+
+    if (qs.length === 0)
+      qs.push({
+        f3Name: 'Unknown',
+        id: 'unknown',
+        profilePhotoUrl: '',
+      });
+
+    return qs;
   }
 
   public goBack() {

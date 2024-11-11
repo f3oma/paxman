@@ -30,6 +30,13 @@
   justify-content: center;
 }
 
+#qList {
+ display: flex;
+ flex-direction: row;
+ padding: 8px 12px;
+ gap: 8px; 
+}
+
 .container {
   padding: 16px 32px;
 
