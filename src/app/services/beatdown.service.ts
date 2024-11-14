@@ -92,7 +92,7 @@ export class BeatdownService {
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date();
         tomorrow.setDate(today.getDate() + 1);
-        tomorrow.setHours(0,0,0,0);
+        tomorrow.setHours(11,59,59,0);
 
         // We need to find out if the user is a SQ or Q for a beatdown occurring today
         // Start with SQ
