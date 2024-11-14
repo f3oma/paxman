@@ -131,8 +131,9 @@ export class ActivityGraphComponent implements AfterViewInit {
     dateItems = dateItems.filter(a => a.date > monthsOut);
 
     dateItems.forEach(item => {
-      item.date.setUTCHours(0, 0, 0, 0);
-      const daysSinceDate = this.daysSince(item.date, currentDate);
+      const date = new Date(item.date)
+      date.setUTCHours(0, 0, 0, 0);
+      const daysSinceDate = this.daysSince(date, currentDate);
       const relativeDay = daysSinceCount - daysSinceDate;
       const itemValue = item.preActivity != PreActivity.None ? 2 : 1;
       relativeDays.set(relativeDay, itemValue);
