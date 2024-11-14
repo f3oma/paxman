@@ -88,12 +88,13 @@ export class BeatdownService {
         if (!user)
             return [];
 
+        const today = new Date();
         const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setDate(today.getDate() - 1);
         yesterday.setHours(0, 0, 0, 0);
 
         const tomorrow = new Date();
-        tomorrow.setDate(yesterday.getDate() + 1);
+        tomorrow.setDate(today.getDate() + 1);
         tomorrow.setHours(11,59,59,0);
 
         // We need to find out if the user is a SQ or Q for a beatdown occurring today
