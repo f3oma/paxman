@@ -1,11 +1,11 @@
 import { Injectable, inject } from "@angular/core";
 import { BaseChallenge, ChallengeState } from "../models/user-challenge.model";
 import { UserProfileService } from "./user-profile.service";
-import { Badges, badgeFromChallengeName } from "../utils/badges";
+import { badgeFromChallengeName } from "../utils/badges";
 import { DocumentData, Firestore, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where } from "@angular/fire/firestore";
 import { UserChallengeConverter } from "../utils/user-challenge.converter";
 import { PaxManagerService } from "./pax-manager.service";
-import { ChallengeInformation, ChallengeStatus, Challenges } from "../utils/challenges";
+import { ChallengeInformation, Challenges } from "../utils/challenges";
 import { ChallengeInformationConverter } from "../utils/challenge-information.converter";
 
 @Injectable({
@@ -76,7 +76,7 @@ export class ChallengeManager {
 
     async getActiveChallengesForUser(userId: string) {
         const userRef = this.paxManagerService.getUserReference('users/' + userId);
-        const q = query(this.UserChallengeCollection, and(where("paxUserRef", "==", userRef), where("state", "not-in", ["failed"])));
+        const q = query(this.UserChallengeCollection, and(where("paxUserRef", "==", userRef), where("state", "not-in", ["failed"]), where("endDateTime", ">=", new Date())));
         const docs = Promise.all((await getDocs<Promise<BaseChallenge>, DocumentData>(q)).docs.map((d) => d.data()));
         return docs;
     }
