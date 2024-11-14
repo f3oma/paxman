@@ -28,7 +28,7 @@
       </div>
       <div class="attendance-report-required" *ngIf="hasClaimedData && beatdownsRequiringAttendanceData && beatdownsRequiringAttendanceData.length > 0" @fadeInOut>
         <h4 class="report-attendance-header">Report Beatdown Attendance</h4>
-        <p>It looks like you might have Q'd recently, please report attendance.</p>
+        <p>It looks like you might have Q'd recently, or have an upcoming Q, please report attendance when available.</p>
         <div class="report-attendance-buttons">
           <ng-container *ngFor="let attendance of beatdownsRequiringAttendanceData">
             <div class="alreadyReported" *ngIf="attendance.isReported">
