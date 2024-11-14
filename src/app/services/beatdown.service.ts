@@ -88,16 +88,18 @@ export class BeatdownService {
         if (!user)
             return [];
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        yesterday.setHours(0, 0, 0, 0);
+
         const tomorrow = new Date();
-        tomorrow.setDate(today.getDate() + 1);
+        tomorrow.setDate(yesterday.getDate() + 1);
         tomorrow.setHours(11,59,59,0);
 
         // We need to find out if the user is a SQ or Q for a beatdown occurring today
         // Start with SQ
         if (siteQLocationRef) {
-            const beatdownsToday = await this.getBeatdownsBetweenDates(today, tomorrow, [where("aoLocationRef", "==", siteQLocationRef)]);
+            const beatdownsToday = await this.getBeatdownsBetweenDates(yesterday, tomorrow, [where("aoLocationRef", "==", siteQLocationRef)]);
             if (beatdownsToday && beatdownsToday.length) {
                 // Attendance reporting required
                 beatdownsRequiringAttendanceData.push(...beatdownsToday);
@@ -107,7 +109,7 @@ export class BeatdownService {
         // A possible scenario where the SQ is a Q at a different site that day.
         // Any Q
         const userRef = this.paxManagerService.getUserReference('users/' + user.id);
-        const beatdownsTodayByQ = await this.getBeatdownsBetweenDates(today, tomorrow, [or(where("qUserRef", "==", userRef), where("coQUserRef", "==", userRef))]);
+        const beatdownsTodayByQ = await this.getBeatdownsBetweenDates(yesterday, tomorrow, [or(where("qUserRef", "==", userRef), where("coQUserRef", "==", userRef))]);
         if (beatdownsTodayByQ && beatdownsTodayByQ.length) {
             // Assuming just 1 Q, filter down to single beatdown
             // This would happen if user is a SQ but also on the Q this day
