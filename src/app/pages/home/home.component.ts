@@ -97,8 +97,12 @@ export class HomeComponent {
     this.activeChallenges = await this.challengeManager.getActiveChallengesForUser(paxDataId);
     this.loadingChallenges = false;
 
-    // Remove banner if already joined
     let showChallengeBanner = true;
+
+    // Remove banner if already joined
+    if (this.activeChallenges.length === 0)
+      showChallengeBanner = false;
+
     for (let challenge of this.activeChallenges) {
       if (challenge.name === Challenges.SummerMurph2024) {
         showChallengeBanner = false;
@@ -107,9 +111,8 @@ export class HomeComponent {
 
     // Remove banner if user closed it
     let localStorageChallengeBannerPreference = localStorage.getItem('showChallengeAnnouncement');
-    if (localStorageChallengeBannerPreference !== null) {
-      const result = localStorageChallengeBannerPreference === 'false' ? false : true;
-      showChallengeBanner = result;
+    if (localStorageChallengeBannerPreference !== null && localStorageChallengeBannerPreference === 'false') {
+      showChallengeBanner = false;
     }
 
     this.showChallengeBanner = showChallengeBanner;
