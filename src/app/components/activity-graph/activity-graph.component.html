@@ -3,7 +3,7 @@
   <div class="inner-data">
     <div class="graph-container">
       <div class="graph">
-          <ul class="months">
+          <ul class="months" [style.grid-template-columns]="'repeat(' + repeatedColumnsCount + ', calc(var(--week-width) * 4))' ">
             <li *ngFor="let month of sortedMonths">{{month}}</li>
           </ul>
           <ul class="days">
@@ -25,20 +25,25 @@
           <li><span class="legend-square" id="l-2"></span>Beatdown + Pre-Activity</li>
         </ol>
       </div>
+      <div class="month-selector">
+        <button mat-flat-button id="changeMonths3" [disabled]="monthsOut === 3" (click)="adjustMonthsOut(3)">3 Months</button>
+        <button mat-flat-button id="changeMonths6" [disabled]="monthsOut === 6" (click)="adjustMonthsOut(6)">6 Months</button>
+      </div>
     </div>
     <div class="recent-activity-container">
       <div class="recent-title">
         <h2>Recent Beatdowns</h2>
+        <!-- <a *ngIf="!loadingRecents" [routerLink]="['/users/' + user.id + '/all-workouts']">View All</a> -->
         <ng-container *ngIf="!loadingRecents; else loadingSpinner"></ng-container>
       </div>
       <div class="fill-container" *ngIf="loadingRecents"></div>
       <ng-container *ngIf="recentActivity && !loadingRecents">
-        <div class="recent-activity" *ngFor="let activity of recentActivity" [ngClass]="{ 'activity-color' : activity.preActivity !== 'None'}">
+        <div class="recent-activity" *ngFor="let activity of recentActivity">
+          <p class="activity-date">{{activity.date | date: 'MM/dd/yyyy'}}</p>
           <div class="title">            
             <h2>{{activity.beatdownDomain.eventName ? activity.beatdownDomain.eventName : activity.beatdownDomain.aoLocation?.name}}</h2>
-            <p>{{activity.date | date: 'MM/dd/yyyy'}}</p>
+            <p id="pre-activity" *ngIf="activity.preActivity !== 'None'">Pre-Activity: <b>{{activity.preActivity}}</b></p>
           </div>
-          <p id="pre-activity" *ngIf="activity.preActivity !== 'None'">Pre-Activity: <b>{{activity.preActivity}}</b></p>
         </div>
         <div class="empty-activity" *ngIf="recentActivity.length === 0">
           <p>No recent activity</p>

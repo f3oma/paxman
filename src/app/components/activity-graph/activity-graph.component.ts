@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { PreActivity, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
+import { PreActivity, UserReportedWorkout, UserReportedWorkoutUI } from 'src/app/models/beatdown-attendance';
 import { Beatdown } from 'src/app/models/beatdown.model';
 import { IPaxUser } from 'src/app/models/users.model';
 import { BeatdownService } from 'src/app/services/beatdown.service';
@@ -10,9 +10,6 @@ export interface DailyWorkoutReported {
   countPerDay: number;
 }
 
-export interface UserReportedWorkoutUI extends UserReportedWorkout {
-  beatdownDomain: Beatdown;
-}
 
 @Component({
   selector: 'activity-graph',
@@ -27,8 +24,10 @@ export class ActivityGraphComponent implements AfterViewInit {
   public sortedMonths: string[] = [];
   beatdownAttendance: UserReportedWorkout[] = [];
   monthsOut: number = 3;
+  repeatedColumnsCount: number = this.monthsOut + 1;
   recentActivity: UserReportedWorkoutUI[] = [];
   loadingRecents = true;
+  beatdownAttendanceCache: Map<number, UserReportedWorkout[]> = new Map();
 
   constructor(
     private workoutService: WorkoutManagerService,
@@ -39,27 +38,43 @@ export class ActivityGraphComponent implements AfterViewInit {
     await this.getBeatdownAttendanceLogs();
   }
 
+  async adjustMonthsOut(monthsOut: number) {
+    this.monthsOut = monthsOut;
+    this.repeatedColumnsCount = monthsOut + 1;
+    this.workouts = [];
+    await this.getBeatdownAttendanceLogs();
+  }
+
   async getBeatdownAttendanceLogs() {
-    const beatdownAttendance = await this.workoutService.getAllBeatdownAttendanceForUser(this.user);
+    let beatdownAttendance: UserReportedWorkout[] = [];
+    if (this.beatdownAttendanceCache.has(this.monthsOut)) {
+      beatdownAttendance = this.beatdownAttendanceCache.get(this.monthsOut)!;
+    } else {
+      beatdownAttendance = await this.workoutService.getAllBeatdownAttendanceForUser(this.user.id);
+      this.beatdownAttendanceCache.set(this.monthsOut, beatdownAttendance);
+    }
+
     this.calculateChartFromCurrentDate(beatdownAttendance);
     await this.updateRecents(beatdownAttendance);
     this.loadingRecents = false;
   }
 
   async updateRecents(beatdownAttendance: UserReportedWorkout[]) {
-    const recentActivity = beatdownAttendance.sort((a, b) => a.date > b.date ? -1 : 1).slice(0, 4);
+    const recentActivity = beatdownAttendance.slice(0, 4);
+    const recentActivityList = [];
     for (let activity of recentActivity) {
       const beatdownData = await this.beatdownService.getBeatdownDetail(activity.beatdown.id);
       if (!beatdownData)
         continue;
 
-      this.recentActivity.push({
+      recentActivityList.push({
         beatdown: activity.beatdown,
         date: activity.date,
         beatdownDomain: beatdownData,
         preActivity: activity.preActivity
-      })
+      });
     }
+    this.recentActivity = recentActivityList;
   }
 
   generateMonthHeaders(): string[] {
@@ -83,8 +98,11 @@ export class ActivityGraphComponent implements AfterViewInit {
     this.sortedMonths = months;
     
     const dayMap = this.mapToRelativeDay(beatdownAttendance, today);
+    const values = [];
     for (let entry of dayMap.values())
-      this.workouts.push({ countPerDay: entry})
+      values.push({ countPerDay: entry})
+
+    this.workouts = values;
   }
 
   daysSince(date: Date, currentDate: Date): number {
@@ -106,14 +124,14 @@ export class ActivityGraphComponent implements AfterViewInit {
     const relativeDays: Map<number, number> = new Map<number, number>();
     // Pre-load
     // +1 to include the current date as well
-    for (let i = 0; i < daysSinceCount + 1; i++) {
+    for (let i = 0; i < daysSinceCount; i++) {
       relativeDays.set(i, 0);
     }
 
     dateItems = dateItems.filter(a => a.date > monthsOut);
 
     dateItems.forEach(item => {
-      item.date.setHours(0, 0, 0, 0);
+      item.date.setUTCHours(0, 0, 0, 0);
       const daysSinceDate = this.daysSince(item.date, currentDate);
       const relativeDay = daysSinceCount - daysSinceDate;
       const itemValue = item.preActivity != PreActivity.None ? 2 : 1;

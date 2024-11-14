@@ -272,7 +272,7 @@ export class UserAuthenticationService {
     return true;
   }
 
-  public async promoteRole(userRole: UserRole, userId: string) {
+  public async promoteRole(userRole: UserRole, userId: string): Promise<void> {
     // We need to make sure the user has an auth account
     // Search the user auth collection for paxdataid that matches
     // if none exists, user doesn't have an auth account

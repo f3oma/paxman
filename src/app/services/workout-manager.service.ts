@@ -1,5 +1,5 @@
 import { Injectable, inject } from "@angular/core";
-import { Firestore, collection, doc, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc, increment, getDocs } from "@angular/fire/firestore";
+import { Firestore, collection, doc, setDoc, DocumentReference, updateDoc, arrayUnion, getDoc, increment, getDocs, query, orderBy } from "@angular/fire/firestore";
 import { PersonalWorkoutConverter } from "../utils/personal-workout.converter";
 import { CommunityWorkoutConverter } from "../utils/community-workout.converter";
 import { IPaxUser, PaxUser } from "../models/users.model";
@@ -82,9 +82,10 @@ export class WorkoutManagerService {
         }
     }
 
-    public async getAllBeatdownAttendanceForUser(user: IPaxUser): Promise<UserReportedWorkout[]> {
-        const userPersonalWorkoutCollection = collection(this.firestore, `users/${user.id}/personal_attendance`).withConverter(this.personalWorkoutConverter.getConverter());
-        const docRes = await getDocs(userPersonalWorkoutCollection);
+    public async getAllBeatdownAttendanceForUser(userId: string): Promise<UserReportedWorkout[]> {
+        const userPersonalWorkoutCollection = collection(this.firestore, `users/${userId}/personal_attendance`).withConverter(this.personalWorkoutConverter.getConverter());
+        const q = query(userPersonalWorkoutCollection, orderBy("date", "desc"));
+        const docRes = await getDocs(q);
         if (docRes.empty) {
             return [];
         }

@@ -21,10 +21,10 @@
   
   .months {
     display: grid;
-    grid-template-columns: calc(var(--week-width) * 4) /* Jan */
-                           calc(var(--week-width) * 4) /* Feb */
-                           calc(var(--week-width) * 4) /* Mar */
-                           calc(var(--week-width) * 4) /* Apr */
+  }
+
+  .mat-mdc-unelevated-button[disabled][disabled] {
+    --mdc-filled-button-disabled-container-color: rgb(255 136 14 / 25%);
   }
   
   .days,
