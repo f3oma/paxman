@@ -25,6 +25,10 @@ export interface UserReportedWorkout {
     notes?: string;
 }
 
+export interface UserReportedWorkoutUI extends UserReportedWorkout {
+    beatdownDomain: Beatdown;
+}
+
 export interface UserReportedWorkoutEntity {
     preActivity: PreActivity;
     date: Timestamp;
