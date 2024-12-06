@@ -19,7 +19,10 @@
                 <div class="date" [id]="day.dayName">
                     {{day.dayName}} ({{day.date | date: 'MM/dd' }})
                     <div class="weather">
-                        <b matTooltip="'Feels Like' at 5am">{{currentWeekWeather[i]}}</b>
+                        <span style="display: flex; gap: 4px">
+                            <mat-icon class="warning-color" *ngIf="currentWeekWeather[i] < 10" [inline]="true" matTooltip="Use caution">warning</mat-icon>
+                            <b>{{formatWeatherString(currentWeekWeather[i])}}</b>
+                        </span>
                     </div>
                 </div>
                 <div class="beatdowns">
@@ -41,7 +44,7 @@
                             <p *ngIf="beatdown.isCanceled" style="margin: 0">Canceled this week</p>
                             <div class="metadata">
                                 <div class="no-q-warning" *ngIf="!beatdown.qUser && !beatdown.isCanceled">
-                                    <mat-icon [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
+                                    <mat-icon class="warning-color" [inline]="true" matTooltip="No Q Assigned">warning</mat-icon> No Q
                                 </div>
                                 <div class="q-data" *ngIf="beatdown.qUser && !beatdown.isCanceled">
                                     <div class="q-user-chip" *ngIf="beatdown.qUser" [routerLink]="'/users/' + beatdown.qUser.id">

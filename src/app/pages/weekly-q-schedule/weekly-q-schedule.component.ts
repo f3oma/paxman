@@ -3,7 +3,7 @@ import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { IconSize } from 'src/app/components/beatdown-category-chips/beatdown-category-chips.component';
 import { Beatdown } from 'src/app/models/beatdown.model';
 import { BeatdownService } from 'src/app/services/beatdown.service';
-import { WeatherService } from 'src/app/services/weather-api.service';
+import { formatDegreeString, WeatherService } from 'src/app/services/weather-api.service';
 
 @Component({
   selector: 'app-weekly-q-schedule',
@@ -24,7 +24,7 @@ export class WeeklyQScheduleComponent {
   currentWeekDate: Date = new Date();
   shouldShowScrollToday = true;
 
-  currentWeekWeather: string[] = [];
+  currentWeekWeather: number[] = [];
 
   chipIconSize: IconSize = IconSize.Small;
 
@@ -118,6 +118,10 @@ export class WeeklyQScheduleComponent {
         behavior: 'smooth'
       });
     }
+  }
+
+  public formatWeatherString(number: number) {
+    return formatDegreeString(number);
   }
 
   async initializeBeatdowns(weekStartDate: Date, weekEndDate: Date) {

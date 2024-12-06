@@ -28,6 +28,12 @@ export class ChallengeManager {
         return Promise.all((await getDocs<Promise<ChallengeInformation>, DocumentData>(q)).docs.map((d) => d.data()));
     }
 
+    // Get all challenge information for completed challenges
+    async getAllCompletedChallenges(): Promise<ChallengeInformation[]> {
+        const q = query(this.ChallengeInformationCollection, and(where("status", "in", ["completed"])));
+        return Promise.all((await getDocs<Promise<ChallengeInformation>, DocumentData>(q)).docs.map((d) => d.data()));
+    }
+
     // Get challenge information for single challenge
     async getChallengeInformation(challengeId: string) {
         const ref = doc(this.ChallengeInformationCollection, challengeId);

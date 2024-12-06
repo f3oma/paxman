@@ -24,24 +24,17 @@ export class WeatherService {
         const startDate = this.formatDateToYYYYMMDD(date)
         const url = this.getForecastUrl() + this.startDateParam + startDate + this.endDateParam + startDate;
         const result = await this.http.get<WeatherData>(url).toPromise();
-        return this.formatDegreeString(result?.hourly.temperature_2m[5]);
+        return formatDegreeString(result?.hourly.temperature_2m[5]);
     }
 
-    private formatDegreeString(temp: number | undefined): string {
-        if (!temp)
-            return "Unknown";
-
-        return `${Math.round(temp)}°F`;
-    }
-
-    async getFeelsLikeForDate(date: Date) {
+    async getFeelsLikeForDate(date: Date): Promise<number | undefined> {
         const startDate = this.formatDateToYYYYMMDD(date)
         const url = this.getForecastUrl() + this.startDateParam + startDate + this.endDateParam + startDate;
         const result = await this.http.get<WeatherData>(url).toPromise();
-        return this.formatDegreeString(result?.hourly.apparent_temperature[5]);
+        return result?.hourly.apparent_temperature[5];
     }
 
-    async getWeatherForWeek(startDate: Date, endDate: Date): Promise<string[]> {
+    async getWeatherForWeek(startDate: Date, endDate: Date): Promise<number[]> {
         const startDateString = this.formatDateToYYYYMMDD(startDate)
         const endDateString = this.formatDateToYYYYMMDD(endDate);
         const url = this.getForecastUrl() + this.startDateParam + startDateString + this.endDateParam + endDateString;
@@ -50,13 +43,11 @@ export class WeatherService {
         if (!result?.hourly) {
             return [];
         } else {
-            const temps: string[] = [];
+            const temps: number[] = [];
             for (let i = 5; i < result.hourly.time.length; i += 24) {
                 const temp = result.hourly.apparent_temperature[i];
-                const tempString = this.formatDegreeString(temp);
-                temps.push(tempString);
+                temps.push(temp);
             }
-
             return temps;
         }
     }
@@ -89,4 +80,11 @@ export interface WeatherData {
         temperature_2m: number[];
         apparent_temperature: number[];
     }
+}
+
+export function formatDegreeString(temp: number | undefined): string {
+    if (!temp)
+        return "Unknown";
+
+    return `${Math.round(temp)}°F`;
 }

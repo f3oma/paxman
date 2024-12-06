@@ -78,11 +78,11 @@
         display: flex;
         align-items: center;
         gap: 4px;
+    }
 
-        mat-icon {
-            font-size: 14px;
-            color: orange;
-        }
+    mat-icon.warning-color {
+        font-size: 14px;
+        color: orange;
     }
 
     .canceled-beatdown {
