@@ -3,6 +3,7 @@ import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { IconSize } from 'src/app/components/beatdown-category-chips/beatdown-category-chips.component';
 import { Beatdown } from 'src/app/models/beatdown.model';
 import { BeatdownService } from 'src/app/services/beatdown.service';
+import { WeatherService } from 'src/app/services/weather-api.service';
 
 @Component({
   selector: 'app-weekly-q-schedule',
@@ -23,10 +24,13 @@ export class WeeklyQScheduleComponent {
   currentWeekDate: Date = new Date();
   shouldShowScrollToday = true;
 
+  currentWeekWeather: string[] = [];
+
   chipIconSize: IconSize = IconSize.Small;
 
   constructor(
     private beatdownService: BeatdownService,
+    private weatherService: WeatherService,
     @Inject(LOCALE_ID) private locale: string) {
 
     const today = new Date();
@@ -117,6 +121,9 @@ export class WeeklyQScheduleComponent {
   }
 
   async initializeBeatdowns(weekStartDate: Date, weekEndDate: Date) {
+
+    this.currentWeekWeather = await this.weatherService.getWeatherForWeek(weekStartDate, weekEndDate);
+
     if (this.beatdownCache.has(weekStartDate.toDateString())) {
       this.generateDailyBeatdowns(this.beatdownCache.get(weekStartDate.toDateString())!);
       this.loadingBeatdownData = false;

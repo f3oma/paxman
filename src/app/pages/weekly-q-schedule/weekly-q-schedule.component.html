@@ -15,9 +15,12 @@
     </div>
 
     <ng-container *ngIf="!loadingBeatdownData; else loadingSpinner">
-            <div class="day-container" *ngFor="let day of weekList">
+            <div class="day-container" *ngFor="let day of weekList; let i = index">
                 <div class="date" [id]="day.dayName">
                     {{day.dayName}} ({{day.date | date: 'MM/dd' }})
+                    <div class="weather">
+                        <b matTooltip="'Feels Like' at 5am">{{currentWeekWeather[i]}}</b>
+                    </div>
                 </div>
                 <div class="beatdowns">
                     <div class="beatdown-container" [ngClass]="{'canceled-beatdown' : beatdown.isCanceled }" *ngFor="let beatdown of currentBeatdownList[day.dateString]; trackBy: trackByFn">
@@ -28,7 +31,7 @@
                                     <div class="event" *ngIf="beatdown.eventName">
                                         <h4>{{beatdown.eventName}}</h4>
                                     </div>
-                                    <h5 *ngIf="beatdown.aoLocation" id="ao-name" [routerLink]="['/sites/', beatdown.aoLocation.id]"><span *ngIf="beatdown.eventName">@</span>{{beatdown.aoLocation.name}}</h5>
+                                    <h5 *ngIf="beatdown.aoLocation" id="ao-name" [routerLink]="['/sites/', beatdown.aoLocation.id]"><span *ngIf="beatdown.eventName">&#64;</span>{{beatdown.aoLocation.name}}</h5>
                                 </div>
                                 <app-beatdown-category-chips [beatdown]="beatdown" [iconSize]="chipIconSize"></app-beatdown-category-chips>
                             </div>
