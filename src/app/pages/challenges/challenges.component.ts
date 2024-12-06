@@ -17,6 +17,7 @@ export class ChallengesComponent {
   public authUserData$: Observable<AuthenticatedUser | undefined>;
   public activeUserChallenges: BaseChallenge[] = [];
   public activeChallenges: ChallengeInformation[] = [];
+  public completedChallenges: ChallengeInformation[] = [];
   public loading = true;
   public isAdmin = false;
   
@@ -45,9 +46,17 @@ export class ChallengesComponent {
 
       // TODO: For any and all new challenges, this must use a linked ID
       this.activeUserChallengesSet = new Set(this.activeUserChallenges.map((c) => c.name));
-      console.log(this.activeUserChallengesSet);
-      this.activeChallenges = await this.challengeManager.getAllActiveChallenges();
+      await this.getActiveChallenges();
+      await this.getCompletedChallenges();
       this.loading = false;
+    }
+
+    async getActiveChallenges() {
+      this.activeChallenges = await this.challengeManager.getAllActiveChallenges();
+    }
+
+    async getCompletedChallenges() {
+      this.completedChallenges = await this.challengeManager.getAllCompletedChallenges();
     }
     
     isIterativeCompletionChallenge(challenge: BaseChallenge): challenge is IterativeCompletionChallenge {

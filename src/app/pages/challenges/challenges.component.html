@@ -39,6 +39,22 @@
                             <p><b>Runs {{challenge.startDateString}} to {{challenge.endDateString}}</b></p>
                         </div>
                     </div>
+                    <p *ngIf="!activeChallenges.length">No new challenges</p>
+                </div>
+            </div>
+            <div class="section">
+                <h4>Previous Challenges</h4>
+                <div class="available-challenges">
+                    <div class="available-challenge" *ngFor="let challenge of completedChallenges" [routerLink]="['/challenges/', challenge.name]">
+                        <div class="image">
+                            <img [src]="challenge.imageSrc" />
+                        </div>
+                        <div class="details">
+                            <h5>{{challenge.name}}</h5>
+                            <p id="challengeDescription">{{challenge.description | truncate:150:true }}</p>
+                            <p><b>Ran {{challenge.startDateString}} to {{challenge.endDateString}}</b></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div> 
