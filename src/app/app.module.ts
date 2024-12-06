@@ -70,6 +70,7 @@ import { ChallengesComponent } from './pages/challenges/challenges.component';
 import { ChallengeViewComponent } from './pages/challenges/challenge-view/challenge-view.component';
 import { TruncatePipe } from './utils/truncate.pipe';
 import { BeatdownCategoryChipsComponent } from './components/beatdown-category-chips/beatdown-category-chips.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -146,6 +147,7 @@ import { BeatdownCategoryChipsComponent } from './components/beatdown-category-c
     MatChipsModule,
     MatTabsModule,
     MatTooltipModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
