@@ -18,7 +18,7 @@
             <div class="day-container" *ngFor="let day of weekList; let i = index">
                 <div class="date" [id]="day.dayName">
                     {{day.dayName}} ({{day.date | date: 'MM/dd' }})
-                    <div class="weather">
+                    <div class="weather" *ngIf="currentWeekWeather">
                         <span style="display: flex; gap: 4px">
                             <mat-icon class="warning-color" *ngIf="currentWeekWeather[i] < 10" [inline]="true" matTooltip="Use caution">warning</mat-icon>
                             <b>{{formatWeatherString(currentWeekWeather[i])}}</b>

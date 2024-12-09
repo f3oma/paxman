@@ -24,7 +24,7 @@ export class WeeklyQScheduleComponent {
   currentWeekDate: Date = new Date();
   shouldShowScrollToday = true;
 
-  currentWeekWeather: number[] = [];
+  currentWeekWeather: number[] | null = [];
 
   chipIconSize: IconSize = IconSize.Small;
 
@@ -126,7 +126,12 @@ export class WeeklyQScheduleComponent {
 
   async initializeBeatdowns(weekStartDate: Date, weekEndDate: Date) {
 
-    this.currentWeekWeather = await this.weatherService.getWeatherForWeek(weekStartDate, weekEndDate);
+    try {
+      this.currentWeekWeather = await this.weatherService.getWeatherForWeek(weekStartDate, weekEndDate);
+    }
+    catch(e) {
+      this.currentWeekWeather = null;
+    }
 
     if (this.beatdownCache.has(weekStartDate.toDateString())) {
       this.generateDailyBeatdowns(this.beatdownCache.get(weekStartDate.toDateString())!);
