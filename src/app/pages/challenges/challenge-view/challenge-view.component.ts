@@ -34,7 +34,13 @@ export class ChallengeViewComponent implements OnInit {
   public loading = true;
   public challengeInformation: ChallengeInformation | null = null;
   public paxChallengeData: BaseChallenge | undefined;
+
+  // Challenge specific
+  public is300Challenge: boolean = false;
+  public showLoggedState: boolean = false;
+
   public showVenmo: boolean = false;
+
   private paxUser: PaxUser | undefined = undefined;
   
   @ViewChild(MatSort) sort!: MatSort;
@@ -140,16 +146,18 @@ export class ChallengeViewComponent implements OnInit {
       return;
     }
 
-    if (challenge == Challenges.WinterWarrior2024) {
-      this.showVenmo = true;
-    }
-
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
     if (!tableData) {
       this.showChallengeNotFoundError = true;
     }
 
     const challengeInformation: ChallengeInformation = await this.challengeManager.getChallengeInformation(id);
+
+    if (challenge == Challenges.WinterWarrior2024) {
+      this.showVenmo = true;
+    } else if (challenge === Challenges.ThreeHundredChallenge && new Date(challengeInformation.startDateString) < new Date()) {
+      this.is300Challenge = true;
+    }
 
     // As soon as a challenge is active, set the state of all entries to in-progress
     // and update challenge information to started
@@ -161,6 +169,25 @@ export class ChallengeViewComponent implements OnInit {
       for (let challengeEntry of tableData) {
         if (challengeEntry.state === ChallengeState.PreRegistered) {
           challengeEntry.updateState(ChallengeState.InProgress);
+          promises.push(this.challengeManager.updateChallenge(challengeEntry));
+        }
+      }
+      await Promise.all(promises);
+    }
+
+    // Once the challenge is over:
+    // 1. Update the status of the challenge to completed
+    // 2. Any entries still in progress set to DNF
+    if (new Date(challengeInformation.endDateString) < new Date()) {
+      if (challengeInformation.status !== ChallengeStatus.Completed) {
+        challengeInformation.status = ChallengeStatus.Completed;
+        await this.challengeManager.updateChallengeInformation(challengeInformation);
+      }
+
+      const promises: Promise<any>[] = [];
+      for (let challengeEntry of tableData) {
+        if (challengeEntry.state === ChallengeState.InProgress || challengeEntry.state === ChallengeState.NotStarted) {
+          challengeEntry.updateState(ChallengeState.Failed);
           promises.push(this.challengeManager.updateChallenge(challengeEntry));
         }
       }
@@ -190,6 +217,12 @@ export class ChallengeViewComponent implements OnInit {
       }
       return b.activeCompletions - a.activeCompletions;
     });
+
+    // The first element set to status from db
+    if (this.paxChallengeData) {
+      sorted[0] = this.paxChallengeData as IterativeCompletionChallenge;
+    }
+
     this.tableData = sorted;
     this.dataSource = new MatTableDataSource(this.tableData);
     this.dataSource.sort = this.sort;
@@ -203,4 +236,25 @@ export class ChallengeViewComponent implements OnInit {
     this.location.back();
   }
 
+  async logSingleCompletion() {
+    if (!this.paxChallengeData)
+      return;
+
+    if (this.paxChallengeData.state === ChallengeState.NotStarted || this.paxChallengeData.state === ChallengeState.PreRegistered) {
+      this.paxChallengeData.updateState(ChallengeState.InProgress);
+    }
+
+    this.showLoggedState = true;
+    (this.paxChallengeData as IterativeCompletionChallenge).addNewIteration();
+
+    if ((this.paxChallengeData as IterativeCompletionChallenge).isComplete())
+      await this.challengeManager.completeChallenge(this.paxChallengeData);
+
+    await this.challengeManager.updateChallenge(this.paxChallengeData);
+
+    setTimeout(() => {
+      this.showLoggedState = false;
+    }, 2000);
+
+  }
 }

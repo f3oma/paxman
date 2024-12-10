@@ -5,7 +5,7 @@ import { ChallengeManager } from "../services/challenge-manager.service";
 export enum Challenges {
     SummerMurph2024 = "Summer Murph Challenge - 2024",
     WinterWarrior2024 = "Winter Warrior Challenge - 2024",
-    ThreeHundredChallenge = "300x300 Challenge",
+    ThreeHundredChallenge = "300x300 Challenge - 2024",
 }
 
 export interface ICompletionRequirements {}
@@ -41,7 +41,7 @@ export function getChallengeIdByName(challenge: Challenges): string | null  {
         case Challenges.WinterWarrior2024:
             return "N7vPPQBYKo3irbzhjaHw";
         case Challenges.ThreeHundredChallenge:
-            return "";
+            return "iVJUt1cvLpE0mmigwo4s";
         default:
             return null;
     }
