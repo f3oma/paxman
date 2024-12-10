@@ -2,21 +2,21 @@
 <div class="home-container">
   <div class="primary-content">
     <div class="content" *ngIf="isLoggedIn; else loggedOut">
-      <!-- <div class="challengeAnnouncement" *ngIf="showChallengeBanner" @fadeInOut>
+      <div class="challengeAnnouncement" *ngIf="showChallengeBanner" @fadeInOut>
         <div class="close" (click)="closeChallengeAnnouncement()">
           <mat-icon>close</mat-icon>
         </div>
         <div class="display-row">
           <div class="image">
-            <img src="assets/challenges/murph-challenge-2024.png" />
+            <img src="assets/challenges/winter-warrior-challenge-2024.png" />
           </div>
           <div class="text">
-            <h5>2024 Summer Murph Challenge</h5>
-            <p>Can you complete 24 murphs in 8 weeks? Prove it!</p>
+            <h5>2024 Winter Warrior Challenge</h5>
+            <p>Can you brace the cold? Prove it!</p>
             <button id="join-challenge" mat-flat-button (click)="joinChallenge()">Join the challenge</button>
           </div>
         </div>
-      </div> -->
+      </div>
       <h4 class="quick-actions-header">Quick actions</h4>
       <div class="quick-actions" @fadeInOut>
           <button *ngIf="!hasClaimedData" mat-button id="claim-data-btn" class="action-btn" [routerLink]="['/settings']">Claim My Data <mat-icon>person</mat-icon></button>

@@ -82,6 +82,7 @@ export class HomeComponent {
   public async getPaxUserData(paxDataId: string, siteQLocationRef: AoLocationRef | undefined) {
     this.user = await (await this.paxManagerService.getDataByAuthId(paxDataId)).data();
     this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
+
     this.handleChallenges(paxDataId);
 
     const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
@@ -99,17 +100,14 @@ export class HomeComponent {
     let showChallengeBanner = true;
 
     // Remove banner if already joined
-    if (this.activeChallenges.length === 0)
-      showChallengeBanner = false;
-
     for (let challenge of this.activeChallenges) {
-      if (challenge.name === Challenges.SummerMurph2024) {
+      if (challenge.name === Challenges.WinterWarrior2024) {
         showChallengeBanner = false;
       }
     }
 
     // Remove banner if user closed it
-    let localStorageChallengeBannerPreference = localStorage.getItem('showChallengeAnnouncement');
+    let localStorageChallengeBannerPreference = localStorage.getItem('showWinterWarriorChallengeAnnouncement');
     if (localStorageChallengeBannerPreference !== null && localStorageChallengeBannerPreference === 'false') {
       showChallengeBanner = false;
     }
@@ -150,7 +148,7 @@ export class HomeComponent {
   }
 
   async joinChallenge() {
-    const challengeId = getChallengeIdByName(Challenges.SummerMurph2024);
+    const challengeId = getChallengeIdByName(Challenges.WinterWarrior2024);
     if (!challengeId) {
       console.error("Unknown challenge");
       return;
