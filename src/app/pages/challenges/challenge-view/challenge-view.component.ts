@@ -34,6 +34,7 @@ export class ChallengeViewComponent implements OnInit {
   public loading = true;
   public challengeInformation: ChallengeInformation | null = null;
   public paxChallengeData: BaseChallenge | undefined;
+  public showVenmo: boolean = false;
   private paxUser: PaxUser | undefined = undefined;
   
   @ViewChild(MatSort) sort!: MatSort;
@@ -42,7 +43,7 @@ export class ChallengeViewComponent implements OnInit {
     private challengeManager: ChallengeManager,
     private userAuthService: UserAuthenticationService,
     private paxManagerService: PaxManagerService,
-    private location: Location, 
+    private location: Location,
     private route: ActivatedRoute) {
       this.authUserData$ = this.userAuthService.authUserData$.pipe(
         tap(async (data) => {
@@ -137,6 +138,10 @@ export class ChallengeViewComponent implements OnInit {
     if (!id) {
       console.error("Unknown challenge");
       return;
+    }
+
+    if (challenge == Challenges.WinterWarrior2024) {
+      this.showVenmo = true;
     }
 
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);

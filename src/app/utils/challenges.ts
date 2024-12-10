@@ -1,8 +1,11 @@
-import { BaseChallenge, ChallengeState, ChallengeType } from "../models/user-challenge.model";
+import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from "../models/user-challenge.model";
 import { PaxUser } from "../models/users.model";
+import { ChallengeManager } from "../services/challenge-manager.service";
 
 export enum Challenges {
-    SummerMurph2024 = "Summer Murph Challenge - 2024"
+    SummerMurph2024 = "Summer Murph Challenge - 2024",
+    WinterWarrior2024 = "Winter Warrior Challenge - 2024",
+    ThreeHundredChallenge = "300x300 Challenge",
 }
 
 export interface ICompletionRequirements {}
@@ -35,6 +38,10 @@ export function getChallengeIdByName(challenge: Challenges): string | null  {
     switch(challenge) {
         case Challenges.SummerMurph2024:
             return "aI66pjf8m5wq5FBjGh4j";
+        case Challenges.WinterWarrior2024:
+            return "N7vPPQBYKo3irbzhjaHw";
+        case Challenges.ThreeHundredChallenge:
+            return "";
         default:
             return null;
     }
@@ -47,4 +54,46 @@ export function getChallengesEnumKeyByValue(value: string): Challenges | undefin
         return Challenges[enumKey as keyof typeof Challenges];
     }
     return undefined;
+}
+
+export async function winterWarriorChallengeHelper(challenge: BaseChallenge, challengeManager: ChallengeManager) {
+    if (challenge.type === ChallengeType.IterativeCompletions && 
+        challenge.name === Challenges.WinterWarrior2024 &&
+        new Date(challenge.startDateString) < new Date()) {
+
+        const iterativeChallenge = challenge as IterativeCompletionChallenge;
+        if (iterativeChallenge.state === ChallengeState.NotStarted || iterativeChallenge.state === ChallengeState.PreRegistered)
+            iterativeChallenge.updateState(ChallengeState.InProgress);
+
+        // For this challenge, users just need to post in the winter
+        // when temps are at or below 20 deg. We should check this before entering this method.
+        iterativeChallenge.addNewIteration();
+        
+        if (iterativeChallenge.isComplete()) {
+            await challengeManager.completeChallenge(iterativeChallenge);
+        }
+
+        await challengeManager.updateChallenge(iterativeChallenge);
+    }
+}
+
+export async function threeHundredChallengeHelper(challenge: BaseChallenge, challengeManager: ChallengeManager, numberOfCompletions: number) {
+    if (challenge.type === ChallengeType.IterativeCompletions && 
+        challenge.name === Challenges.ThreeHundredChallenge &&
+        new Date(challenge.startDateString) < new Date()) {
+
+        const iterativeChallenge = challenge as IterativeCompletionChallenge;
+        if (iterativeChallenge.state === ChallengeState.NotStarted || iterativeChallenge.state === ChallengeState.PreRegistered)
+            iterativeChallenge.updateState(ChallengeState.InProgress);
+
+        // For this challenge, users report they completed an iteration (which is a single day)
+        for (let i = 1; i < numberOfCompletions; i++)
+            iterativeChallenge.addNewIteration();
+        
+        if (iterativeChallenge.isComplete()) {
+            await challengeManager.completeChallenge(iterativeChallenge);
+        }
+
+        await challengeManager.updateChallenge(iterativeChallenge);
+    }
 }

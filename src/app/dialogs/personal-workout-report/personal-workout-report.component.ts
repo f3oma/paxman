@@ -1,18 +1,16 @@
 import { Component, Inject } from '@angular/core';
-import { Timestamp } from '@angular/fire/firestore';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
-import { AOCategory } from 'src/app/models/ao.model';
-import { PreActivity, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
-import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from 'src/app/models/user-challenge.model';
+import { UserReportedWorkout } from 'src/app/models/beatdown-attendance';
+import { BaseChallenge, ChallengeType } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { BeatdownSearchService } from 'src/app/services/beatdown-search.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
+import { WeatherService } from 'src/app/services/weather-api.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
-import { Challenges } from 'src/app/utils/challenges';
+import { Challenges, threeHundredChallengeHelper, winterWarriorChallengeHelper } from 'src/app/utils/challenges';
 
 export interface UserReportedWorkoutProps {
   user: PaxUser,
@@ -34,28 +32,24 @@ export class PersonalWorkoutReportComponent {
   f3OmahaForm: FormGroup = new FormGroup({
     'beatdown': new FormControl(''),
     'preActivity': new FormControl('None'),
-    'notes': new FormControl(''),
-    'murphChallengeActivity': new FormControl(false)
+    'notes': new FormControl('')
   });
 
   downrangeForm: FormGroup = new FormGroup({
     'downrangeAOName': new FormControl(''),
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
-    'date': new FormControl(new Date()),
-    'murphChallengeActivity': new FormControl(false)
+    'date': new FormControl(new Date())
   });
 
   shieldLockForm: FormGroup = new FormGroup({
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
-    'date': new FormControl(new Date()),
-    'murphChallengeActivity': new FormControl(false)
+    'date': new FormControl(new Date())
   });
 
   user: PaxUser;
   activeChallenges: BaseChallenge[] = [];
-  murphChallenge: boolean = false;
   userSaveLoading: boolean = false;
 
   filteredBeatdownOptionsSubject: Subject<any[]> = new BehaviorSubject<any[]>([]);
@@ -70,19 +64,11 @@ export class PersonalWorkoutReportComponent {
     private beatdownService: BeatdownService,
     private challengeManager: ChallengeManager,
     public dialogRef: MatDialogRef<PersonalWorkoutReportComponent>,
+    public weatherService: WeatherService,
     @Inject(MAT_DIALOG_DATA) public data: UserReportedWorkoutProps
     ) {
     this.user = data.user;
     this.activeChallenges = data.activeChallenges;
-
-    this.murphChallenge = this.activeChallenges.filter((challenge) => {
-      if (challenge.type === ChallengeType.IterativeCompletions && 
-        challenge.name === Challenges.SummerMurph2024 &&
-        new Date(challenge.startDateString) < new Date()) {
-          return true;
-        }
-        return false;
-    }).length > 0;
 
     this.f3OmahaForm.controls['preActivity'].setValue('None');
     this.f3OmahaForm.controls['beatdown'].valueChanges.pipe(
@@ -118,26 +104,16 @@ export class PersonalWorkoutReportComponent {
       for (let challenge of this.activeChallenges) {
 
         // Do we have an active challenge
-        if (challenge.type === ChallengeType.IterativeCompletions && 
-          challenge.name === Challenges.SummerMurph2024 &&
-          new Date(challenge.startDateString) < new Date()) {
+        if (challenge.name === Challenges.WinterWarrior2024) {
+          const feelsLike: number | undefined = await this.weatherService.getFeelsLikeForDate(workoutData.date);
+          if (feelsLike && feelsLike <= 20) {
+            await winterWarriorChallengeHelper(challenge, this.challengeManager);
+          }
+        }
 
-            const iterativeChallenge = challenge as IterativeCompletionChallenge;
-            iterativeChallenge.updateState(ChallengeState.InProgress);
-
-            if (workoutData.preActivity === PreActivity.Murph || workoutData.preActivity === PreActivity.Smurph) {
-              iterativeChallenge.addNewIteration();
-            }
-
-            if (this.challengeIterationCompleted()) {
-              iterativeChallenge.addNewIteration();
-            }
-
-            if (iterativeChallenge.isComplete()) {
-              await this.challengeManager.completeChallenge(iterativeChallenge);
-            }
-
-            await this.challengeManager.updateChallenge(iterativeChallenge);
+        if (challenge.name === Challenges.ThreeHundredChallenge) {
+          const iterations = this.getNumberOfChallengeDaysCompleted();
+          await threeHundredChallengeHelper(challenge, this.challengeManager, iterations);
         }
       }
     }
@@ -145,16 +121,18 @@ export class PersonalWorkoutReportComponent {
     this.dialogRef.close();
   }
 
-  private challengeIterationCompleted(): boolean {
-    let iterationCompleted = false;
+  private getNumberOfChallengeDaysCompleted(): number {
+    let iterationsCompleted = 0;
+
     if (this.activeTab === AvailableTabs.F3Omaha) {
-      iterationCompleted = this.f3OmahaForm.controls['murphChallengeActivity'].value;
+      iterationsCompleted = this.f3OmahaForm.controls['thirtyDayChallengeActivity'].value;
     } else if (this.activeTab === AvailableTabs.Downrange) {
-      iterationCompleted = this.downrangeForm.controls['murphChallengeActivity'].value;
+      iterationsCompleted = this.downrangeForm.controls['thirtyDayChallengeActivity'].value;
     } else if (this.activeTab === AvailableTabs.ShieldLock) {
-      iterationCompleted = this.shieldLockForm.controls['murphChallengeActivity'].value;
+      iterationsCompleted = this.shieldLockForm.controls['thirtyDayChallengeActivity'].value;
     }
-    return iterationCompleted;
+
+    return iterationsCompleted;
   }
 
   async validateF3OmahaForm() {
