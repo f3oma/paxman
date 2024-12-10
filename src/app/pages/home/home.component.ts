@@ -100,11 +100,14 @@ export class HomeComponent {
     let showChallengeBanner = true;
 
     // Remove banner if already joined
-    for (let challenge of this.activeChallenges) {
-      if (challenge.name === Challenges.WinterWarrior2024) {
-        showChallengeBanner = false;
-      }
-    }
+    // for (let challenge of this.activeChallenges) {
+    //   if (challenge.name === Challenges.WinterWarrior2024) {
+    //     showChallengeBanner = false;
+    //   }
+    // }
+
+    // Remove last times
+    localStorage.removeItem('showChallengeAnnouncement');
 
     // Remove banner if user closed it
     let localStorageChallengeBannerPreference = localStorage.getItem('showWinterWarriorChallengeAnnouncement');
@@ -193,7 +196,7 @@ export class HomeComponent {
   }
 
   closeChallengeAnnouncement() {
-    localStorage.setItem('showChallengeAnnouncement', 'false');
+    localStorage.setItem('showWinterWarriorChallengeAnnouncement', 'false');
     this.showChallengeBanner = false;
   }
 

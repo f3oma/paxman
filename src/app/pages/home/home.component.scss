@@ -75,9 +75,10 @@
       flex-direction: row;
       justify-content: center;
       align-items: center;
+      gap: 12px;
 
       .image {
-        padding: 12px;
+        padding: 6px;
         img {
           height: 100px;
           width: 100px;
@@ -92,6 +93,7 @@
           font-size: 18px;
           font-weight: bold;
           text-align: left;
+          margin-bottom: 2px;
         }
         p {
           margin-bottom: 8px;
