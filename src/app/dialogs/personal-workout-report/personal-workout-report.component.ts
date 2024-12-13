@@ -104,16 +104,11 @@ export class PersonalWorkoutReportComponent {
       for (let challenge of this.activeChallenges) {
 
         // Do we have an active challenge
-        if (challenge.name === Challenges.WinterWarrior2024) {
+        if (challenge.name === Challenges.WinterWarrior2024 && new Date(challenge.startDateString) < new Date()) {
           const feelsLike: number | undefined = await this.weatherService.getFeelsLikeForDate(workoutData.date);
           if (feelsLike && feelsLike <= 20) {
             await winterWarriorChallengeHelper(challenge, this.challengeManager);
           }
-        }
-
-        if (challenge.name === Challenges.ThreeHundredChallenge) {
-          const iterations = this.getNumberOfChallengeDaysCompleted();
-          await threeHundredChallengeHelper(challenge, this.challengeManager, iterations);
         }
       }
     }
@@ -121,19 +116,19 @@ export class PersonalWorkoutReportComponent {
     this.dialogRef.close();
   }
 
-  private getNumberOfChallengeDaysCompleted(): number {
-    let iterationsCompleted = 0;
+  // private getNumberOfChallengeDaysCompleted(): number {
+  //   let iterationsCompleted = 0;
 
-    if (this.activeTab === AvailableTabs.F3Omaha) {
-      iterationsCompleted = this.f3OmahaForm.controls['thirtyDayChallengeActivity'].value;
-    } else if (this.activeTab === AvailableTabs.Downrange) {
-      iterationsCompleted = this.downrangeForm.controls['thirtyDayChallengeActivity'].value;
-    } else if (this.activeTab === AvailableTabs.ShieldLock) {
-      iterationsCompleted = this.shieldLockForm.controls['thirtyDayChallengeActivity'].value;
-    }
+  //   if (this.activeTab === AvailableTabs.F3Omaha) {
+  //     iterationsCompleted = this.f3OmahaForm.controls['thirtyDayChallengeActivity'].value;
+  //   } else if (this.activeTab === AvailableTabs.Downrange) {
+  //     iterationsCompleted = this.downrangeForm.controls['thirtyDayChallengeActivity'].value;
+  //   } else if (this.activeTab === AvailableTabs.ShieldLock) {
+  //     iterationsCompleted = this.shieldLockForm.controls['thirtyDayChallengeActivity'].value;
+  //   }
 
-    return iterationsCompleted;
-  }
+  //   return iterationsCompleted;
+  // }
 
   async validateF3OmahaForm() {
     if (this.f3OmahaForm.valid) {
