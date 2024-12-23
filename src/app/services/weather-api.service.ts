@@ -9,7 +9,7 @@ export class WeatherService {
     // must append start_date and end_date before calling
     private readonly startDateParam = "&start_date=";
     private readonly endDateParam = "&end_date="
-    private readonly latLngOmaha = "latitude=41&longitude=95";
+    private readonly latLngOmaha = "latitude=41.25&longitude=-95.94";
     private readonly forecastApi = "https://api.open-meteo.com/v1/forecast?";
 
     constructor(private http: HttpClient) {
