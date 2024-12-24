@@ -71,6 +71,7 @@ import { ChallengeViewComponent } from './pages/challenges/challenge-view/challe
 import { TruncatePipe } from './utils/truncate.pipe';
 import { BeatdownCategoryChipsComponent } from './components/beatdown-category-chips/beatdown-category-chips.component';
 import { HttpClientModule } from '@angular/common/http';
+import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.component';
 
 @NgModule({
   declarations: [
@@ -117,6 +118,7 @@ import { HttpClientModule } from '@angular/common/http';
     ChallengeViewComponent,
     TruncatePipe,
     BeatdownCategoryChipsComponent,
+    UserStatsViewComponent
   ],
   imports: [
     BrowserModule,
