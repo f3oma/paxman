@@ -13,8 +13,11 @@ import { AoLocationRef, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
+import { YearInReviewEmailService } from 'src/app/services/email-services/2024-year-in-review-email.service';
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
+import { StatisticsService } from 'src/app/services/statistics.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
+import { WeatherService } from 'src/app/services/weather-api.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
 import { Challenges, getChallengeIdByName } from 'src/app/utils/challenges';
 
@@ -54,7 +57,9 @@ export class HomeComponent {
     private aoManagerService: AOManagerService,
     private challengeManager: ChallengeManager,
     private beatdownService: BeatdownService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private yearlyEmailService: YearInReviewEmailService,
+    private statisticsService: StatisticsService,
   ) {
     if (this.userAuthService.isLoggedIn) {
       this.isLoggedIn = true;
@@ -84,6 +89,17 @@ export class HomeComponent {
     this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
 
     this.handleChallenges(paxDataId);
+
+    if (this.user!.id === "qSpp5XPtYdwCCrijrDpU") {
+      try {
+        const aoStats = await this.statisticsService.getTop10Leaderboard();
+        await this.yearlyEmailService.send2024EndOfYearEmail(this.user!.id, this.user!.f3Name, aoStats!);
+      }
+      catch(err) {
+        console.error(err);
+      }
+      console.log("SENT");
+    }
 
     const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
     const threeMonthsOut = new Date();
