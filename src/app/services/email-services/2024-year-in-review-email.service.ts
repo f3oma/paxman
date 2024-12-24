@@ -47,6 +47,8 @@ export class YearInReviewEmailService {
         const topPerson5 = leaderboard[4].f3Name;
         const topPerson5Count = leaderboard[4].posts;
 
+        const url = "https://f3omaha.web.app/users/" + paxId + '/stats';
+
         await addDoc(mail, {
             toUids: [paxId],
             template: {
@@ -74,6 +76,7 @@ export class YearInReviewEmailService {
                 topPerson4Count: topPerson4Count,
                 topPerson5: topPerson5,
                 topPerson5Count: topPerson5Count,
+                url,
                 },
             },
         });
