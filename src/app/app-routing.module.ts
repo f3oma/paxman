@@ -89,6 +89,7 @@ const routes: Routes = [
   {
     path: 'users/:id/stats',
     component: UserStatsViewComponent,
+    canActivate: [BasicAuthenticatedAuthGuard],
   },
   {
     path: 'challenges',
