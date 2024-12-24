@@ -25,6 +25,7 @@ import { ExiconApprovalComponent } from './pages/admin-home/exicon-approval/exic
 import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-schedule.component';
 import { ChallengesComponent } from './pages/challenges/challenges.component';
 import { ChallengeViewComponent } from './pages/challenges/challenge-view/challenge-view.component';
+import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.component';
 
 const routes: Routes = [
   {
@@ -84,6 +85,10 @@ const routes: Routes = [
   {
     path: 'users/:id/unsubscribe',
     component: UnsubscribeComponent
+  },
+  {
+    path: 'users/:id/stats',
+    component: UserStatsViewComponent,
   },
   {
     path: 'challenges',

@@ -17,7 +17,6 @@ import { YearInReviewEmailService } from 'src/app/services/email-services/2024-y
 import { AnniversaryResponsePax, GetNewPaxResponse, PaxManagerService } from 'src/app/services/pax-manager.service';
 import { StatisticsService } from 'src/app/services/statistics.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
-import { WeatherService } from 'src/app/services/weather-api.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
 import { Challenges, getChallengeIdByName } from 'src/app/utils/challenges';
 
@@ -89,17 +88,6 @@ export class HomeComponent {
     this.beatdownsRequiringAttendanceData = await this.beatdownService.getBeatdownAttendanceReportForUser(this.user, siteQLocationRef);
 
     this.handleChallenges(paxDataId);
-
-    if (this.user!.id === "qSpp5XPtYdwCCrijrDpU") {
-      try {
-        const aoStats = await this.statisticsService.getTop10Leaderboard();
-        await this.yearlyEmailService.send2024EndOfYearEmail(this.user!.id, this.user!.f3Name, aoStats!);
-      }
-      catch(err) {
-        console.error(err);
-      }
-      console.log("SENT");
-    }
 
     const userRef = this.paxManagerService.getUserReference('users/' + paxDataId);
     const threeMonthsOut = new Date();

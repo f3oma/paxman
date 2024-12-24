@@ -39,7 +39,9 @@ export interface UserReportedWorkoutEntity {
 export interface MyTotalAttendance {
     beatdownsAttended: number;
     preactivitiesCompleted: number;
+    favoriteActivity: string;
 }
+
 
 export enum PreActivity {
     None = "None",

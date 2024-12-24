@@ -102,9 +102,21 @@ export class WorkoutManagerService {
             return <MyTotalAttendance> {
                 preactivitiesCompleted: 0,
                 beatdownsAttended: 0,
+                favoriteActivity: 'None'
             }
         }
       }
+
+    public async updateFavoriteActivityForYear(paxDataId: any, favoriteActivity: string) {
+        const yearlyAttendanceCountCollection = collection(this.firestore, `users/${paxDataId}/yearly_attendance_counts`);
+        const attendenceDoc = doc(yearlyAttendanceCountCollection, String(this.currentYear));
+        const yearlyAttendance = await getDoc(attendenceDoc);
+        if (yearlyAttendance.exists()) {
+            await updateDoc(attendenceDoc, {
+                favoriteActivity
+            });
+        } 
+    }
 
     private async tryCreatePersonalWorkoutForUserRef(workoutReport: UserReportedWorkout, userRef: DocumentReference<PaxUser>): Promise<void> {
 

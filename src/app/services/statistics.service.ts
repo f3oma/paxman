@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { TopLeaderboardResponse, UserStatisticsResponse } from "../models/statistics.model";
+import { TopLeaderboardResponse, TopSiteAttendanceResponse, UserStatisticsResponse } from "../models/statistics.model";
 
 
 @Injectable({
@@ -26,10 +26,10 @@ export class StatisticsService {
         return leaders;
     }
 
-    async getTopSiteAttendance() {
+    async getTopSiteAttendance(): Promise<TopSiteAttendanceResponse[] | undefined> {
         const topSiteAttendanceUrl = '/aos/top-site-attendance-total';
         const finalUrl = this.baseUrl + topSiteAttendanceUrl;
-        const topSites = await this.http.get(finalUrl).toPromise();
+        const topSites = await this.http.get<TopSiteAttendanceResponse[]>(finalUrl).toPromise();
         return topSites;
     }
 
