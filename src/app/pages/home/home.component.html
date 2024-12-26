@@ -72,13 +72,13 @@
           <a mat-raised-button target="_blank" href="https://f3omaha.com/2025-f3omaha-csaup-registration/">Register</a>
         </div>
       </div>
-      <div class="announcement" @fadeInOut id="abide">
+      <div class="announcement" @fadeInOut id="yearReview" *ngIf="user">
         <div class="info">
-          <h5>🧸 Donate to the F3 Omaha Abide Christmas Store</h5>
-          <p>Abide is looking for business sponsors and individuals to help make a difference this holiday with a donation to the Abide Christmas Store. Click the link for Individuals donations and contact Papa Smurf for more information on business donations.</p>
+          <h5>🔁 2024 - Year in Review</h5>
+          <p>It was an incredible year of growth! View this year's PaxNet stats</p>
         </div>
         <div class="action">
-          <a mat-raised-button target="_blank" href="https://www.amazon.com/registries/gl/guest-view/OT2LNQMWKNVP">Donate</a>
+          <a mat-raised-button target="_blank" [routerLink]="'/users/'+user.id+'/stats'">View Stats</a>
         </div>
       </div>
       <div class="announcement" @fadeInOut id="ceddy">
