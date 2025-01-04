@@ -313,31 +313,21 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
     for (let existingSiteQ of this.originalActiveSiteQUsers) {
       if (activeSiteQUsers.filter((a) => a.id === existingSiteQ.id).length === 0) {
 
-        // If they aren't in the list, are they in retired?
-        if (this.temporaryRetiredSiteQUsers.filter((t) => t.id === existingSiteQ.id).length === 0) {
+        // If they aren't in the active list, are they in retired or founding?
+        if (this.temporaryRetiredSiteQUsers.filter((t) => t.id === existingSiteQ.id).length === 0 || 
+          this.temporaryFoundingSiteQUsers.filter((t) => t.id === existingSiteQ.id).length === 0)
+        {
+          // Ask if we want to remove the user because they aren't in active, retired, founding...
           if (confirm("Remove all Site-Q role privileges from " + existingSiteQ.f3Name + "?")) {
             // We need to completely remove all site-q references
             await this.authManagerService.removeRole(UserRole.SiteQ, existingSiteQ.id);
             await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
             await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
-          } else {
-            if (confirm(existingSiteQ.f3Name + " will retain role privileges. Move to retired?")) {
-              this.temporaryRetiredSiteQUsers.push(existingSiteQ);
-              await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
-              await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, existingSiteQ.id);
-              await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
-            } else {
-              // User canceled
-              return;
-            }
           }
-        } else {
-          await this.userProfileService.removeBadgeFromProfile(Badges.SiteQ, existingSiteQ.id);
-          await this.userProfileService.addBadgeToProfile(Badges.RetiredSiteQ, existingSiteQ.id);
-          await this.paxManagerService.removeSiteQUserLocation(existingSiteQ.id);
         }
       }
     }
+
     // Finally, rewrite the active site q users
     this.site.activeSiteQUsers = activeSiteQUsers;
   }
@@ -354,14 +344,6 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
       }
     }
 
-    // If an original member is no longer in retired, remove their access
-    for (let siteq of this.originalRetiredSiteQUsers) {
-      if (retiredSiteQUsers.filter((o) => o.id !== siteq.id)) {
-        await this.userProfileService.removeBadgeFromProfile(Badges.RetiredSiteQ, siteq.id);
-        await this.authManagerService.removeRole(UserRole.SiteQ, siteq.id);
-      }
-    }
-
     this.site.retiredSiteQUsers = retiredSiteQUsers;
   }
 
@@ -374,14 +356,6 @@ export class SiteDataEditComponent implements OnInit, AfterViewChecked {
         await this.authManagerService.promoteRole(UserRole.SiteQ, siteq.id).catch((err) => console.error(err));
         await this.userProfileService.addBadgeToProfile(Badges.SiteFounder, siteq.id);
         foundingSiteQUsers.push(paxUser);
-      }
-    }
-
-    // If an original member is no longer in retired, remove their access
-    for (let siteq of this.originalFoundingSiteQUsers) {
-      if (foundingSiteQUsers.filter((o) => o.id !== siteq.id)) {
-        await this.userProfileService.removeBadgeFromProfile(Badges.SiteFounder, siteq.id);
-        await this.authManagerService.removeRole(UserRole.SiteQ, siteq.id);
       }
     }
 
