@@ -19,7 +19,8 @@ http('backup', (_request: Request, response: Response) => {
       f3Name: "F3 Name",
       email: "Email",
       phoneNumber: "Phone Number",
-      joinDate: "Join Date"
+      joinDate: "Join Date",
+      notificationFrequency: "Notification Frequency"
   }
   const storage = new Storage();
   async function uploadFile() {
@@ -39,8 +40,8 @@ http('backup', (_request: Request, response: Response) => {
     console.log(`${fileName} uploaded to ${bucketName}.`);
   }
 
-  db.collection('users').orderBy("paxNumber").get().then((snapshot) => {
-    snapshot.forEach((doc) => {
+  db.collection('users').orderBy("paxNumber").get().then((snapshot: any) => {
+    snapshot.forEach((doc: any) => {
       const data = doc.data();
       elements.push({
         paxNumber: data.paxNumber,
@@ -49,7 +50,8 @@ http('backup', (_request: Request, response: Response) => {
         f3Name: data.f3Name,
         email: data.hideContactInformation ? '' : data.email,
         phoneNumber: data.hideContactInformation ? '' : data.phoneNumber,
-        joinDate: data.joinDate.toDate()
+        joinDate: data.joinDate.toDate(),
+        notificationFrequency: data.notificationFrequency ? data.notificationFrequency : ''
       });
     });
 

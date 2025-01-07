@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #2d364c;
+      font-size: 1.2em;
+    }
+    .email-container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      background-color: #2d364c;
+      text-align: center;
+      padding: 20px;
+    }
+    .sub-header {
+        background-color: #525252;
+        text-align: center;
+        padding: 1px;
+        color: #fff;
+    }
+    .header img {
+      max-width: 300px;
+      margin: 0 10px;
+    }
+    .header h1 {
+      color: #ffa33a;
+      margin: 10px 0 0;
+      font-size: 2em;
+    }
+    .content {
+      padding: 20px;
+    }
+    .view-more {
+        font-weight: bold;
+        color: #000;
+        background-color: #ffa33a;
+        border-radius: 8px;
+        padding: 12px 0px;
+        width: 100%;
+        display: block;
+        text-align: center;
+        margin: 24px 0;
+    }
+    .section-title {
+      font-size: 1.4em;
+      color: #ffa33a;
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 4px;
+      display: inline-block;
+      padding-bottom: 4px;
+    }
+    .data-highlight {
+      font-size: 1.0em;
+      font-weight: bold;
+      color: #2d364c;
+    }
+    .stats-list {
+      margin: 10px 0;
+      padding: 0;
+      list-style-type: none;
+    }
+    .stats-list li {
+      margin-bottom: 14px;
+    }
+    .stats-list li ul {
+      margin: 14px 0;
+    }
+    .closing {
+        margin: 36px 0;
+    }
+    .footer {
+      background-color: #2d364c;
+      text-align: center;
+      padding: 10px;
+      color: #ffffff;
+      font-size: 0.9em;
+    }
+    .footer a {
+      color: #ffa33a;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <img src="https://f3omaha.web.app/assets/PaxNet-White-1.png" alt="Social Platform Logo">
+    </div>
+    <div class="sub-header">
+        <h1>2024 Year in Review</h1>
+    </div>
+    <div class="content">
+      <p>{{f3Name}},</p>
+      <p>2024 was an incredible year of fitness and brotherhood! PaxNet began tracking workout progress in May and the response has been incredible! Here's your personalized workout journey:</p>
+      
+      <div class="section-title">Your Year at a Glance</div>
+      <ul class="stats-list">
+        <li>You crushed it at <span class="data-highlight">{{workoutCount}}</span> workouts.</li>
+        <li>Jump-started your mornings with <span class="data-highlight">{{preActivities}}</span> pre-activities.</li>
+        <li>Your favorite workout spots:
+          <ul>
+            <li><span class="data-highlight">{{topSite1}}</span>: {{topSite1Count}} posts</li>
+            <li><span class="data-highlight">{{topSite2}}</span>: {{topSite2Count}} posts</li>
+            <li><span class="data-highlight">{{topSite3}}</span>: {{topSite3Count}} posts</li>
+          </ul>
+        </li>
+        <li>Favorite day to grind: <span class="data-highlight">{{favoriteDay}}</span>.</li>
+        <li>You posted with <span class="data-highlight">{{workoutBuddy}}</span> the most. Iron sharpens iron!</li>
+      </ul>
+
+      <div class="section-title">Community Highlights</div>
+      <ul class="stats-list">
+        <li><b>Top 5 grinders this year:</b>
+          <ul>
+            <li><span class="data-highlight">{{topPerson1}}</span>: {{topPerson1Count}} posts</li>
+            <li><span class="data-highlight">{{topPerson2}}</span>: {{topPerson2Count}} posts</li>
+            <li><span class="data-highlight">{{topPerson3}}</span>: {{topPerson3Count}} posts</li>
+            <li><span class="data-highlight">{{topPerson4}}</span>: {{topPerson4Count}} posts</li>
+            <li><span class="data-highlight">{{topPerson5}}</span>: {{topPerson5Count}} posts</li>
+          </ul>
+        </li>
+        <li><b>Most popular AOs:</b>
+          <ul>
+            <li><span class="data-highlight">Oracle</span>: 885 total posts</li>
+            <li><span class="data-highlight">Paradise Island</span>: 763 total posts</li>
+            <li><span class="data-highlight">Coronado</span>: 742 total posts</li>
+          </ul>
+        </li>
+        <li><b>Month with the most FNGs:</b> August with <span class="data-highlight">43 FNGs</span></li>
+      </ul>
+
+      <p class="closing">Thank you for being part of the journey and supporting PaxNet along the way. PaxNet continues to improve based on your feedback and recommendations, and we love it! Let's make 2025 even bigger and better, it's only up from here!</p>
+
+      <a class="view-more" href={{url}}>View more stats</a>
+
+    </div>
+    <div class="footer">
+      <p>&copy; 2024 F3 Omaha | Fitness, Fellowship, Faith</p>
+    </div>
+  </div>
+</body>
+</html>
