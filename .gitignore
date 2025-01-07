@@ -50,3 +50,4 @@ src/environments/
 # Cloud Functions
 paxnet_cloud_functions/*/node_modules
 paxnet_cloud_functions/*/lib
+paxnet_cloud_functions/*/priv
