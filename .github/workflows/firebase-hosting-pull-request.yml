@@ -18,8 +18,8 @@ jobs:
         with:
           node-version: 20.x
 
-      - name: Install pnpm
-        run: npm install -g pnpm nx@latest
+      - name: Install pnpm nx
+        run: npm install -g pnpm @nrwl/cli
       
       - name: Install Dependencies
         run: pnpm install
