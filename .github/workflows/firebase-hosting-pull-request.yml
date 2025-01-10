@@ -56,7 +56,7 @@ jobs:
       
       - name: List files in main project dist folder (after copy)
         run: |
-          ls -R PaxNet
+          ls -R PaxNet-Web/dist
 
       # - name: 'Install Web'
       #   working-directory: PaxNet-Web
