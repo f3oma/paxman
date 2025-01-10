@@ -8,7 +8,8 @@
     "workout": "./types/workout/index.ts"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc --skipLibCheck"
+    "build-dev": "rm -rf dist && tsc --skipLibCheck",
+    "build": "tsc --skipLibCheck"
   },
   "keywords": [],
   "author": "Nolan Clark",

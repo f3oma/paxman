@@ -43,15 +43,15 @@ jobs:
 
       - name: Create Dist Folder in Main Project
         run: |
-          mkdir -p PaxNet-Web/dist/@shared
+          mkdir -p PaxNet/PaxNet-Web/dist/@shared
       
       - name: Copy Shared Dist Folder to Main Project
         run: |
-          cp -r packages/shared/dist/* PaxNet-Web/dist/@shared
+          cp -r packages/shared/dist/* PaxNet/PaxNet-Web/dist/@shared
       
       - name: List files in main project dist folder (after copy)
         run: |
-          ls -R PaxNet-Web/dist/@shared
+          ls -R PaxNet
 
       # - name: 'Install Web'
       #   working-directory: PaxNet-Web
