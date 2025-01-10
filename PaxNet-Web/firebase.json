@@ -1,7 +1,7 @@
 {
   "hosting": {
-    "target": "homebase",
-    "public": "dist/homebase",
+    "target": "paxnet",
+    "public": "dist/paxnet",
     "ignore": [
       "**/.*"
     ],

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "homebase": {
+    "paxnet": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/homebase",
+            "outputPath": "dist/paxnet",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "homebase:build:production"
+              "browserTarget": "paxnet:build:production"
             },
             "development": {
-              "browserTarget": "homebase:build:development"
+              "browserTarget": "paxnet:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "homebase:build"
+            "browserTarget": "paxnet:build"
           }
         },
         "test": {
@@ -107,7 +107,7 @@
           "options": {
             "prerender": false,
             "ssr": false,
-            "browserTarget": "homebase:build:production",
+            "browserTarget": "paxnet:build:production",
             "firebaseProject": "f3omaha",
             "firebaseHostingSite": "f3omaha"
           }

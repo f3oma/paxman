@@ -26,11 +26,11 @@
     "paths": {
       "@shared/*": [
         "../shared/src/types/*", 
-        "./dist/shared-library/*"]
+        "./shared-library/*"]
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./dist/shared-library"         // Explicitly tell TypeScript to look in dist for types
+      "./shared-library"         // Explicitly tell TypeScript to look in dist for types
     ]
   },
   "angularCompilerOptions": {
@@ -41,6 +41,6 @@
   },
   "include": [
     "src/**/*.ts",                    // Include all TypeScript files in the src directory
-    "./dist/shared-library/**/*.d.ts"  // Explicitly include the type declarations from dist
+    "./shared-library/**/*.d.ts"  // Explicitly include the type declarations from dist
   ]
 }
