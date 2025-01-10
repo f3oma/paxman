@@ -24,7 +24,7 @@
       "dom"
     ],
     "paths": {
-      "@shared/*": ["../shared/src/types/*"]
+      "@shared/*": ["../shared/src/types/*", "dist/shared-library/*"]
     }
   },
   "angularCompilerOptions": {
