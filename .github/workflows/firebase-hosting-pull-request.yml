@@ -19,7 +19,8 @@ jobs:
           node-version: 20.x
       
       - id: 'Generate'
-        run: node PaxNet-Web/gen_env_files.js
+        working-directory: PaxNet-Web
+        run: node gen_env_files.js
         env:
           ANGULAR_ENV_VARS: '${{ secrets.ANGULAR_ENV_VARS }}'
 
