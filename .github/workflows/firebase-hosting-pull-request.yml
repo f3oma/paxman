@@ -37,4 +37,3 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_F3OMAHA }}'
           projectId: f3omaha
-        working-directory: PaxNet-Web
