@@ -35,9 +35,9 @@ jobs:
       
       - id: 'Deploy'
         uses: FirebaseExtended/action-hosting-deploy@v0
-        working-directory: PaxNet-Web
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_F3OMAHA }}'
           channelId: live
           projectId: f3omaha
+        working-directory: PaxNet-Web
