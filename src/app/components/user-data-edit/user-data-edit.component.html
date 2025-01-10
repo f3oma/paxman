@@ -106,7 +106,7 @@
                 <img id="icon" src="/assets/x_icon.svg" />
                 <mat-form-field appearance="outline" *ngIf="userProfileData">
                     <mat-label>X Handle</mat-label>
-                    <span matPrefix style="padding: 2px">@</span>
+                    <span matPrefix style="padding: 2px">&#64;</span>
                     <input formControlName="xHandle" [(ngModel)]="userProfileData.links['x'].url" autocomplete="off" matInput type="text" placeholder="X Handle">
                     <mat-hint>https://x.com/<b>your-handle</b></mat-hint>
                 </mat-form-field>
