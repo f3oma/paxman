@@ -3,12 +3,20 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": [
+        "../shared/src/types/*",
+        "./dist/shared-library/*"
+      ]
+    }
   },
   "files": [
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "./dist/shared-library/**/*.d.ts"
   ]
 }
