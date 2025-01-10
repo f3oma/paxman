@@ -32,6 +32,10 @@ jobs:
         working-directory: shared
         run: npm run build
       
+      - name: Create Dist Folder in Main Project
+        run: |
+          mkdir -p PaxNet-Web/dist
+      
       - name: Copy Shared Dist Folder to Main Project
         run: |
           cp -r shared/dist/* PaxNet-Web/dist/
