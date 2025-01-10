@@ -1,5 +1,6 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
+  "extends": "../tsconfig.base.json",
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": ".",
@@ -22,17 +23,6 @@
     "lib": [
       "ES2022",
       "dom"
-    ],
-    "paths": {
-      "@shared/*": [
-        "../shared/src/types/*", 
-        "./shared-library/*",
-        "../shared/*"
-      ]
-    },
-    "typeRoots": [
-      "./node_modules/@types",
-      "./shared-library"         // Explicitly tell TypeScript to look in dist for types
     ]
   },
   "angularCompilerOptions": {
@@ -40,9 +30,5 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  },
-  "include": [
-    "src/**/*.ts",                    // Include all TypeScript files in the src directory
-    "./shared-library/**/*.d.ts"  // Explicitly include the type declarations from dist
-  ]
+  }
 }
