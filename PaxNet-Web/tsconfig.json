@@ -2,7 +2,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
+    "baseUrl": ".",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -24,7 +24,7 @@
       "dom"
     ],
     "paths": {
-      "@shared/*": ["../shared/src/types/*", "dist/shared-library/*"]
+      "@shared/*": ["../shared/src/types/*", "./dist/shared-library/*"]
     }
   },
   "angularCompilerOptions": {
