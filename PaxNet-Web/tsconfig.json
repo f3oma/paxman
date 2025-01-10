@@ -24,8 +24,14 @@
       "dom"
     ],
     "paths": {
-      "@shared/*": ["../shared/src/types/*", "./dist/shared-library/*"]
-    }
+      "@shared/*": [
+        "../shared/src/types/*", 
+        "./dist/shared-library/*"]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./dist/shared-library"         // Explicitly tell TypeScript to look in dist for types
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
