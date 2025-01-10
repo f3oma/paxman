@@ -1,0 +1,19 @@
+{
+  "name": "@shared",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared types/assets/etc for PaxNet",
+  "main": "dist/index.js",
+  "exports": {
+    "workout": "./types/workout/index.ts"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc --skipLibCheck"
+  },
+  "keywords": [],
+  "author": "Nolan Clark",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

@@ -5,7 +5,7 @@ import { Beatdown } from 'src/app/models/beatdown.model';
 import { IPaxUser } from 'src/app/models/users.model';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
-import { PreActivity } from '@shared/workout';
+import { PreActivity } from '@shared/src/types/workout';
 
 export interface DailyWorkoutReported {
   countPerDay: number;

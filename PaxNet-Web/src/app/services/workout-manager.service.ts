@@ -5,7 +5,7 @@ import { CommunityWorkoutConverter } from "../utils/community-workout.converter"
 import { IPaxUser, PaxUser } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { IBeatdownAttendance, MyTotalAttendance, UserReportedWorkout } from "../models/beatdown-attendance";
-import { PreActivity } from '@shared/workout';
+import { PreActivity } from "@shared/src/types/workout";
 
 @Injectable({
     providedIn: 'root'
