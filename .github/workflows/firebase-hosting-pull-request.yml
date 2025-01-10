@@ -17,6 +17,12 @@ jobs:
         uses: 'actions/setup-node@v1'
         with:
           node-version: 20.x
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+      
+      - name: Install Dependencies
+        run: pnpm install
       
       - name: 'Generate Secrets'
         working-directory: PaxNet-Web
@@ -24,9 +30,9 @@ jobs:
         env:
           ANGULAR_ENV_VARS: '${{ secrets.ANGULAR_ENV_VARS }}'
       
-      - name: 'Install Shared'
-        working-directory: shared
-        run: npm install
+      # - name: 'Install Shared'
+      #   working-directory: shared
+      #   run: npm install
       
       - name: 'Build Shared'
         working-directory: shared
@@ -48,9 +54,9 @@ jobs:
         run: |
           ls -R PaxNet-Web/dist/paxnet/shared-library/
 
-      - name: 'Install Web'
-        working-directory: PaxNet-Web
-        run: npm install
+      # - name: 'Install Web'
+      #   working-directory: PaxNet-Web
+      #   run: npm install
 
       - name: 'Build Web'
         working-directory: PaxNet-Web
