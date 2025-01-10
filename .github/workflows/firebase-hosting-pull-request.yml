@@ -36,7 +36,7 @@ jobs:
       
       - name: 'Build Shared'
         working-directory: shared
-        run: npm run build
+        run: pnpm run build
       
       - name: List files in shared dist folder
         run: |
@@ -60,7 +60,7 @@ jobs:
 
       - name: 'Build Web'
         working-directory: PaxNet-Web
-        run: npm run build
+        run: pnpm run build
       
       - id: 'Deploy'
         uses: FirebaseExtended/action-hosting-deploy@v0
