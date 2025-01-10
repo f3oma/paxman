@@ -24,13 +24,16 @@ jobs:
           ANGULAR_ENV_VARS: '${{ secrets.ANGULAR_ENV_VARS }}'
 
       - id: 'Install'
+        working-directory: PaxNet-Web
         run: npm install
 
       - id: 'Build'
+        working-directory: PaxNet-Web
         run: npm run build
       
       - id: 'Deploy'
         uses: FirebaseExtended/action-hosting-deploy@v0
+        working-directory: PaxNet-Web
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_F3OMAHA }}'
