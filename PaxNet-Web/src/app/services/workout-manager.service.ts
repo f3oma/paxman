@@ -4,7 +4,8 @@ import { PersonalWorkoutConverter } from "../utils/personal-workout.converter";
 import { CommunityWorkoutConverter } from "../utils/community-workout.converter";
 import { IPaxUser, PaxUser } from "../models/users.model";
 import { PaxModelConverter } from "../utils/pax-model.converter";
-import { IBeatdownAttendance, MyTotalAttendance, PreActivity, UserReportedWorkout } from "../models/beatdown-attendance";
+import { IBeatdownAttendance, MyTotalAttendance, UserReportedWorkout } from "../models/beatdown-attendance";
+import { PreActivity } from "@shared/workout";
 
 @Injectable({
     providedIn: 'root'

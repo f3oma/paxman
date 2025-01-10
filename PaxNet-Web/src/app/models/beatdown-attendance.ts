@@ -1,6 +1,6 @@
 import { DocumentReference, Timestamp } from "@angular/fire/firestore";
 import { Beatdown } from "./beatdown.model";
-import { PaxUser, UserRef } from "./users.model";
+import { UserRef } from "./users.model";
 import { PreActivity } from "@shared/workout";
 
 // Beatdown based attendance, larger scope
