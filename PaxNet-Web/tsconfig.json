@@ -38,5 +38,9 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": [
+    "src/**/*.ts",                    // Include all TypeScript files in the src directory
+    "./dist/shared-library/**/*.d.ts"  // Explicitly include the type declarations from dist
+  ]
 }
