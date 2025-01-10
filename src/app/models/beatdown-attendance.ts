@@ -50,5 +50,6 @@ export enum PreActivity {
     Smurph = "Smurph",
     Ruck = "Ruck",
     Bookclub = "Bookclub",
+    Sandbags = "Sandbags",
     Other = "Other"
 }
