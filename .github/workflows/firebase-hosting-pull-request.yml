@@ -46,14 +46,13 @@ jobs:
         run: |
           mkdir -p dist/@shared
       
-      - name: List files in main project dist folder
-        working-directory: PaxNet-Web
+      - name: List files in working folder
         run: |
-          ls -R .
+          ls .
       
       - name: Copy Shared Dist Folder to Main Project
         run: |
-          cp -r packages/shared/* PaxNet/PaxNet-Web/dist/@shared
+          cp -r packages/shared/* PaxNet-Web/dist/@shared
       
       - name: List files in main project dist folder (after copy)
         run: |
