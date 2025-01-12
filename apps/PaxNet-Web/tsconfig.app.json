@@ -10,6 +10,7 @@
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
-  ]
+    "src/**/*.d.ts",
+    "../../packages/shared/src/**/*.ts"  // Include shared library source
+  ],
 }
