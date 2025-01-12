@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@nx/js": "^20.3.1",
     "nx": "20.3.1"
+  },
+  "dependencies": {
+    "@types/node": "^22.10.5"
   }
 }
