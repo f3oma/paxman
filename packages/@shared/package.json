@@ -5,7 +5,7 @@
   "description": "Shared types/assets/etc for PaxNet",
   "main": "dist/index.js",
   "exports": {
-    "workout": "./types/workout/index.ts"
+    "./types/workout": "./src/types/Workout.ts"
   },
   "scripts": {
     "build-dev": "rm -rf dist && tsc --skipLibCheck",

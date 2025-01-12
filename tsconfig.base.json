@@ -2,11 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",   // Base URL for module resolution
     "paths": {
-      "@shared/*": [
-        "./shared/src/types/*",       // Path to shared types (development)
-        "./dist/shared-library/*",    // Path to built shared types (CI/CD)
-        "shared/src/types/*",
-        "../shared/src/types/*",
+      "@shared/types/workout": [
+        "@shared/src/types/Workout.ts",       // Path to shared types (development)
       ]
     },
   },

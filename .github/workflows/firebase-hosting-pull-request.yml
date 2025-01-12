@@ -37,26 +37,26 @@ jobs:
       #   working-directory: shared
       #   run: pnpm run build
       
-      - name: List files in shared dist folder
-        run: |
-          ls -R packages/shared/dist
+      # - name: List files in shared dist folder
+      #   run: |
+      #     ls -R packages/shared/dist
 
-      - name: Create Dist Folder in Main Project
-        working-directory: PaxNet-Web
-        run: |
-          mkdir -p dist/@shared
+      # - name: Create Dist Folder in Main Project
+      #   working-directory: PaxNet-Web
+      #   run: |
+      #     mkdir -p dist/@shared
       
-      - name: List files in working folder
-        run: |
-          ls .
+      # - name: List files in working folder
+      #   run: |
+      #     ls .
       
-      - name: Copy Shared Dist Folder to Main Project
-        run: |
-          cp -r packages/shared/* PaxNet-Web/dist/@shared
+      # - name: Copy Shared Dist Folder to Main Project
+      #   run: |
+      #     cp -r packages/shared/* PaxNet-Web/dist/@shared
       
-      - name: List files in main project dist folder (after copy)
-        run: |
-          ls -R PaxNet-Web/dist
+      # - name: List files in main project dist folder (after copy)
+      #   run: |
+      #     ls -R PaxNet-Web/dist
 
       # - name: 'Install Web'
       #   working-directory: PaxNet-Web

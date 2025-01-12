@@ -11,7 +11,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "paxnet-web": "pnpm --filter PaxNet-Web start"
   },
   "private": true,
   "dependencies": {

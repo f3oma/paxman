@@ -2,7 +2,6 @@
   "name": "PaxNet",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@nrwl/cli": "^15.9.3",
-    "nx": "^20.3.1"
+    "nx": "20.3.1"
   }
 }
