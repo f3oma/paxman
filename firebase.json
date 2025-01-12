@@ -1,9 +1,8 @@
 {
   "hosting": {
-    "target": "paxnet",
-    "public": "dist/paxnet",
+    "public": "dist/apps/PaxNet-Web",
     "ignore": [
-      "**/.*"
+      "firebase.json", "**/.*", "**/node_modules/**"
     ],
     "headers": [
       {
