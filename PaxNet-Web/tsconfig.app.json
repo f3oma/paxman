@@ -11,5 +11,6 @@
   ],
   "include": [
     "src/**/*.d.ts",
+    "../packages/@shared/src/**/*.ts"
   ]
 }

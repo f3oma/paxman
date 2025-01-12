@@ -6,6 +6,7 @@
     "targets": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
+          "dependsOn": ["^build"],
           "options": {
             "outputPath": "dist/PaxNet-Web",
             "index": "src/index.html",
@@ -102,5 +103,6 @@
             "firebaseHostingSite": "f3omaha"
           }
         }
-    }
+    },
+    "implicitDependencies": ["@shared"]
 }
