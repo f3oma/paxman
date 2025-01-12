@@ -5,10 +5,10 @@
     "prefix": "PaxNet-Web",
     "targets": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "dependsOn": ["^build"],
           "options": {
-            "outputPath": "dist/PaxNet-Web",
+            "outputPath": "./dist/PaxNet-Web",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
