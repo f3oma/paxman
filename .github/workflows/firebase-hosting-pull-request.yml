@@ -25,7 +25,7 @@ jobs:
         run: pnpm install
       
       - name: 'Generate Secrets'
-        working-directory: PaxNet-Web
+        working-directory: apps/PaxNet-Web
         run: node gen_env_files.js
         env:
           ANGULAR_ENV_VARS: '${{ secrets.ANGULAR_ENV_VARS }}'
@@ -72,4 +72,3 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_F3OMAHA }}'
           projectId: f3omaha
-          entryPoint: './PaxNet-Web/'
