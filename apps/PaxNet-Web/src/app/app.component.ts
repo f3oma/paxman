@@ -27,7 +27,6 @@ export class AppComponent {
   @HostListener('window:resize', ['$event'])
   getScreenSize(event?: any) {
       this.screenWidth = window.innerWidth;
-      console.log(PreActivity.Bookclub);
   }
 
   isCollapsed = false;
@@ -42,6 +41,7 @@ export class AppComponent {
     private paxManagerService: PaxManagerService,
     private readonly router: Router
   ) {
+    console.log(PreActivity.Bookclub);
     this.isLoggedIn = this.auth.isLoggedIn;
     this.authUserData$ = this.auth.authUserData$
       .pipe(

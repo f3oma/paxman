@@ -3,11 +3,7 @@
     "baseUrl": ".",   // Base URL for module resolution
     "moduleResolution": "node",
     "paths": {
-      "@shared/*": [
-        "@shared/src/*",
-        "packages/@shared/src/*",
-        "dist/packages/@shared/*"
-      ]
+      "@shared/*": ["dist/packages/@shared/*"]
     },
   },
 }
