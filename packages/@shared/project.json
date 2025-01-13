@@ -9,7 +9,7 @@
         "options": {
           "main": "packages/@shared/src/index.ts",
           "outputPath": "dist/packages/@shared",
-          "tsConfig": "packages/@shared/tsconfig.json"
+          "tsConfig": "packages/@shared/tsconfig.lib.json"
         }
       }
     }

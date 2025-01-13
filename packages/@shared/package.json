@@ -9,11 +9,13 @@
   "exports": {
     ".": {
       "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
       "types": "./dist/index.d.ts"
     },
-    "./types/workout": {
-      "require": "./dist/types/Workout.js",
-      "types": "./dist/types/Workout.d.ts"
+    "./src/types/Workout": {
+      "require": "./dist/src/types/Workout.js",
+      "import": "./dist/src/types/Workout.mjs",
+      "types": "./dist/src/types/Workout.d.ts"
     }
   },
   "scripts": {
@@ -21,7 +23,7 @@
     "build": "rm -rf dist && tsc --skipLibCheck"
   },
   "keywords": [],
-  "author": "Nolan Clark",
+  "author": "Nolan Clark - iMac",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^5.7.3"

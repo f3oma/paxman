@@ -36,6 +36,9 @@
             ],
             "scripts": [
 
+            ],
+            "allowedCommonJsDependencies": [
+              "@shared"
             ]
           },
           "configurations": {
