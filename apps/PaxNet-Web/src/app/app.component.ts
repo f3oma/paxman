@@ -5,6 +5,7 @@ import { UserAuthenticationService } from './services/user-authentication.servic
 import { AuthenticatedUser, UserRole } from './models/authenticated-user.model';
 import { IPaxUser } from './models/users.model';
 import { PaxManagerService } from './services/pax-manager.service';
+import { PreActivity } from '@shared/src/types/Workout';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,7 @@ export class AppComponent {
   @HostListener('window:resize', ['$event'])
   getScreenSize(event?: any) {
       this.screenWidth = window.innerWidth;
+      console.log(PreActivity.Bookclub);
   }
 
   isCollapsed = false;

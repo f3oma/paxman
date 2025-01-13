@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     "baseUrl": ".",   // Base URL for module resolution
+    "moduleResolution": "node",
     "paths": {
-      "@shared/types/workout": [
-        "@shared/src/types/Workout.ts",       // Path to shared types (development)
+      "@shared/": [
+        "@shared/src/*",
+        "packages/@shared/src/*"       // Path to shared types (development)
       ]
     },
   },

@@ -1,1 +1,1 @@
-// export * from './types/workout';
+export * from './types/Workout';

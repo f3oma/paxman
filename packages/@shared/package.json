@@ -3,13 +3,22 @@
   "version": "1.0.0",
   "private": true,
   "description": "Shared types/assets/etc for PaxNet",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "./types/workout": "./src/types/Workout.ts"
+    ".": {
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types/workout": {
+      "require": "./dist/types/Workout.js",
+      "types": "./dist/types/Workout.d.ts"
+    }
   },
   "scripts": {
     "build-dev": "rm -rf dist && tsc --skipLibCheck",
-    "build": "tsc --skipLibCheck"
+    "build": "rm -rf dist && tsc --skipLibCheck"
   },
   "keywords": [],
   "author": "Nolan Clark",
