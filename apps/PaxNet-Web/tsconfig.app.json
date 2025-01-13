@@ -11,6 +11,6 @@
   ],
   "include": [
     "src/**/*.d.ts",
-    "../../packages/@shared/src/**/*.ts"  // Include shared library source
+    "../../libs/@shared/src/**/*.ts"  // Include shared library source
   ],
 }
