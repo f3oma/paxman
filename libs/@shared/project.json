@@ -1,15 +1,15 @@
 {
     "name": "@shared",
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "sourceRoot": "packages/@shared/src",
+    "sourceRoot": "libs/@shared/src",
     "projectType": "library",
     "targets": {
       "build": {
         "executor": "@nx/js:tsc",
         "options": {
-          "main": "packages/@shared/src/index.ts",
-          "outputPath": "dist/packages/@shared",
-          "tsConfig": "packages/@shared/tsconfig.lib.json"
+          "main": "libs/@shared/src/index.ts",
+          "outputPath": "dist/libs/@shared",
+          "tsConfig": "libs/@shared/tsconfig.lib.json"
         }
       }
     }

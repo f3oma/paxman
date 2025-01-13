@@ -6,3 +6,4 @@ node_modules/
 .nx/workspace-data
 dist/
 .angular
+apps/**/dist/
