@@ -41,7 +41,6 @@ export class AppComponent {
     private paxManagerService: PaxManagerService,
     private readonly router: Router
   ) {
-    console.log(PreActivity.Bookclub);
     this.isLoggedIn = this.auth.isLoggedIn;
     this.authUserData$ = this.auth.authUserData$
       .pipe(
