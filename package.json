@@ -1,0 +1,20 @@
+{
+  "name": "PaxNet",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "paxnet-web": "pnpm --filter PaxNet-Web start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@nx/js": "^20.3.1",
+    "nx": "20.3.1"
+  },
+  "dependencies": {
+    "@angular/material": "16.2.12",
+    "@types/node": "^22.10.5"
+  }
+}

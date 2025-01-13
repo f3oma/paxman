@@ -17,20 +17,21 @@ jobs:
         uses: 'actions/setup-node@v1'
         with:
           node-version: 20.x
+
+      - name: Install pnpm nx
+        run: npm install -g pnpm @nrwl/cli
       
-      - id: 'Generate'
-        working-directory: PaxNet-Web
+      - name: Install Dependencies
+        run: pnpm install
+      
+      - name: 'Generate Secrets'
+        working-directory: apps/PaxNet-Web
         run: node gen_env_files.js
         env:
           ANGULAR_ENV_VARS: '${{ secrets.ANGULAR_ENV_VARS }}'
-
-      - id: 'Install'
-        working-directory: PaxNet-Web
-        run: npm install
-
-      - id: 'Build'
-        working-directory: PaxNet-Web
-        run: npm run build
+      
+      - name: 'Install All'
+        run: npx nx run-many --target=build --all
       
       - id: 'Deploy'
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -38,4 +39,3 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_F3OMAHA }}'
           projectId: f3omaha
-          entryPoint: './PaxNet-Web/'

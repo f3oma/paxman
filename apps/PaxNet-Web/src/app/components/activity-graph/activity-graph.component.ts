@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { AfterViewInit, Component, Input } from '@angular/core';
-import { PreActivity, UserReportedWorkout, UserReportedWorkoutUI } from 'src/app/models/beatdown-attendance';
+import { PreActivity } from '@shared/src/types/Workout';
+import { UserReportedWorkout, UserReportedWorkoutUI } from 'src/app/models/beatdown-attendance';
 import { Beatdown } from 'src/app/models/beatdown.model';
 import { IPaxUser } from 'src/app/models/users.model';
 import { BeatdownService } from 'src/app/services/beatdown.service';
@@ -9,7 +10,6 @@ import { WorkoutManagerService } from 'src/app/services/workout-manager.service'
 export interface DailyWorkoutReported {
   countPerDay: number;
 }
-
 
 @Component({
   selector: 'activity-graph',

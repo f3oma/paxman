@@ -1,0 +1,111 @@
+{
+    "name": "PaxNet-Web",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "prefix": "PaxNet",
+    "sourceRoot": "apps/PaxNet-Web/src",
+    "targets": {
+        "build": {
+          "executor": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "dependsOn": ["^build"],
+          "options": {
+            "outputPath": "dist/apps/PaxNet-Web",
+            "index": "apps/PaxNet-Web/src/index.html",
+            "main": "apps/PaxNet-Web/src/main.ts",
+            "polyfills": [
+              "apps/PaxNet-Web/node_modules/zone.js"
+            ],
+            "tsConfig": "apps/PaxNet-Web/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/PaxNet-Web/src/favicon.ico",
+              "apps/PaxNet-Web/src/assets"
+            ],
+            "styles": [
+              "apps/PaxNet-Web/src/styles.scss",
+              "apps/PaxNet-Web/node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "apps/PaxNet-Web/node_modules/bootstrap-icons/font/bootstrap-icons.css"
+            ],
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "@shared"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kb",
+                  "maximumError": "10kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "paxnet:build:production"
+            },
+            "development": {
+              "browserTarget": "paxnet:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "paxnet:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "apps/PaxNet-Web/tsconfig.spec.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/PaxNet-Web/src/favicon.ico",
+              "apps/PaxNet-Web/src/assets"
+            ],
+            "styles": [
+              "apps/PaxNet-Web/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "paxnet:build:production",
+            "firebaseProject": "f3omaha",
+            "firebaseHostingSite": "f3omaha"
+          }
+        }
+    },
+    "implicitDependencies": ["@shared"]
+}

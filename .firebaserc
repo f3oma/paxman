@@ -2,7 +2,7 @@
   "targets": {
     "f3omaha": {
       "hosting": {
-        "homebase": [
+        "paxnet": [
           "f3omaha"
         ]
       }

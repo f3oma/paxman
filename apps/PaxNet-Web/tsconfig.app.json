@@ -3,12 +3,14 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": []
+    "types": [],
+    "baseUrl": ".",
   },
   "files": [
     "src/main.ts"
   ],
   "include": [
-    "src/**/*.d.ts"
-  ]
+    "src/**/*.d.ts",
+    "../../packages/@shared/src/**/*.ts"  // Include shared library source
+  ],
 }

@@ -1,0 +1,17 @@
+{
+    "extends": "../../tsconfig.base.json", // Adjust based on your monorepo structure
+    "compilerOptions": {
+      "declaration": true,
+      "declarationMap": true,
+      "emitDeclarationOnly": false,
+      "outDir": "./dist",        // Outputs to dist folder
+      "rootDir": "./src",        // Source directory
+      "module": "ES2022",        // For ES modules
+      "target": "ES2022",        // Compatible with Angular
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["**/*.spec.ts", "node_modules"]
+  }

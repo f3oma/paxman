@@ -1,10 +1,10 @@
 {
-  "name": "PaxNet",
+  "name": "PaxNet-Web",
   "version": "1.0.0",
   "authors": [
     "Nolan Clark - F3 iMac"
   ],
-  "description": "Roster management tool for F3 Omaha",
+  "description": "F3 Omaha's internal PAX Network",
   "license": "ISC",
   "scripts": {
     "ng": "ng",
@@ -15,6 +15,7 @@
   },
   "private": true,
   "dependencies": {
+    "@shared": "workspace:*",
     "@angular/animations": "^16.2.12",
     "@angular/cdk": "^16.2.12",
     "@angular/common": "^16.2.12",
