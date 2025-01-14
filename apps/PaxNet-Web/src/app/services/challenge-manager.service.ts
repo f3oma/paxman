@@ -1,12 +1,12 @@
 import { Injectable, inject } from "@angular/core";
 import { BaseChallenge, ChallengeState } from "../models/user-challenge.model";
 import { UserProfileService } from "./user-profile.service";
-import { badgeFromChallengeName } from "../utils/badges";
 import { DocumentData, Firestore, addDoc, and, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where } from "@angular/fire/firestore";
 import { UserChallengeConverter } from "../utils/user-challenge.converter";
 import { PaxManagerService } from "./pax-manager.service";
 import { ChallengeInformation, Challenges } from "../utils/challenges";
 import { ChallengeInformationConverter } from "../utils/challenge-information.converter";
+import { getCompletedAchievementForChallenge } from "../utils/achievements";
 
 @Injectable({
     providedIn: 'root'
@@ -69,8 +69,10 @@ export class ChallengeManager {
         if (challenge.isComplete()) {
             challenge.updateState(ChallengeState.Completed);
             // Give user badge...
-            const badgeFromChallenge = badgeFromChallengeName(challenge.name);
-            await this.userProfileService.addBadgeToProfileInternal(badgeFromChallenge, challenge.paxUser.id);
+            const achievement = getCompletedAchievementForChallenge(challenge.name);
+            if (achievement) {
+                await this.userProfileService.addAchievementToProfile(achievement, challenge.paxUser.id);
+            }    
         }
         return await this.updateChallenge(challenge);
     }

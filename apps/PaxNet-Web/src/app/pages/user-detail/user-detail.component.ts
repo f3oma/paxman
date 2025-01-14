@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { AOData } from 'src/app/models/ao.model';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
-import { MyTotalAttendance, UserReportedWorkout } from 'src/app/models/beatdown-attendance';
+import { MyTotalAttendance } from 'src/app/models/beatdown-attendance';
 import { UserProfileData } from 'src/app/models/user-profile-data.model';
 import { IPaxUser, PaxUser } from 'src/app/models/users.model';
 import { AOManagerService } from 'src/app/services/ao-manager.service';
@@ -13,6 +13,7 @@ import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
+import { getAchievementImageFromChallengeName } from 'src/app/utils/achievements';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
 
 @Component({
@@ -110,6 +111,12 @@ export class UserDetailComponent {
     }
   }
 
+  public getAchievementImage(challengeName: string) {
+    const img = getAchievementImageFromChallengeName(challengeName);
+    console.log(img);
+    return img;
+  }
+
   private determineIfIsUsersProfile(userId: string) {
     this.isPersonalProfile = this.userAuthService.cachedCurrentAuthData?.paxDataId === userId;
   }
@@ -129,6 +136,14 @@ export class UserDetailComponent {
   }
 
   private async getUserProfileData(userId: string) {
-    this.userProfileData = await this.userProfileService.getOrCreateUserProfileById(userId);
+    var profileData = await this.userProfileService.getOrCreateUserProfileById(userId);
+    if (profileData && profileData.achievements) {
+      for (let achievement of profileData.achievements) {
+        if (achievement.imageSrc) {
+          await this.userProfileService.updateAchievementFormat(achievement, userId);
+        }
+      }
+    }
+    this.userProfileData = profileData;
   }
 }

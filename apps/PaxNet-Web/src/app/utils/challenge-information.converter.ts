@@ -1,9 +1,6 @@
 import { Injectable, inject } from "@angular/core";
-import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, doc, getDoc } from "@angular/fire/firestore";
-import { BaseChallenge, ChallengeType, IChallengeBase, IChallengeEntityBase, IIterativeCompletionChallengeEntity, IterativeCompletionChallenge } from "../models/user-challenge.model";
-import { PaxModelConverter } from "./pax-model.converter";
-import { PaxUser } from "../models/users.model";
-import { ChallengeInformation, IterativeCompletionRequirements } from "./challenges";
+import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot } from "@angular/fire/firestore";
+import { ChallengeInformation } from "./challenges";
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +33,6 @@ export class ChallengeInformationConverter {
             type: data.type,
             startDateString: data.startDateString,
             endDateString: data.endDateString,
-            imageSrc: data.imageSrc,
             completionRequirements: data.completionRequirements
         };
         return entity;

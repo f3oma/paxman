@@ -1,5 +1,4 @@
 import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from "../models/user-challenge.model";
-import { PaxUser } from "../models/users.model";
 import { ChallengeManager } from "../services/challenge-manager.service";
 
 export enum Challenges {
@@ -25,7 +24,6 @@ export enum ChallengeStatus {
 export interface ChallengeInformation {
     id?: string; // undefined when not set yet
     description: string;
-    imageSrc: string;
     name: Challenges;
     status: ChallengeStatus;
     type: ChallengeType,
@@ -42,6 +40,19 @@ export function getChallengeIdByName(challenge: Challenges): string | null  {
             return "N7vPPQBYKo3irbzhjaHw";
         case Challenges.ThreeHundredChallenge:
             return "iVJUt1cvLpE0mmigwo4s";
+        default:
+            return null;
+    }
+}
+
+export function getChallengeImageByName(challenge: Challenges): string | null {
+    switch(challenge) {
+        case Challenges.SummerMurph2024:
+            return "assets/challenges/murph-challenge-2024.png";
+        case Challenges.WinterWarrior2024:
+            return "assets/challenges/winter-warrior-challenge-2024.png";
+        case Challenges.ThreeHundredChallenge:
+            return "assets/challenges/three-hundred-challenge-2024.png";
         default:
             return null;
     }

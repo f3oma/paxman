@@ -1,6 +1,6 @@
 <div class="container">
     <div class="eventData" *ngIf="!showCompleteMessage">
-        <img [src]="challenge.imageSrc" />
+        <img [src]="getChallengeImage(challenge)" />
         <h4>{{challenge.name}}</h4>
         <p>{{challenge.description}}</p>
     </div>

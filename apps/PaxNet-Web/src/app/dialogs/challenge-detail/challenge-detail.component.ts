@@ -1,9 +1,9 @@
 import { Component, Inject } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { BaseChallenge, ChallengeState, ChallengeType, IIterativeCompletionChallenge, IterativeCompletionChallenge } from "src/app/models/user-challenge.model";
+import { ChallengeState, ChallengeType, IterativeCompletionChallenge } from "src/app/models/user-challenge.model";
 import { PaxUser } from "src/app/models/users.model";
 import { ChallengeManager } from "src/app/services/challenge-manager.service";
-import { ChallengeInformation, IterativeCompletionRequirements } from "src/app/utils/challenges";
+import { ChallengeInformation, getChallengeImageByName, IterativeCompletionRequirements } from "src/app/utils/challenges";
 
 export interface ChallengeDetailProps {
     challenge: ChallengeInformation;
@@ -91,6 +91,10 @@ export interface ChallengeDetailProps {
 
     userCancel() {
         this.dialogRef.close();
+    }
+
+    getChallengeImage(challenge: ChallengeInformation) {
+        return getChallengeImageByName(challenge.name);
     }
 }
     

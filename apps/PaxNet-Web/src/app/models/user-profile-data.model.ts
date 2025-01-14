@@ -26,7 +26,8 @@ export interface Badge {
 }
 
 export interface Achievement {
-    imageSrc: string;
+    name: string;
     text: string;
     dateCompleted: string;
+    imageSrc?: string;
 }

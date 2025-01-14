@@ -5,8 +5,8 @@ import { Achievement, Badge, IUserProfileDataEntity, UserProfileData } from "../
 import { PaxManagerService } from "./pax-manager.service";
 import { PaxModelConverter } from "../utils/pax-model.converter";
 import { Badges, getBadgeDetail } from "../utils/badges";
-import { Observable, switchMap } from "rxjs";
 import { Storage, getDownloadURL, ref, uploadBytes } from "@angular/fire/storage";
+import { Challenges } from "../utils/challenges";
 
 @Injectable({
     providedIn: 'root'
@@ -134,6 +134,22 @@ export class UserProfileService {
         return await updateDoc(docRef, {
             ...profileDataEntity
         });
+    }
+
+    async updateAchievementFormat(achievement: Achievement, userId: string) {
+        const docRef = doc(this.userProfileCollection, userId);
+        await updateDoc(docRef, {
+            achievements: arrayRemove(achievement)
+        });
+        if (achievement.imageSrc && achievement.text == "Summer Murph Challenge 2024")
+        {
+            achievement.name = Challenges.SummerMurph2024;
+            achievement.text = Challenges.SummerMurph2024;
+            delete achievement.imageSrc;
+        }
+        // Add it back...
+        await this.addAchievementToProfile(achievement, userId);
+        console.log(achievement);
     }
 
     public async deleteUserProfile(userId: string) {

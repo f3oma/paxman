@@ -6,7 +6,7 @@ import { PaxUser } from 'src/app/models/users.model';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
-import { ChallengeInformation } from 'src/app/utils/challenges';
+import { ChallengeInformation, getChallengeImageByName } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-challenges',
@@ -65,5 +65,9 @@ export class ChallengesComponent {
 
     userIsCommittedToChallenge(challenge: ChallengeInformation) {
       return this.activeUserChallengesSet.has(challenge.name);
+    }
+
+    getChallengeImageSrc(challenge: ChallengeInformation) {
+      return getChallengeImageByName(challenge.name);
     }
 }

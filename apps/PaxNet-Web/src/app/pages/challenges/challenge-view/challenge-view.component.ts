@@ -12,7 +12,7 @@ import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
-import { ChallengeInformation, ChallengeStatus, Challenges, IterativeCompletionRequirements, getChallengeIdByName, getChallengesEnumKeyByValue } from 'src/app/utils/challenges';
+import { ChallengeInformation, ChallengeStatus, Challenges, IterativeCompletionRequirements, getChallengeIdByName, getChallengeImageByName, getChallengesEnumKeyByValue } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-challenge-view',
@@ -236,6 +236,10 @@ export class ChallengeViewComponent implements OnInit {
     this.location.back();
   }
 
+  getChallengeImage(challenge: ChallengeInformation) {
+    return getChallengeImageByName(challenge.name);
+  }
+
   async logSingleCompletion() {
     if (!this.paxChallengeData)
       return;
@@ -245,12 +249,14 @@ export class ChallengeViewComponent implements OnInit {
     }
 
     this.showLoggedState = true;
+
+    var isCompleted = this.paxChallengeData.isComplete();
     (this.paxChallengeData as IterativeCompletionChallenge).addNewIteration();
 
-    if ((this.paxChallengeData as IterativeCompletionChallenge).isComplete())
+    if (!isCompleted && (this.paxChallengeData as IterativeCompletionChallenge).isComplete())
       await this.challengeManager.completeChallenge(this.paxChallengeData);
-
-    await this.challengeManager.updateChallenge(this.paxChallengeData);
+    else
+      await this.challengeManager.updateChallenge(this.paxChallengeData);
 
     setTimeout(() => {
       this.showLoggedState = false;

@@ -4,7 +4,7 @@
         <div class="container" *ngIf="challengeInformation" @fadeInOut>
             <div class="challenge-data">
                 <div class="image">
-                    <img [src]="challengeInformation.imageSrc" />
+                    <img [src]="getChallengeImage(challengeInformation)" />
                 </div>
                 <div class="details">
                     <h2>{{challengeInformation.name}}</h2>
