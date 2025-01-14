@@ -6,4 +6,5 @@
       "@shared/*": ["dist/libs/@shared/*"]
     },
   },
+  "include": ["image.d.ts"]
 }

@@ -10,8 +10,11 @@
       "target": "ES2022",        // Compatible with Angular
       "moduleResolution": "node",
       "esModuleInterop": true,
-      "allowSyntheticDefaultImports": true
+      "allowSyntheticDefaultImports": true,
+      "paths": {
+        "@/*": ["./src/*"]
+      }
     },
-    "include": ["src/**/*"],
+    "include": ["src/**/*", "image.d.ts"],
     "exclude": ["**/*.spec.ts", "node_modules"]
   }

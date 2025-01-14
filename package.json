@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@nx/angular": "^20.3.1",
     "@nx/js": "^20.3.1",
     "nx": "20.3.1"
   },
