@@ -72,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "paxnet:build:production"
+              "buildTarget": "paxnet:build:production"
             },
             "development": {
-              "browserTarget": "paxnet:build:development"
+              "buildTarget": "paxnet:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "paxnet:build"
+            "buildTarget": "paxnet:build"
           }
         },
         "test": {
