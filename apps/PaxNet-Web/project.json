@@ -21,7 +21,11 @@
             "assets": [
               "apps/PaxNet-Web/src/favicon.ico",
               "apps/PaxNet-Web/src/assets",
-              "libs/@shared/src/assets"
+              {
+                "glob": "**/*",
+                "input": "libs/@shared/src/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "apps/PaxNet-Web/src/styles.scss",
@@ -61,11 +65,7 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "executor": "@nx/angular:module-federation-dev-server",
-          "options": {
-            "port": 4200,
-            "publicHost": "http://localhost:4200"
-          },
+          "executor": "@nx/angular:dev-server",
           "configurations": {
             "production": {
               "buildTarget": "PaxNet-Web:build:production"

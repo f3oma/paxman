@@ -16,20 +16,12 @@
       "require": "./dist/src/types/Workout.js",
       "import": "./dist/src/types/Workout.mjs",
       "types": "./dist/src/types/Workout.d.ts"
-    },
-    "./src/constants/images": {
-      "require": "./dist/src/constants/images.js",
-      "import": "./dist/src/constants/images.mjs",
-      "types": "./dist/src/constants/images.d.ts"
     }
-  },
-  "scripts": {
-    "build": "rm -rf dist && tsc --skipLibCheck && node copy-assets.js"
   },
   "keywords": [],
   "author": "Nolan Clark - iMac",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.7.3"
+    "typescript": "^5.4.5"
   }
 }

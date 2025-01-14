@@ -45,14 +45,14 @@ export function getChallengeIdByName(challenge: Challenges): string | null  {
     }
 }
 
-export function getChallengeImageByName(challenge: Challenges): string | null {
+export function getChallengeImageByName(challenge: string): string | null {
     switch(challenge) {
         case Challenges.SummerMurph2024:
-            return "assets/challenges/murph-challenge-2024.png";
+            return "assets/images/challenges/murph-challenge-2024.png";
         case Challenges.WinterWarrior2024:
-            return "assets/challenges/winter-warrior-challenge-2024.png";
+            return "assets/images/challenges/winter-warrior-challenge-2024.png";
         case Challenges.ThreeHundredChallenge:
-            return "assets/challenges/three-hundred-challenge-2024.png";
+            return "assets/images/challenges/three-hundred-challenge-2024.png";
         default:
             return null;
     }

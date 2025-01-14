@@ -15,6 +15,6 @@
         "@/*": ["./src/*"]
       }
     },
-    "include": ["src/**/*", "image.d.ts"],
+    "include": ["src/**/*", "image.d.ts", "src/assets/**/*"],
     "exclude": ["**/*.spec.ts", "node_modules"]
   }
