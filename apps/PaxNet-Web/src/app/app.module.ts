@@ -14,8 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PhoneInputComponent } from './components/phone-input/phone-input.component';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
-import { environment } from '../environments/environment';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { provideAnalytics, getAnalytics } from '@angular/fire/analytics';
@@ -72,6 +71,7 @@ import { TruncatePipe } from './utils/truncate.pipe';
 import { BeatdownCategoryChipsComponent } from './components/beatdown-category-chips/beatdown-category-chips.component';
 import { HttpClientModule } from '@angular/common/http';
 import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.component';
+import { environment } from 'src/environments/environment.prod';
 
 @NgModule({
   declarations: [
@@ -130,11 +130,6 @@ import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideAnalytics(() => getAnalytics()),
-    provideStorage(() => getStorage()),
     NgbModule,
     MatSelectModule,
     MatAutocompleteModule,
@@ -151,7 +146,13 @@ import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.
     MatTooltipModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    provideAnalytics(() => getAnalytics()),
+    provideStorage(() => getStorage()),
+  ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
