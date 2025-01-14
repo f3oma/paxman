@@ -13,8 +13,8 @@ import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { UserProfileService } from 'src/app/services/user-profile.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
-import { getAchievementImageFromChallengeName } from 'src/app/utils/achievements';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
+import { getChallengeImageByName } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-user-detail',
@@ -112,9 +112,7 @@ export class UserDetailComponent {
   }
 
   public getAchievementImage(challengeName: string) {
-    const img = getAchievementImageFromChallengeName(challengeName);
-    console.log(img);
-    return img;
+    return getChallengeImageByName(challengeName);
   }
 
   private determineIfIsUsersProfile(userId: string) {

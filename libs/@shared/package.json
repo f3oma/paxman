@@ -18,14 +18,10 @@
       "types": "./dist/src/types/Workout.d.ts"
     }
   },
-  "scripts": {
-    "build-dev": "rm -rf dist && tsc --skipLibCheck",
-    "build": "rm -rf dist && tsc --skipLibCheck"
-  },
   "keywords": [],
   "author": "Nolan Clark - iMac",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^5.7.3"
+    "typescript": "^5.4.5"
   }
 }

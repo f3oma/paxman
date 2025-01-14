@@ -1,6 +1,6 @@
 {
   "name": "PaxNet",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "",
   "scripts": {
     "paxnet-web": "pnpm --filter PaxNet-Web start",
@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@nx/js": "^20.3.1",
+    "@nx/angular": "20.3.1",
+    "@nx/js": "20.3.1",
     "nx": "20.3.1"
   },
   "dependencies": {

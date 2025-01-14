@@ -20,7 +20,12 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "apps/PaxNet-Web/src/favicon.ico",
-              "apps/PaxNet-Web/src/assets"
+              "apps/PaxNet-Web/src/assets",
+              {
+                "glob": "**/*",
+                "input": "libs/@shared/src/assets",
+                "output": "assets"
+              }
             ],
             "styles": [
               "apps/PaxNet-Web/src/styles.scss",
@@ -60,13 +65,13 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "executor": "@nx/angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "paxnet:build:production"
+              "buildTarget": "PaxNet-Web:build:production"
             },
             "development": {
-              "browserTarget": "paxnet:build:development"
+              "buildTarget": "PaxNet-Web:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -74,7 +79,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "paxnet:build"
+            "browserTarget": "PaxNet-Web:build"
           }
         },
         "test": {
@@ -88,7 +93,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "apps/PaxNet-Web/src/favicon.ico",
-              "apps/PaxNet-Web/src/assets"
+              "apps/PaxNet-Web/src/assets",
+              "libs/@shared/src/assets"
             ],
             "styles": [
               "apps/PaxNet-Web/src/styles.scss"

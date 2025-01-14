@@ -21,20 +21,6 @@ export function getCompletedAchievementForChallenge(challengeName: string): Achi
     }
 }
 
-export function getAchievementImageFromChallengeName(challengeName: string): string | undefined {
-    switch(challengeName) {
-        case Challenges.SummerMurph2024:
-            return "assets/challenges/murph-challenge-2024.png";
-        case Challenges.ThreeHundredChallenge:
-            return "assets/challenges/three-hundred-challenge-2024.png";
-        case Challenges.WinterWarrior2024:
-            return "assets/challenges/winter-warrior-challenge-2024.png";
-        default:
-            console.error("No challenge found");
-            return undefined;
-    }
-}
-
 function formatDate(date: Date): string {
     return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
         .getDate()
