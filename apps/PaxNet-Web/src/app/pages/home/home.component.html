@@ -115,8 +115,8 @@
 
 
 <ng-template #loggedOut>
-  <div class="content">
-    <h2><b>Welcome to F3 Omaha's PaxNet!</b></h2>
+  <div class="welcome-content">
+    <h2>Welcome to <b>PaxNet</b> for F3 Omaha</h2>
     <p>To get started and join the community, please use the button below to get authenticated.</p>
     <button *ngIf="!isLoggedIn" mat-button id="login-btn" class="action-btn" [routerLink]="['/login']">Log in to continue<mat-icon>lock</mat-icon></button>
   </div>
