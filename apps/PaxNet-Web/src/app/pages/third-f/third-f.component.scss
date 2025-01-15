@@ -1,0 +1,70 @@
+.fill-container {
+    width: 100%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.mat-mdc-progress-spinner { --mdc-circular-progress-active-indicator-color: rgb(255, 128, 0); }
+
+.container {
+    padding: 16px;
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .text {
+            h1 {
+                margin-bottom: 4px;
+                font-size: 32px;
+                font-weight: bold;
+            }
+        }
+    }
+    
+    .section {
+        margin: 4px 0;
+        padding: 12px 0;
+        .section-head {
+            margin-bottom: 16px;
+
+            h4 {
+                margin-bottom: 0;
+                font-weight: bold;
+            }
+        }   
+    }
+
+    .events {
+        display: flex;
+        flex-direction: column;
+
+        .event {
+            padding: 12px;
+            background-color: #f6f6f6a1;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            align-items: center;
+            gap: 12px;
+
+            .event-image {
+
+            }
+
+            .event-details {
+                h5 {
+                    font-weight: bold;
+                    margin: 0
+                }
+                p {
+                    margin: 0
+                }
+            }
+        }
+    }
+}

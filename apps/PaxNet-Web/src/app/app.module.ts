@@ -72,6 +72,7 @@ import { BeatdownCategoryChipsComponent } from './components/beatdown-category-c
 import { HttpClientModule } from '@angular/common/http';
 import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.component';
 import { environment } from 'src/environments/environment.prod';
+import { ThirdFComponent } from './pages/third-f/third-f.component';
 
 @NgModule({
   declarations: [
@@ -118,7 +119,8 @@ import { environment } from 'src/environments/environment.prod';
     ChallengeViewComponent,
     TruncatePipe,
     BeatdownCategoryChipsComponent,
-    UserStatsViewComponent
+    UserStatsViewComponent,
+    ThirdFComponent
   ],
   imports: [
     BrowserModule,

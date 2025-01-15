@@ -1,10 +1,14 @@
 {
-    "compilerOptions": {
-      "baseUrl": ".",   // Base URL for module resolution
-      "moduleResolution": "node",
-      "paths": {
-        "@shared/*": ["dist/libs/@shared/*"]
-      },
-    },
-    "include": ["image.d.ts"]
+  "compilerOptions": {
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "paths": {
+      "@shared/*": [
+        "dist/libs/@shared/*"
+      ]
+    }
+  },
+  "include": [
+    "image.d.ts"
+  ]
 }
