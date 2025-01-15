@@ -8,49 +8,53 @@
   </button>
   <div class="collapse navbar-collapse align-right" id="navbarCollapse" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/search">Search</a>
-      </li>
-      <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/add-pax">Add FNG</a>
-      </li>
-      <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/exicon">Exicon</a>
-      </li>
-      <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/challenges">Challenges</a>
-      </li>
-      <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/weekly-schedule">Schedule</a>
-      </li>
-      <li class="nav-item" *ngIf="authenticatedUser">
-        <a class="nav-link" routerLink="/sites">AOs</a>
-      </li>
-      <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
-        <a class="nav-link dropdown-toggle nav-drop-image" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
-          <span *ngIf="paxUserData$ | async as paxUserData; else basicUser">
-            <div class="user-data">
-              <div class="current-profile-img" [style.background-image]="'url(' + paxUserData.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !paxUserData.profilePhotoUrl }"></div>
-              <span>{{ paxUserData.f3Name }}</span>
+      <div class="primary-list">
+        <li class="nav-item" *ngIf="authenticatedUser">
+          <a class="nav-link" routerLink="/search">Search</a>
+        </li>
+        <li class="nav-item" *ngIf="authenticatedUser">
+          <a class="nav-link" routerLink="/add-pax">Add FNG</a>
+        </li>
+        <li class="nav-item" *ngIf="authenticatedUser">
+          <a class="nav-link" routerLink="/exicon">Exicon</a>
+        </li>
+        <li class="nav-item" *ngIf="authenticatedUser">
+          <a class="nav-link" routerLink="/challenges">Challenges</a>
+        </li>
+        <li class="nav-item" *ngIf="authenticatedUser">
+          <a class="nav-link" routerLink="/weekly-schedule">Schedule</a>
+        </li>
+        <li class="nav-item" *ngIf="authenticatedUser">
+          <a class="nav-link" routerLink="/sites">AOs</a>
+        </li>
+      </div>
+      <div class="user-list">
+        <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
+          <a class="nav-link dropdown-toggle nav-drop-image" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+            <span *ngIf="paxUserData$ | async as paxUserData; else basicUser">
+              <div class="user-data">
+                <div class="current-profile-img" [style.background-image]="'url(' + paxUserData.profilePhotoUrl + ')'" [ngClass]="{ 'defaultBackground': !paxUserData.profilePhotoUrl }"></div>
+                <span>{{ paxUserData.f3Name }}</span>
+              </div>
+            </span>
+          </a>
+          <div ngbDropdownMenu class="dropdown-menu dropdown-menu-left shift-left" aria-labelledby="navbarDropdown">
+            <ng-container *ngIf="paxUserData$ | async as paxUserData; else claimData">
+              <a ngbDropdownItem class="dropdown-item" [routerLink]="['/users/', paxUserData.id]">My Profile</a>
+              <a ngbDropdownItem class="dropdown-item" [routerLink]="['/settings']">Settings</a>
+            </ng-container>
+            <div class="admin-data" *ngIf="isAdmin">
+              <div class="dropdown-divider"></div>
+              <a ngbDropdownItem class="dropdown-item" [routerLink]="['/admin']">Admin Tools</a>
             </div>
-          </span>
-        </a>
-        <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-          <ng-container *ngIf="paxUserData$ | async as paxUserData; else claimData">
-            <a ngbDropdownItem class="dropdown-item" [routerLink]="['/users/', paxUserData.id]">My Profile</a>
-            <a ngbDropdownItem class="dropdown-item" [routerLink]="['/settings']">Settings</a>
-          </ng-container>
-          <div class="admin-data" *ngIf="isAdmin">
             <div class="dropdown-divider"></div>
-            <a ngbDropdownItem class="dropdown-item" [routerLink]="['/admin']">Admin Tools</a>
+            <a ngbDropdownItem class="dropdown-item" (click)="signOut()">Log Out</a>
           </div>
-          <div class="dropdown-divider"></div>
-          <a ngbDropdownItem class="dropdown-item" (click)="signOut()">Log Out</a>
-        </div>
-      </li>
-      <li class="nav-item" *ngIf="!authenticatedUser">
-        <a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
-      </li>
+        </li>
+        <li class="nav-item" *ngIf="!authenticatedUser">
+          <a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active">Login</a>
+        </li>
+      </div>
     </ul>
   </div>
 </nav>

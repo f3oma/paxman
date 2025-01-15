@@ -65,6 +65,23 @@ p {
   }
 }
 
+.navbar-nav {
+  width: 100%;
+  display: flex;
+
+  .primary-list {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+  }
+  .user-list {
+    .shift-left {
+      left: -68px !important;
+    }
+  }
+}
+
+
 .navbar {
   padding: 8px 8px;
   display: flex;
@@ -83,4 +100,17 @@ p {
   width: 100%;
   height: 2.5rem;
   text-align: center;
+}
+
+@media only screen and (max-width: 767px) {
+  .navbar-nav {
+    .primary-list {
+      flex-direction: column !important;
+    }
+    .user-list {
+      .shift-left {
+        left: 0px !important;
+      }
+    }
+  }
 }
