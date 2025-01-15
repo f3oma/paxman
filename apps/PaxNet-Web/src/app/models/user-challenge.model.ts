@@ -2,7 +2,9 @@ import { Timestamp } from "firebase/firestore";
 import { PaxUser, UserRef } from "./users.model";
 
 export enum ChallengeType {
-    IterativeCompletions = 'iterativeCompletions'
+    IterativeCompletions = 'iterativeCompletions',
+    BestAttempt = 'bestAttempt',
+    UserSelectedGoal = 'userSelectedGoal',
 }
 
 export enum ChallengeState {
@@ -27,6 +29,13 @@ export interface IIterativeCompletionChallengeEntity extends IChallengeEntityBas
     activeCompletions: number;
     totalToComplete: number;
 }
+export interface IBestAttemptChallengeEntity extends IChallengeEntityBase {
+    bestAttempt: number;
+}
+export interface IUserSelectedGoalChallengeEntity extends IChallengeEntityBase {
+    goal: number;
+    currentValue: number;
+}
 
 // Domain
 export interface IChallengeBase {
@@ -43,6 +52,15 @@ export interface IChallengeBase {
 export interface IIterativeCompletionChallenge extends IChallengeBase {
     activeCompletions: number;
     totalToComplete: number;
+}
+
+export interface IBestAttemptChallenge extends IChallengeBase {
+    bestAttempt: number;
+}
+
+export interface IUserSelectedGoalChallenge extends IChallengeBase {
+    goal: number;
+    currentValue: number;
 }
 
 // Classes
@@ -162,6 +180,64 @@ export class IterativeCompletionChallenge extends BaseChallenge {
             ...baseProperties,
             activeCompletions: this.activeCompletions,
             totalToComplete: this.totalToComplete
+        }
+    }
+}
+
+export class BestAttemptChallenge extends BaseChallenge {
+    private _bestAttempt: number;
+
+    constructor(data: IBestAttemptChallenge) {
+        super(data.id, data.paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString, data.endDateTime);
+        this._bestAttempt = data.bestAttempt;
+    }
+
+    get bestAttempt(): number {
+        return this._bestAttempt;
+    }
+
+    updateAttempt(newAttempt: number) {
+        this._bestAttempt = newAttempt;
+    }
+
+    override toProperties(): IBestAttemptChallenge {
+        const baseProperties = super.toProperties();
+        return {
+            ...baseProperties,
+            bestAttempt: this.bestAttempt,
+        }
+    }
+}
+
+
+export class UserSelectedGoalChallenge extends BaseChallenge {
+    private _goal: number;
+    private _currentValue: number;
+
+    constructor(data: IUserSelectedGoalChallenge) {
+        super(data.id, data.paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString, data.endDateTime);
+        this._goal = data.goal;
+        this._currentValue = data.currentValue;
+    }
+
+    get goal(): number {
+        return this._goal;
+    }
+
+    get currentValue(): number {
+        return this._currentValue;
+    }
+
+    updateValue(newValue: number) {
+        this._currentValue = newValue;
+    }
+
+    override toProperties(): IUserSelectedGoalChallenge {
+        const baseProperties = super.toProperties();
+        return {
+            ...baseProperties,
+            goal: this.goal,
+            currentValue: this.currentValue
         }
     }
 }

@@ -6,7 +6,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
-import { BaseChallenge, ChallengeState, ChallengeType, IterativeCompletionChallenge } from 'src/app/models/user-challenge.model';
+import { BaseChallenge, BestAttemptChallenge, ChallengeState, ChallengeType, IBestAttemptChallenge, IterativeCompletionChallenge, UserSelectedGoalChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
@@ -91,10 +91,11 @@ export class ChallengeViewComponent implements OnInit {
   }
 
   async joinChallenge() {
+    let challenge: BaseChallenge | null = null;
+    const challengeState = this.challengeInformation?.status === ChallengeStatus.PreRegistration ? ChallengeState.PreRegistered : ChallengeState.NotStarted;
     if (this.challengeInformation?.type === ChallengeType.IterativeCompletions) {
         const completionRequirements = this.challengeInformation.completionRequirements as IterativeCompletionRequirements;
-        const challengeState = this.challengeInformation.status === ChallengeStatus.PreRegistration ? ChallengeState.PreRegistered : ChallengeState.NotStarted;
-        const iterativeChallenge: IterativeCompletionChallenge = new IterativeCompletionChallenge({
+        challenge = new IterativeCompletionChallenge({
             id: '',
             paxUser: this.paxUser!,
             type: this.challengeInformation.type,
@@ -106,10 +107,42 @@ export class ChallengeViewComponent implements OnInit {
             totalToComplete: completionRequirements.totalCompletionsRequired,
             activeCompletions: 0
         });
-        await this.challengeManager.startChallenge(iterativeChallenge);
-        this.paxChallengeData = iterativeChallenge;
-        this.tableData.push(iterativeChallenge);
-        this.refreshData(this.tableData);
+    } else if (this.challengeInformation?.type === ChallengeType.BestAttempt) {
+      challenge = new BestAttemptChallenge({
+        id: '',
+        paxUser: this.paxUser!,
+        type: this.challengeInformation.type,
+        state: challengeState,
+        startDateString: this.challengeInformation.startDateString,
+        endDateString: this.challengeInformation.endDateString,
+        endDateTime: new Date(this.challengeInformation.endDateString),
+        name: this.challengeInformation.name,
+        bestAttempt: 0
+      }); 
+    } else if (this.challengeInformation?.type === ChallengeType.UserSelectedGoal) {
+
+      // TODO: Prompt user for goal, use value below:
+      const goal = 20;
+
+      challenge = new UserSelectedGoalChallenge({
+        id: '',
+        paxUser: this.paxUser!,
+        type: this.challengeInformation.type,
+        state: challengeState,
+        startDateString: this.challengeInformation.startDateString,
+        endDateString: this.challengeInformation.endDateString,
+        endDateTime: new Date(this.challengeInformation.endDateString),
+        name: this.challengeInformation.name,
+        goal: goal,
+        currentValue: 0
+      }); 
+    }
+
+    if (challenge) {
+      await this.challengeManager.startChallenge(challenge);
+      this.paxChallengeData = challenge;
+      this.tableData.push(challenge);
+      this.refreshData(this.tableData);
     }
   }
 
@@ -132,7 +165,7 @@ export class ChallengeViewComponent implements OnInit {
 
   canJoinChallenge() {
     if (this.challengeInformation) {
-      if (new Date() < new Date(this.challengeInformation.endDateString)) {
+      if (new Date() < new Date(this.challengeInformation.lastDateToRegister)) {
         return true;
       }
     }
@@ -251,16 +284,20 @@ export class ChallengeViewComponent implements OnInit {
     this.showLoggedState = true;
 
     var isCompleted = this.paxChallengeData.isComplete();
-    (this.paxChallengeData as IterativeCompletionChallenge).addNewIteration();
 
-    if (!isCompleted && (this.paxChallengeData as IterativeCompletionChallenge).isComplete())
-      await this.challengeManager.completeChallenge(this.paxChallengeData);
-    else
-      await this.challengeManager.updateChallenge(this.paxChallengeData);
+    if (this.paxChallengeData.type === ChallengeType.IterativeCompletions) {
+      (this.paxChallengeData as IterativeCompletionChallenge).addNewIteration();
+      if (!isCompleted && (this.paxChallengeData as IterativeCompletionChallenge).isComplete())
+        await this.challengeManager.completeChallenge(this.paxChallengeData);
+      else
+        await this.challengeManager.updateChallenge(this.paxChallengeData);
+    } else if (this.paxChallengeData.type === ChallengeType.BestAttempt) {
+      // TODO: Get attempt value from user, set value and mark completed.
+
+    }
 
     setTimeout(() => {
       this.showLoggedState = false;
     }, 2000);
-
   }
 }

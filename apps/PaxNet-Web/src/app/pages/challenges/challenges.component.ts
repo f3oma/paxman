@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
-import { BaseChallenge, IterativeCompletionChallenge } from 'src/app/models/user-challenge.model';
+import { BaseChallenge, BestAttemptChallenge, IterativeCompletionChallenge, UserSelectedGoalChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
@@ -61,6 +61,14 @@ export class ChallengesComponent {
     
     isIterativeCompletionChallenge(challenge: BaseChallenge): challenge is IterativeCompletionChallenge {
       return (challenge as IterativeCompletionChallenge).activeCompletions !== undefined;
+    }
+
+    isBestAttemptChallenge(challenge: BaseChallenge): challenge is BestAttemptChallenge {
+      return (challenge as BestAttemptChallenge)?.bestAttempt !== undefined;
+    }
+
+    isUserSelectedGoalChallenge(challenge: BaseChallenge): challenge is UserSelectedGoalChallenge {
+      return (challenge as UserSelectedGoalChallenge)?.goal !== undefined;
     }
 
     userIsCommittedToChallenge(challenge: ChallengeInformation) {

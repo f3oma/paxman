@@ -26,10 +26,11 @@ export interface ChallengeInformation {
     description: string;
     name: Challenges;
     status: ChallengeStatus;
-    type: ChallengeType,
-    startDateString: string,
-    endDateString: string
+    type: ChallengeType;
+    startDateString: string;
+    endDateString: string;
     completionRequirements: ICompletionRequirements;
+    lastDateToRegister: string;
 }
 
 export function getChallengeIdByName(challenge: Challenges): string | null  {

@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, doc, getDoc } from "@angular/fire/firestore";
-import { BaseChallenge, ChallengeType, IChallengeBase, IChallengeEntityBase, IIterativeCompletionChallengeEntity, IterativeCompletionChallenge } from "../models/user-challenge.model";
+import { BaseChallenge, BestAttemptChallenge, ChallengeType, IBestAttemptChallenge, IBestAttemptChallengeEntity, IChallengeBase, IChallengeEntityBase, IIterativeCompletionChallengeEntity, IterativeCompletionChallenge } from "../models/user-challenge.model";
 import { PaxManagerService } from "../services/pax-manager.service";
 import { PaxModelConverter } from "./pax-model.converter";
 import { PaxUser } from "../models/users.model";
@@ -47,6 +47,11 @@ export class UserChallengeConverter {
                 activeCompletions: data.activeCompletions,
                 totalToComplete: data.totalToComplete
             }
+        } else if (data instanceof BestAttemptChallenge) {
+            return <IBestAttemptChallengeEntity> {
+                ...baseEntity,
+                bestAttempt: data.bestAttempt
+            }  
         } else {
             // Unknown type
             return baseEntity;
