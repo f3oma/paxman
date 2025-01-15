@@ -27,6 +27,14 @@
         <li class="nav-item" *ngIf="authenticatedUser">
           <a class="nav-link" routerLink="/sites">AOs</a>
         </li>
+        <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>
+          <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
+            The F's
+          </a>
+          <div ngbDropdownMenu class="dropdown-menu dropdown-menu-left" aria-labelledby="navbarDropdown">
+            <a ngbDropdownItem class="dropdown-item" [routerLink]="['/fs/third-f']">Third F</a>
+          </div>
+        </li>
       </div>
       <div class="user-list">
         <li class="nav-item dropdown" *ngIf="authenticatedUser" ngbDropdown>

@@ -26,6 +26,7 @@ import { WeeklyQScheduleComponent } from './pages/weekly-q-schedule/weekly-q-sch
 import { ChallengesComponent } from './pages/challenges/challenges.component';
 import { ChallengeViewComponent } from './pages/challenges/challenge-view/challenge-view.component';
 import { UserStatsViewComponent } from './pages/user-stats-view/user-stats-view.component';
+import { ThirdFComponent } from './pages/third-f/third-f.component';
 
 const routes: Routes = [
   {
@@ -115,6 +116,17 @@ const routes: Routes = [
         component: SiteDetailComponent,
         canActivate: [BasicAuthenticatedAuthGuard]
       },
+    ]
+  },
+  {
+    path: 'fs',
+    canActivate: [BasicAuthenticatedAuthGuard],
+    children: [
+      {
+        path: 'third-f',
+        component: ThirdFComponent,
+        canActivate: [BasicAuthenticatedAuthGuard]
+      }
     ]
   },
   {
