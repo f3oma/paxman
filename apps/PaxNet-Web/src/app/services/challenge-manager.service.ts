@@ -24,7 +24,7 @@ export class ChallengeManager {
 
     // Get all challenge information for active challenges
     async getAllActiveChallenges(): Promise<ChallengeInformation[]> {
-        const q = query(this.ChallengeInformationCollection, and(where("status", "in", ["pre-registration", "started", "draft"])));
+        const q = query(this.ChallengeInformationCollection, and(where("status", "in", ["pre-registration", "started"])));
         return Promise.all((await getDocs<Promise<ChallengeInformation>, DocumentData>(q)).docs.map((d) => d.data()));
     }
 

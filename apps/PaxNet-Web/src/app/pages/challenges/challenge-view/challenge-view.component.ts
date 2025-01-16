@@ -198,7 +198,6 @@ export class ChallengeViewComponent implements OnInit {
     }
 
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
-    
     if (!tableData) {
       this.showChallengeNotFoundError = true;
     }
