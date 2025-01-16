@@ -28,10 +28,16 @@
                             <mat-option value="Other">Other</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <div class="challenge-field" *ngIf="isEligibleForPreRunRuckChallengeF3Omaha(f3OmahaForm.controls['preActivity'].value, f3OmahaForm.controls['beatdown'].value.name)">
+                        <p class="challenge-name">Pre-Run\Ruck Challenge</p> 
+                        <h4>How many miles completed?</h4>
+                        <mat-form-field appearance="fill">
+                            <input formControlName="preRunChallengeMiles" matInput type="number" placeholder="Number of pre-run miles" />
+                        </mat-form-field>
+                    </div>
                     <mat-form-field appearance="outline">
-                        <mat-label>Additional notes</mat-label>
+                        <mat-label>(Optional) Additional notes</mat-label>
                         <textarea formControlName="notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="How was the beatdown today..."></textarea>
-                        <mat-hint>(Optional) Any additional notes about your workout</mat-hint>
                     </mat-form-field>
                   </form>
             </mat-tab>
@@ -61,10 +67,16 @@
                             <mat-option value="Other">Other</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <div class="challenge-field" *ngIf="isEligibleForPreRunRuckChallengeDownrange(downrangeForm.controls['preActivity'].value)">
+                        <p class="challenge-name">Pre-Run\Ruck Challenge</p> 
+                        <h4>How many miles on the Pre-{{downrangeForm.controls['preActivity'].value}}?</h4>
+                        <mat-form-field appearance="fill">
+                            <input formControlName="preRunChallengeMiles" matInput type="number" placeholder="Number of pre-run miles" />
+                        </mat-form-field>
+                    </div>
                     <mat-form-field appearance="outline">
-                        <mat-label>Additional notes</mat-label>
+                        <mat-label>(Optional) Additional notes</mat-label>
                         <textarea formControlName="notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="How was the beatdown today..."></textarea>
-                        <mat-hint>(Optional) Any additional notes about your workout</mat-hint>
                     </mat-form-field>
                 </form>
             </mat-tab>
@@ -90,10 +102,16 @@
                             <mat-option value="Other">Other</mat-option>
                         </mat-select>
                     </mat-form-field>
+                    <div class="challenge-field" *ngIf="isEligibleForPreRunRuckChallengeShield(shieldLockForm.controls['preActivity'].value)">
+                        <p class="challenge-name">Pre-Run\Ruck Challenge</p> 
+                        <h4>How many miles on the Pre-{{shieldLockForm.controls['preActivity'].value}}?</h4>
+                        <mat-form-field appearance="fill">
+                            <input formControlName="preRunChallengeMiles" matInput type="number" placeholder="Number of pre-run miles" />
+                        </mat-form-field>
+                    </div>
                     <mat-form-field appearance="outline">
-                        <mat-label>Additional notes</mat-label>
+                        <mat-label>(Optional) Additional notes</mat-label>
                         <textarea formControlName="notes" autocorrect="off" autocomplete="off" matInput type="text" placeholder="How was the beatdown today..."></textarea>
-                        <mat-hint>(Optional) Any additional notes about your workout</mat-hint>
                     </mat-form-field>
                 </form>
             </mat-tab>

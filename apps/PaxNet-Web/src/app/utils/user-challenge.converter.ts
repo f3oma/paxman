@@ -1,6 +1,6 @@
 import { Injectable, inject } from "@angular/core";
 import { DocumentData, Firestore, FirestoreDataConverter, QueryDocumentSnapshot, Timestamp, doc, getDoc } from "@angular/fire/firestore";
-import { BaseChallenge, BestAttemptChallenge, ChallengeType, IBestAttemptChallenge, IBestAttemptChallengeEntity, IChallengeBase, IChallengeEntityBase, IIterativeCompletionChallengeEntity, IterativeCompletionChallenge } from "../models/user-challenge.model";
+import { BaseChallenge, BestAttemptChallenge, ChallengeType, IBestAttemptChallenge, IBestAttemptChallengeEntity, IChallengeBase, IChallengeEntityBase, IIterativeCompletionChallengeEntity, IterativeCompletionChallenge, IUserSelectedGoalChallenge, IUserSelectedGoalChallengeEntity, UserSelectedGoalChallenge } from "../models/user-challenge.model";
 import { PaxManagerService } from "../services/pax-manager.service";
 import { PaxModelConverter } from "./pax-model.converter";
 import { PaxUser } from "../models/users.model";
@@ -52,8 +52,14 @@ export class UserChallengeConverter {
                 ...baseEntity,
                 bestAttempt: data.bestAttempt
             }  
+        } else if (data instanceof UserSelectedGoalChallenge) {
+            return <IUserSelectedGoalChallengeEntity> {
+                ...baseEntity,
+                goal: data.goal,
+                currentValue: data.currentValue
+            }
         } else {
-            // Unknown type
+            console.error("Unknown challenge type when converting");
             return baseEntity;
         }
     }
@@ -74,6 +80,20 @@ export class UserChallengeConverter {
                     endDateTime: data.endDateTime?.toDate() ?? new Date(data.endDateString),
                     activeCompletions: iterativeEntity.activeCompletions,
                     totalToComplete: iterativeEntity.totalToComplete,
+                });
+            case ChallengeType.UserSelectedGoal:
+                const userSelectedGoalEntity = data as IUserSelectedGoalChallengeEntity;
+                return new UserSelectedGoalChallenge({
+                    id,
+                    paxUser,
+                    name: data.name,
+                    type: data.type,
+                    state: data.state,
+                    startDateString: data.startDateString,
+                    endDateString: data.endDateString,
+                    endDateTime: data.endDateTime?.toDate() ?? new Date(data.endDateString),
+                    goal: userSelectedGoalEntity.goal,
+                    currentValue: userSelectedGoalEntity.currentValue
                 });
             default:
                 return new BaseChallenge(id, paxUser, data.name, data.type, data.state, data.startDateString, data.endDateString, data.endDateTime?.toDate() ?? new Date(data.endDateString));

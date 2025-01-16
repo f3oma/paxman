@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { AuthenticatedUser, UserRole } from 'src/app/models/authenticated-user.model';
-import { BaseChallenge, BestAttemptChallenge, IterativeCompletionChallenge, UserSelectedGoalChallenge } from 'src/app/models/user-challenge.model';
+import { BaseChallenge, BestAttemptChallenge,IterativeCompletionChallenge, UserSelectedGoalChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';

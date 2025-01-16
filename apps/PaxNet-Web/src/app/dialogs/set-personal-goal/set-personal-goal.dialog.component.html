@@ -1,0 +1,24 @@
+<div class="container">
+    <h1>Set your Goal</h1>
+    <p>What can you achieve?</p>
+    <div class="simple-form">
+        <form class="internal-form" [formGroup]="personalGoalForm">
+            <mat-form-field appearance="outline">
+                <mat-label>My Goal</mat-label>
+                <mat-select formControlName="goal">
+                    <mat-option *ngFor="let goal of goalOptions" [value]="goal.value">{{goal.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </form>
+    </div>
+    <div class="actions">
+        <button mat-raised-button style="background-color: orange;" (click)="submit()">
+            <span *ngIf="!userSaveLoading; else loadingSpinner">Submit</span>
+        </button>
+        <button mat-flat-button (click)="userCancel()">Cancel</button>
+    </div>
+</div>
+
+<ng-template #loadingSpinner>
+    <mat-spinner [diameter]="16"></mat-spinner>
+</ng-template>

@@ -3,14 +3,14 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, debounceTime, map } from 'rxjs';
 import { UserReportedWorkout } from 'src/app/models/beatdown-attendance';
-import { BaseChallenge, ChallengeType } from 'src/app/models/user-challenge.model';
+import { BaseChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
 import { BeatdownSearchService } from 'src/app/services/beatdown-search.service';
 import { BeatdownService } from 'src/app/services/beatdown.service';
 import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { WeatherService } from 'src/app/services/weather-api.service';
 import { WorkoutManagerService } from 'src/app/services/workout-manager.service';
-import { Challenges, threeHundredChallengeHelper, winterWarriorChallengeHelper } from 'src/app/utils/challenges';
+import { Challenges, preRunRuckChallengeHelper, winterWarriorChallengeHelper } from 'src/app/utils/challenges';
 
 export interface UserReportedWorkoutProps {
   user: PaxUser,
@@ -32,6 +32,7 @@ export class PersonalWorkoutReportComponent {
   f3OmahaForm: FormGroup = new FormGroup({
     'beatdown': new FormControl(''),
     'preActivity': new FormControl('None'),
+    'preRunChallengeMiles': new FormControl(0),
     'notes': new FormControl('')
   });
 
@@ -39,12 +40,14 @@ export class PersonalWorkoutReportComponent {
     'downrangeAOName': new FormControl(''),
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
+    'preRunChallengeMiles': new FormControl(0),
     'date': new FormControl(new Date())
   });
 
   shieldLockForm: FormGroup = new FormGroup({
     'preActivity': new FormControl('None'),
     'notes': new FormControl(''),
+    'preRunChallengeMiles': new FormControl(0),
     'date': new FormControl(new Date())
   });
 
@@ -57,6 +60,7 @@ export class PersonalWorkoutReportComponent {
   selectedBeatdownOption: any = '';
 
   activeTab: AvailableTabs = AvailableTabs.F3Omaha;
+  showPreRunRuckChallengeField: boolean = false;
 
   constructor(
     private workoutService: WorkoutManagerService,
@@ -69,6 +73,11 @@ export class PersonalWorkoutReportComponent {
     ) {
     this.user = data.user;
     this.activeChallenges = data.activeChallenges;
+    for (let challenge of data.activeChallenges) {
+      if (challenge.name === Challenges.PreRuckRunChallenge && new Date(challenge.startDateString) < new Date()) {
+        this.showPreRunRuckChallengeField = true;
+      }
+    }
 
     this.f3OmahaForm.controls['preActivity'].setValue('None');
     this.f3OmahaForm.controls['beatdown'].valueChanges.pipe(
@@ -110,25 +119,62 @@ export class PersonalWorkoutReportComponent {
             await winterWarriorChallengeHelper(challenge, this.challengeManager);
           }
         }
+
+        if (challenge.name === Challenges.PreRuckRunChallenge && new Date(challenge.startDateString) < new Date()) {
+          const completedTotal = this.getNumberOfMilesPreRan();
+          console.log(completedTotal);
+          await preRunRuckChallengeHelper(challenge, completedTotal, this.challengeManager);
+        }
       }
     }
 
     this.dialogRef.close();
   }
 
-  // private getNumberOfChallengeDaysCompleted(): number {
-  //   let iterationsCompleted = 0;
+  isEligibleForPreRunRuckChallengeF3Omaha(preactivitySelected: string, beatdownSelected?: string) {
+    if (!this.showPreRunRuckChallengeField)
+      return false;
 
-  //   if (this.activeTab === AvailableTabs.F3Omaha) {
-  //     iterationsCompleted = this.f3OmahaForm.controls['thirtyDayChallengeActivity'].value;
-  //   } else if (this.activeTab === AvailableTabs.Downrange) {
-  //     iterationsCompleted = this.downrangeForm.controls['thirtyDayChallengeActivity'].value;
-  //   } else if (this.activeTab === AvailableTabs.ShieldLock) {
-  //     iterationsCompleted = this.shieldLockForm.controls['thirtyDayChallengeActivity'].value;
-  //   }
+    if (preactivitySelected === 'Run' || preactivitySelected === 'Ruck' || preactivitySelected === 'Smurph' || beatdownSelected?.includes('Halfway House')) {
+      return true;
+    }
+  
+    return false;
+  }
 
-  //   return iterationsCompleted;
-  // }
+  isEligibleForPreRunRuckChallengeDownrange(preactivitySelected: string) {
+    if (!this.showPreRunRuckChallengeField)
+      return false;
+
+    if (preactivitySelected === 'Run' || preactivitySelected === 'Ruck' || preactivitySelected === 'Smurph') {
+      return true;
+    }
+    return false;
+  }
+
+  isEligibleForPreRunRuckChallengeShield(preactivitySelected: string) {
+    if (!this.showPreRunRuckChallengeField)
+      return false;
+
+    if (preactivitySelected === 'Run' || preactivitySelected === 'Ruck' || preactivitySelected === 'Smurph') {
+      return true;
+    }
+    return false;
+  }
+
+  private getNumberOfMilesPreRan(): number {
+    let milesCompleted = 0;
+
+    if (this.activeTab === AvailableTabs.F3Omaha) {
+      milesCompleted = this.f3OmahaForm.controls['preRunChallengeMiles'].value;
+    } else if (this.activeTab === AvailableTabs.Downrange) {
+      milesCompleted = this.downrangeForm.controls['preRunChallengeMiles'].value;
+    } else if (this.activeTab === AvailableTabs.ShieldLock) {
+      milesCompleted = this.shieldLockForm.controls['preRunChallengeMiles'].value;
+    }
+
+    return milesCompleted;
+  }
 
   async validateF3OmahaForm() {
     if (this.f3OmahaForm.valid) {

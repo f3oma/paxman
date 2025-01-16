@@ -19,6 +19,27 @@
           font-weight: bold;
         }
     }
+
+    .challenge-field {
+      background: linear-gradient(rgb(162, 193, 255), #edb1fa);
+      padding: 16px;
+      border-radius: 16px;
+      margin: 12px;
+
+      .challenge-name {
+        padding: 8px 12px;
+        background: #333;
+        color: #fff;
+        border-radius: 25px;
+        margin-bottom: 12px;
+        width: fit-content;
+      }
+
+      h4 {
+        font-size: 16px;
+      }
+    }
+
     .beatdown-form {
       display: flex;
       flex-direction: column;
