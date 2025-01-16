@@ -1,10 +1,12 @@
 import { transition, trigger, useAnimation } from '@angular/animations';
 import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, tap } from 'rxjs';
+import { SetPersonalGoalDialog, SetPersonalGoalDialogProps, SetPersonalGoalDialogResult } from 'src/app/dialogs/set-personal-goal/set-personal-goal.dialog.component';
 import { AuthenticatedUser } from 'src/app/models/authenticated-user.model';
 import { BaseChallenge, BestAttemptChallenge, ChallengeState, ChallengeType, IBestAttemptChallenge, IterativeCompletionChallenge, UserSelectedGoalChallenge } from 'src/app/models/user-challenge.model';
 import { PaxUser } from 'src/app/models/users.model';
@@ -12,7 +14,7 @@ import { ChallengeManager } from 'src/app/services/challenge-manager.service';
 import { PaxManagerService } from 'src/app/services/pax-manager.service';
 import { UserAuthenticationService } from 'src/app/services/user-authentication.service';
 import { fadeIn, fadeOut } from 'src/app/utils/animations';
-import { ChallengeInformation, ChallengeStatus, Challenges, IterativeCompletionRequirements, getChallengeIdByName, getChallengeImageByName, getChallengesEnumKeyByValue } from 'src/app/utils/challenges';
+import { ChallengeInformation, ChallengeStatus, Challenges, IterativeCompletionRequirements, getChallengeIdByName, getChallengeImageByName, getChallengesEnumKeyByValue, getUserSelectedGoalOptionsByName } from 'src/app/utils/challenges';
 
 @Component({
   selector: 'app-challenge-view',
@@ -50,7 +52,8 @@ export class ChallengeViewComponent implements OnInit {
     private userAuthService: UserAuthenticationService,
     private paxManagerService: PaxManagerService,
     private location: Location,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private matDialog: MatDialog) {
       this.authUserData$ = this.userAuthService.authUserData$.pipe(
         tap(async (data) => {
             const paxDataId = data?.paxDataId;
@@ -120,9 +123,24 @@ export class ChallengeViewComponent implements OnInit {
         bestAttempt: 0
       }); 
     } else if (this.challengeInformation?.type === ChallengeType.UserSelectedGoal) {
+      let goal = 0;
 
-      // TODO: Prompt user for goal, use value below:
-      const goal = 20;
+      const result: SetPersonalGoalDialogResult = await this.matDialog.open(SetPersonalGoalDialog, {
+        data: <SetPersonalGoalDialogProps> {
+          goalOptions: getUserSelectedGoalOptionsByName(this.challengeInformation.name)
+        },
+        maxWidth: '100vw',
+        maxHeight: '100vh',
+        height: '100%',
+        width: '100%'
+      }).afterClosed().toPromise();
+
+      if (result) {
+        goal = result.goal;
+      } else {
+        // user canceled
+        return;
+      }
 
       challenge = new UserSelectedGoalChallenge({
         id: '',
@@ -180,6 +198,7 @@ export class ChallengeViewComponent implements OnInit {
     }
 
     const tableData = await this.challengeManager.getAllChallengeParticipants(challenge);
+    
     if (!tableData) {
       this.showChallengeNotFoundError = true;
     }
@@ -188,8 +207,6 @@ export class ChallengeViewComponent implements OnInit {
 
     if (challenge == Challenges.WinterWarrior2024) {
       this.showVenmo = true;
-    } else if (challenge === Challenges.ThreeHundredChallenge && new Date(challengeInformation.startDateString) < new Date()) {
-      this.is300Challenge = true;
     }
 
     // As soon as a challenge is active, set the state of all entries to in-progress
@@ -216,7 +233,6 @@ export class ChallengeViewComponent implements OnInit {
         challengeInformation.status = ChallengeStatus.Completed;
         await this.challengeManager.updateChallengeInformation(challengeInformation);
       }
-
       const promises: Promise<any>[] = [];
       for (let challengeEntry of tableData) {
         if (challengeEntry.state === ChallengeState.InProgress || challengeEntry.state === ChallengeState.NotStarted) {
@@ -236,24 +252,45 @@ export class ChallengeViewComponent implements OnInit {
   }
 
   refreshData(challenges: BaseChallenge[]) {
-    let sorted = challenges as IterativeCompletionChallenge[];
+    let sorted = challenges;
 
-    // If user is in the challenge put them first, followed by sorted completion status
-    sorted = sorted.sort((a, b) => {
-      if (this.paxChallengeData) {
-        if (a.id === this.paxChallengeData.id && b.id !== this.paxChallengeData.id) {
-          return -1;
+    if (!this.challengeInformation)
+      return;
+
+    if (this.challengeInformation.type === ChallengeType.IterativeCompletions) {
+      let iterativeCompletionChallenges = sorted as IterativeCompletionChallenge[];
+      // If user is in the challenge put them first, followed by sorted completion status
+      sorted = iterativeCompletionChallenges.sort((a, b) => {
+        if (this.paxChallengeData) {
+          if (a.id === this.paxChallengeData.id && b.id !== this.paxChallengeData.id) {
+            return -1;
+          }
+          if (b.id === this.paxChallengeData.id && a.id !== this.paxChallengeData.id) {
+            return 1;
+          }
         }
-        if (b.id === this.paxChallengeData.id && a.id !== this.paxChallengeData.id) {
-          return 1;
+        return b.activeCompletions - a.activeCompletions;
+      });
+    } else if (this.challengeInformation.type === ChallengeType.UserSelectedGoal) {
+      let personalGoalsChallenge = sorted as UserSelectedGoalChallenge[];
+      console.log(personalGoalsChallenge);
+      // If user is in the challenge put them first, followed by sorted completion status
+      sorted = personalGoalsChallenge.sort((a, b) => {
+        if (this.paxChallengeData) {
+          if (a.id === this.paxChallengeData.id && b.id !== this.paxChallengeData.id) {
+            return -1;
+          }
+          if (b.id === this.paxChallengeData.id && a.id !== this.paxChallengeData.id) {
+            return 1;
+          }
         }
-      }
-      return b.activeCompletions - a.activeCompletions;
-    });
+        return b.currentValue - a.currentValue;
+      });
+    }
 
     // The first element set to status from db
     if (this.paxChallengeData) {
-      sorted[0] = this.paxChallengeData as IterativeCompletionChallenge;
+      sorted[0] = this.paxChallengeData;
     }
 
     this.tableData = sorted;
